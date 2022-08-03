@@ -1,6 +1,6 @@
 # repost
 
-A new Flutter project.
+ 😯Flutter iOS App To Repost Instagram Posts
 
 ## Getting Started
 
