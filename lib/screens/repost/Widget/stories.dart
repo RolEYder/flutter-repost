@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
@@ -31,10 +30,13 @@ class Stories extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   if (selectedStory != null) {
-                     selectedStory!(titleArr![i]);
+                    selectedStory!(titleArr![i]);
                   }
                   if (showPostDetail) {
-                    Navigator.push(context, MaterialPageRoute(builder: ((context) => RepostSchedule())));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => RepostSchedule())));
                   }
                 },
                 child: Column(
@@ -64,7 +66,7 @@ class Stories extends StatelessWidget {
                             shape: BoxShape.circle,
                             image: imgArr != null
                                 ? DecorationImage(
-                                    image: AssetImage("assets/${imgArr![i]}"))
+                                    image: NetworkImage("${imgArr![i]}"))
                                 : null),
                         width: 60,
                         height: 60,

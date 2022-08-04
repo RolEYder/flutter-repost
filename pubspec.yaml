@@ -42,6 +42,8 @@ dependencies:
   flutter_picker: ^2.0.4
   syncfusion_flutter_datepicker: ^20.2.38
   icons_launcher: ^1.2.1
+  http: ^0.13.5
+  dio: ^4.0.6
  
   
 

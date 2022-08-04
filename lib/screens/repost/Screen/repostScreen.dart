@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:repost/api/storiesModel.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
+import '../../../api/api_servicer.dart';
+import 'dart:developer';
 
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key? key}) : super(key: key);
@@ -13,6 +16,8 @@ class RepostScreen extends StatefulWidget {
 class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool ishowPost = false;
+  late List<StoriesModel> _storiesModel;
+  List<String> STORIES = [];
   List<String> titleArr = [
     "Rayshean32",
     "alina.sde1",
@@ -25,6 +30,18 @@ class _RepostScreenState extends State<RepostScreen> {
     "Sundshade3",
     "Cakior22"
   ];
+  void _getStoriesByUsername(String _username) async {
+    //_storiesModel = (await ApiService().getStoriesByUsername(_username));
+    var _stories = await ApiService().getStoriesByUsername(_username);
+    var _posts = await ApiService().getPostsByUsername(_username);
+    for (var i = 0; i < _stories.length; i++) {
+      if (_stories[i]["thumbnail"] != null) {
+        STORIES.add(_stories[i]["thumbnail"].toString());
+        log(_stories[i]["thumbnail"].toString());
+      }
+    }
+    Future.delayed(const Duration(seconds: 1));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +56,12 @@ class _RepostScreenState extends State<RepostScreen> {
               child: TextField(
                 style: const TextStyle(fontSize: 16),
                 onSubmitted: (value) {
-                  setState(() {
-                    ishowPost = true;
-                  });
+                  if (value.isNotEmpty) {
+                    _getStoriesByUsername(value.toString());
+                    setState(() {
+                      ishowPost = true;
+                    });
+                  }
                 },
                 controller: _post,
                 decoration: InputDecoration(
@@ -90,10 +110,7 @@ class _RepostScreenState extends State<RepostScreen> {
                           ),
 
                           ///Story///
-                          Stories(
-                            titleArr: titleArr,
-                            showPostDetail: true,
-                          ),
+                          Stories(titleArr: titleArr, showPostDetail: true),
 
                           const Text(
                             "POSTS",
