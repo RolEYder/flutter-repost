@@ -1,7 +1,12 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 
-class ApiService {
+class ApiService 
+  /// Fnction to get posts info  giving a idpost
+  Future<List<dynamic>> getInfoPost(String _idpost) async {
+  
+  }
+  /// Fction to get stories giving their usernames
   Future<List<dynamic>> getPostsByUsername(String _username) async {
     try {
       //first at all, get the user id by their username
