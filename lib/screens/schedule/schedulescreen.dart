@@ -20,7 +20,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         child: ListView(
           children: [
             const Text(
-              
               "PENDING\nPOSTS\nAND\nSTORIES",
               style: TextStyle(
                   fontSize: 50,
@@ -31,7 +30,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             const SizedBox(
               height: 8,
             ),
-             Text(
+            Text(
               "Click to edit your desired scheduled post or story.",
               style: TextStyle(color: secondaryTxtColor),
             ),
@@ -45,7 +44,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       MaterialPageRoute(
                           builder: (context) => RepostSchedule()));
                 },
-                child: const Posts())
+                child: Text("Example"))
           ],
         ),
       ),

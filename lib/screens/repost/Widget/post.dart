@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 
-class Posts extends StatelessWidget {
-  const Posts({Key? key}) : super(key: key);
+class Posts extends StatefulWidget {
+  final String username;
+  final String text;
+  final String thumbnail;
+  final String profilepic;
+  Posts(
+      {Key? key,
+      required this.username,
+      required this.text,
+      required this.thumbnail,
+      required this.profilepic})
+      : super(key: key);
+  @override
+  State<Posts> createState() => _PostState();
+}
 
+class _PostState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: 10,
+        itemCount: 1,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Card(
@@ -23,8 +37,8 @@ class Posts extends StatelessWidget {
                         bottomLeft: Radius.circular(8)),
                     child: SizedBox(
                       height: 125,
-                      child: Image.asset(
-                        "assets/smallgirl.png",
+                      child: Image.network(
+                        widget.thumbnail.toString(),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -56,17 +70,17 @@ class Posts extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Row(
-                                children: const [
+                                children: [
                                   CircleAvatar(
                                     radius: 18,
-                                    backgroundImage:
-                                        AssetImage("assets/smallgirl.png"),
+                                    backgroundImage: NetworkImage(
+                                        widget.profilepic.toString()),
                                   ),
                                   SizedBox(
                                     width: 10,
                                   ),
                                   Text(
-                                    "alina.sde1",
+                                    widget.username.toString(),
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
@@ -88,10 +102,10 @@ class Posts extends StatelessWidget {
                         const Divider(
                           color: Colors.grey,
                         ),
-                        const Padding(
+                        Padding(
                           padding: EdgeInsets.only(left: 12),
                           child: Text(
-                            "Having Fun While Taking picture is the best in the World!!! #Priceless #sofun ",
+                            widget.text.toString(),
                             maxLines: 2,
                             style: TextStyle(
                                 color: Colors.white,

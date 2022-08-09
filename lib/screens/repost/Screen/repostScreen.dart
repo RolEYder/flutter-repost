@@ -4,7 +4,6 @@ import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
 import '../../../api/api_servicer.dart';
-import 'dart:developer';
 
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key? key}) : super(key: key);
@@ -18,6 +17,7 @@ class _RepostScreenState extends State<RepostScreen> {
   bool ishowPost = false;
   late List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
+  List<dynamic> POSTS = [];
   List<String> titleArr = [
     "Rayshean32",
     "alina.sde1",
@@ -32,15 +32,26 @@ class _RepostScreenState extends State<RepostScreen> {
   ];
   void _getStoriesByUsername(String _username) async {
     //_storiesModel = (await ApiService().getStoriesByUsername(_username));
-    var _stories = await ApiService().getStoriesByUsername(_username);
+    //var _stories = await ApiService().getStoriesByUsername(_username);
     var _posts = await ApiService().getPostsByUsername(_username);
-    for (var i = 0; i < _stories.length; i++) {
-      if (_stories[i]["thumbnail"] != null) {
-        STORIES.add(_stories[i]["thumbnail"].toString());
-        log(_stories[i]["thumbnail"].toString());
-      }
-    }
-    Future.delayed(const Duration(seconds: 1));
+    POSTS = _posts as List<dynamic>;
+    // for (var i = 0; i < _stories.length; i++) {
+    //   if (_stories[i]["thumbnail"] != null) {
+    //     STORIES.add(_stories[i]["thumbnail"].toString());
+    //     log(_stories[i]["thumbnail"].toString());
+    //   }
+    // }
+  }
+
+  Widget ShowPosts() {
+    return new Column(children: <Widget>[
+      ...POSTS.map((e) => Posts(
+            username: e["username"],
+            text: (e["text"].toString() + e["hashtags"].join(" ")),
+            thumbnail: e["display_url"].toString(),
+            profilepic: e["profile_pic"].toString(),
+          ))
+    ]);
   }
 
   @override
@@ -132,7 +143,7 @@ class _RepostScreenState extends State<RepostScreen> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 12),
-                                child: Posts(),
+                                child: ShowPosts(),
                               ))
                         ],
                       ),
