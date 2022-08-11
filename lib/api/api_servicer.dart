@@ -57,8 +57,10 @@ class ApiService {
           "display_url":
               element["node"]["display_resources"][0]["src"].toString(),
           "is_video": element["node"]["is_video"],
-          "text": element["node"]["edge_media_to_caption"]["edges"][0]["node"]
-                  ["text"]
+          "text": (element["node"]["edge_media_to_caption"]["edges"][0] == " "
+                  ? " "
+                  : element["node"]["edge_media_to_caption"]["edges"][0]["node"]
+                      ["text"])
               .toString(),
           "username": element["node"]["owner"]["username"].toString(),
           "hashtags": getHashtagsFromString(element["node"]

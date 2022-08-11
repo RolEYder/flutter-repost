@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:repost/api/storiesModel.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
@@ -36,6 +38,7 @@ class _RepostScreenState extends State<RepostScreen> {
     //_storiesModel = (await ApiService().getStoriesByUsername(_username));
     //var _stories = await ApiService().getStoriesByUsername(_username);
     var _posts = await ApiService().getPostsByUsername(_username);
+    log(_posts.toString());
     POSTS = _posts as List<dynamic>;
     // for (var i = 0; i < _stories.length; i++) {
     //   if (_stories[i]["thumbnail"] != null) {
@@ -75,7 +78,7 @@ class _RepostScreenState extends State<RepostScreen> {
                       _isLoading = true;
                       ishowPost = true;
                     });
-                    await Future.delayed(const Duration(seconds: 2));
+                    await Future.delayed(const Duration(seconds: 15));
                     setState(() {
                       _isLoading = false;
                     });
