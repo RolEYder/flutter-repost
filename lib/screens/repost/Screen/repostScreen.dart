@@ -4,6 +4,7 @@ import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
 import '../../../api/api_servicer.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class RepostScreen extends StatefulWidget {
 class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool ishowPost = false;
+  bool _isLoading = false;
   late List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
@@ -66,12 +68,33 @@ class _RepostScreenState extends State<RepostScreen> {
               padding: const EdgeInsets.only(right: 8.0),
               child: TextField(
                 style: const TextStyle(fontSize: 16),
-                onSubmitted: (value) {
+                onSubmitted: (value) async {
                   if (value.isNotEmpty) {
                     _getStoriesByUsername(value.toString());
                     setState(() {
+                      _isLoading = true;
                       ishowPost = true;
                     });
+                    await Future.delayed(const Duration(seconds: 2));
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  } else {
+                    Alert(
+                            buttons: [
+                          DialogButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              "Ok!",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          )
+                        ],
+                            context: context,
+                            title: "Oops!🤔",
+                            desc: "You must enter a proper Instagram username")
+                        .show();
                   }
                 },
                 controller: _post,
@@ -94,7 +117,7 @@ class _RepostScreenState extends State<RepostScreen> {
                         borderRadius: BorderRadius.circular(8))),
               ),
             ),
-            ishowPost
+            !_isLoading
                 ? Expanded(
                     child: Center(
                       child: ListView(
@@ -149,23 +172,7 @@ class _RepostScreenState extends State<RepostScreen> {
                       ),
                     ),
                   )
-                : Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Column(
-                        children: const [
-                          SizedBox(
-                            height: 200,
-                          ),
-                          Text(
-                            "Copy the link of the post that you want to repost and re-enter our app so we can automatically detect the content you want to repost. You can also search by username above and select the content you want to Repost.",
-                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                : const CircularProgressIndicator(),
           ],
         ),
       ),
