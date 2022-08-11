@@ -1,10 +1,10 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:repost/api/storiesModel.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
+import 'package:repost/screens/schedule/schedulescreen.dart';
 import '../../../api/api_servicer.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -48,7 +48,8 @@ class _RepostScreenState extends State<RepostScreen> {
     // }
   }
 
-  Widget ShowPosts() {
+  // Widget function to show instagram posts
+  Widget _showInstagramPosts() {
     return new Column(children: <Widget>[
       ...POSTS.map((e) => Posts(
             username: e["username"],
@@ -57,6 +58,19 @@ class _RepostScreenState extends State<RepostScreen> {
             profilepic: e["profile_pic"].toString(),
           ))
     ]);
+  }
+
+  Widget _showRepostScheduleScreen() {
+    try {
+      for (int i = 0; i < POSTS.length; i++) {
+        return new RepostSchedule(picprofile: POSTS[i]["display_url"]);
+      }
+    } catch (e) {
+      log("Unable to load Repost Schedule");
+    }
+    throw (e) {
+      log("Error");
+    };
   }
 
   @override
@@ -90,7 +104,7 @@ class _RepostScreenState extends State<RepostScreen> {
                             child: Text(
                               "Ok!",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
+                                  TextStyle(color: Colors.white, fontSize: 2),
                             ),
                           )
                         ],
@@ -165,11 +179,11 @@ class _RepostScreenState extends State<RepostScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            RepostSchedule()));
+                                            _showRepostScheduleScreen()));
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 12),
-                                child: ShowPosts(),
+                                child: _showInstagramPosts(),
                               ))
                         ],
                       ),

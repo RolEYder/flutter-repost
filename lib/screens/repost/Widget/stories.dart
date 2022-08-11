@@ -36,7 +36,9 @@ class Stories extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: ((context) => RepostSchedule())));
+                            builder: ((context) => RepostSchedule(
+                                  picprofile: "",
+                                ))));
                   }
                 },
                 child: Column(

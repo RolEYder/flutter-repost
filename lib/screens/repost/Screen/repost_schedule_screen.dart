@@ -7,7 +7,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'caption.dart';
 
 class RepostSchedule extends StatefulWidget {
-  const RepostSchedule({Key? key}) : super(key: key);
+  final String picprofile;
+  const RepostSchedule({Key? key, required this.picprofile}) : super(key: key);
 
   @override
   State<RepostSchedule> createState() => _RepostScheduleState();
@@ -24,7 +25,6 @@ class _RepostScheduleState extends State<RepostSchedule> {
 
   Widget waterMarks(String title, String trailing) {
     return Container(
-      
       height: 40,
       width: double.infinity,
       child: Row(
@@ -89,8 +89,8 @@ class _RepostScheduleState extends State<RepostSchedule> {
                         itemCount: image.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            child: Image.asset(
-                              "assets/${image[index]}",
+                            child: Image.network(
+                              widget.picprofile.toString(),
                               fit: BoxFit.fill,
                             ),
                           );
@@ -114,19 +114,20 @@ class _RepostScheduleState extends State<RepostSchedule> {
               child: Column(
                 children: [
                   GestureDetector(
-                      onTap: () async{
-                       var resp = await Navigator.push(
+                      onTap: () async {
+                        var resp = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Watermark()));
 
-                               if (resp != null) {
-                                 setState(() {
-                                   selectedWatermark = resp == -1 ? "off" : watermarks[resp];
-                                 });
-                               } 
+                        if (resp != null) {
+                          setState(() {
+                            selectedWatermark =
+                                resp == -1 ? "off" : watermarks[resp];
+                          });
+                        }
                       },
-                      child: waterMarks("Watermark",  selectedWatermark)),
+                      child: waterMarks("Watermark", selectedWatermark)),
                   const Divider(
                     color: Colors.grey,
                   ),

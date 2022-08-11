@@ -42,7 +42,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => RepostSchedule()));
+                          builder: (context) => RepostSchedule(
+                                picprofile: "",
+                              )));
                 },
                 child: Text("Example"))
           ],
