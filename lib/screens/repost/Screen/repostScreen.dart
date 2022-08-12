@@ -49,29 +49,40 @@ class _RepostScreenState extends State<RepostScreen> {
   }
 
   // Widget function to show instagram posts
-  Widget _showInstagramPosts() {
+  Widget showInstagramPosts() {
     return new Column(children: <Widget>[
       ...POSTS.map((e) => Posts(
             username: e["username"],
-            text: (e["text"].toString() + e["hashtags"].join(" ")),
+            text: (e["text"].toString()),
             thumbnail: e["display_url"].toString(),
             profilepic: e["profile_pic"].toString(),
           ))
     ]);
   }
 
-  Widget _showRepostScheduleScreen() {
-    try {
-      for (int i = 0; i < POSTS.length; i++) {
-        return new RepostSchedule(picprofile: POSTS[i]["display_url"]);
-      }
-    } catch (e) {
-      log("Unable to load Repost Schedule");
-    }
-    throw (e) {
-      log("Error");
-    };
-  }
+  // Widget _gesturePostsDetector(BuildContext buildContext) {
+  //   return new GestureDetector(
+  //       onTap: () {
+  //         POSTS.map((e) => {
+  //               Navigator.push(buildContext,
+  //                   MaterialPageRoute<Widget>(builder: (buildContext) {
+  //                 try {
+  //                   RepostSchedule(
+  //                       picprofile: e["display_url"].toString().isEmpty
+  //                           ? "/assets/category4.png"
+  //                           : e["display_url"].toString());
+  //                 } catch (e) {}
+  //                 throw (e) {
+  //                   log(e.toString());
+  //                 };
+  //               }))
+  //             });
+  //       },
+  //       child: Padding(
+  //         padding: const EdgeInsets.only(right: 12),
+  //         child: showInstagramPosts(),
+  //       ));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +103,7 @@ class _RepostScreenState extends State<RepostScreen> {
                       _isLoading = true;
                       ishowPost = true;
                     });
-                    await Future.delayed(const Duration(seconds: 15));
+                    await Future.delayed(const Duration(seconds: 2));
                     setState(() {
                       _isLoading = false;
                     });
@@ -173,18 +184,12 @@ class _RepostScreenState extends State<RepostScreen> {
                           const SizedBox(
                             height: 10,
                           ),
+
                           GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            _showRepostScheduleScreen()));
-                              },
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 12),
-                                child: _showInstagramPosts(),
-                              ))
+                            padding: const EdgeInsets.only(right: 12),
+                            child: showInstagramPosts(),
+                          ))
                         ],
                       ),
                     ),
