@@ -44,6 +44,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       MaterialPageRoute(
                           builder: (context) => RepostSchedule(
                                 picprofile: "/assets/category4.png",
+                                CustomCaption: "Custom",
                               )));
                 },
                 child: Text("Example"))

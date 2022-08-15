@@ -8,7 +8,10 @@ import 'caption.dart';
 
 class RepostSchedule extends StatefulWidget {
   final String picprofile;
-  const RepostSchedule({Key? key, required this.picprofile}) : super(key: key);
+  final String CustomCaption;
+  const RepostSchedule(
+      {Key? key, required this.picprofile, required this.CustomCaption})
+      : super(key: key);
 
   @override
   State<RepostSchedule> createState() => _RepostScheduleState();
@@ -110,7 +113,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
           Container(
             color: Colors.black,
             child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              padding: EdgeInsets.only(top: 20, left: 20, right: 20),
               child: Column(
                 children: [
                   GestureDetector(
@@ -128,7 +131,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
                         }
                       },
                       child: waterMarks("Watermark", selectedWatermark)),
-                  const Divider(
+                  Divider(
                     color: Colors.grey,
                   ),
                   GestureDetector(
@@ -136,7 +139,9 @@ class _RepostScheduleState extends State<RepostSchedule> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Caption()));
+                                builder: (context) => Caption(
+                                    CustomCaption:
+                                        widget.CustomCaption.toString())));
                       },
                       child: waterMarks("Caption", "original Caption")),
                   const Divider(

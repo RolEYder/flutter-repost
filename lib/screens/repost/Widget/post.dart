@@ -33,6 +33,7 @@ class _PostState extends State<Posts> {
                     MaterialPageRoute(
                         builder: (context) => RepostSchedule(
                               picprofile: widget.thumbnail.toString(),
+                              CustomCaption: widget.text.toString(),
                             )));
               },
               child: Card(

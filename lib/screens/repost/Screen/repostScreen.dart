@@ -22,6 +22,7 @@ class _RepostScreenState extends State<RepostScreen> {
   late List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
+  List<dynamic> errors = [];
   List<String> titleArr = [
     "Rayshean32",
     "alina.sde1",
@@ -38,8 +39,26 @@ class _RepostScreenState extends State<RepostScreen> {
     //_storiesModel = (await ApiService().getStoriesByUsername(_username));
     //var _stories = await ApiService().getStoriesByUsername(_username);
     var _posts = await ApiService().getPostsByUsername(_username);
-    log(_posts.toString());
-    POSTS = _posts as List<dynamic>;
+    if (_posts![0]["type"] == "error") {
+      Alert(
+              buttons: [
+            DialogButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                "Ok!",
+                style: TextStyle(color: Colors.red, fontSize: 2),
+              ),
+            )
+          ],
+              context: context,
+              title: "Something unexpected occur",
+              desc: _posts[0]["message"] + " of user " + _username.toString())
+          .show();
+    } else {
+      log(_posts.toString());
+      POSTS = _posts;
+    }
+
     // for (var i = 0; i < _stories.length; i++) {
     //   if (_stories[i]["thumbnail"] != null) {
     //     STORIES.add(_stories[i]["thumbnail"].toString());
@@ -103,7 +122,7 @@ class _RepostScreenState extends State<RepostScreen> {
                       _isLoading = true;
                       ishowPost = true;
                     });
-                    await Future.delayed(const Duration(seconds: 2));
+                    await Future.delayed(const Duration(seconds: 10));
                     setState(() {
                       _isLoading = false;
                     });
@@ -129,7 +148,7 @@ class _RepostScreenState extends State<RepostScreen> {
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     hintStyle: const TextStyle(color: Colors.grey),
-                    hintText: "Search",
+                    hintText: "Enter Instagram username...",
                     suffixIcon: IconButton(
                       onPressed: _post.clear,
                       icon: Icon(Icons.clear),

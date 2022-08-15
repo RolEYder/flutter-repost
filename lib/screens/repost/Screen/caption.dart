@@ -1,32 +1,22 @@
 import 'package:flutter/material.dart';
-
 import 'editing_custom_caption.dart';
 
 class Caption extends StatefulWidget {
-  const Caption({Key? key}) : super(key: key);
+  final String CustomCaption;
+
+  const Caption({Key? key, required this.CustomCaption}) : super(key: key);
 
   @override
   State<Caption> createState() => _CaptionState();
 }
 
 class _CaptionState extends State<Caption> {
+  bool rememberMe = false;
+
   List isCheckedbox = [];
-  List data = [
-    {
-      "title": "Orignal",
-      "description":
-          "Having fun while taking pictures is the best in the World!!!! 🥰  #priceless #sofun"
-    },
-    {
-      "title": "Orignal",
-      "description":
-          "Having fun while taking pictures is the best in the World!!!! 🥰  #priceless #sofun"
-    },
-    {
-      "title": "Custom",
-      "description":
-          "Choose to Edit"
-    }
+  late List<dynamic> data = [
+    {"title": "Custom", "description": "Choose to Edit"},
+    {"title": "Original", "description": widget.CustomCaption.toString()}
   ];
 
   @override
@@ -81,8 +71,9 @@ class _CaptionState extends State<Caption> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                     Expanded(child:  Text(
-                    data[index]["description"],
+                      Expanded(
+                          child: Text(
+                        data[index]["description"],
                         style: TextStyle(fontSize: 12, color: Colors.grey),
                       )),
                       SizedBox(width: 8),
@@ -112,8 +103,8 @@ class _CaptionState extends State<Caption> {
                       )
                     ],
                   ),
-                  // Text("#priceless #sofun",
-                  //     style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text("#priceless #sofun",
+                      style: TextStyle(fontSize: 12, color: Colors.grey)),
                   Divider(
                     color: Colors.grey,
                   ),

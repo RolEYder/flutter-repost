@@ -38,6 +38,7 @@ class Stories extends StatelessWidget {
                         MaterialPageRoute(
                             builder: ((context) => RepostSchedule(
                                   picprofile: "/assets/category4.png",
+                                  CustomCaption: "Custom",
                                 ))));
                   }
                 },

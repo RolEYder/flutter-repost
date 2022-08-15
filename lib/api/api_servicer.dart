@@ -12,6 +12,8 @@ class ApiService {
 
   /// Function to get stories giving their usernames
   Future<List<dynamic>?> getPostsByUsername(String _username) async {
+    List<dynamic> dataParsed = [];
+
     //first at all, get the user id by their username
     var url =
         "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/?user=" +
@@ -42,11 +44,18 @@ class ApiService {
         'X-RapidAPI-Host': 'instagram-best-experience.p.rapidapi.com'
       });
       final profile_pic = json.decode(profile_pic_res.body);
+      log(data_res.body.toString());
+      if (json.decode(data_res.body)["data"] == null) {
+        List<dynamic> err = [
+          {"type": "error", "message": "Error to fecth Posts"}
+        ];
+        return err;
+      }
+
       // parsing data
       List<Map<String, dynamic>> posts = List.castFrom(
           json.decode(data_res.body)["data"]["user"]
               ["edge_owner_to_timeline_media"]["edges"]);
-      List<dynamic> dataParsed = [];
       posts.forEach((element) {
         final data = {
           "_typeimage": element["node"]["__typename"].toString(),
@@ -74,11 +83,12 @@ class ApiService {
         return null;
       }
       // log(dataParsed.toString());
-      return dataParsed;
+
       //final postdata = List<Map<String, dynamic>>.from(jsonDecode(data_res.body));
     } else {
       log("Unable to load posts");
     }
+    return dataParsed;
   }
 
   Future<List<dynamic>> getStoriesByUsername(String _username) async {
