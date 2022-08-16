@@ -6,6 +6,7 @@ import 'screens/pro/proscreen.dart';
 import 'screens/repost/Screen/repostScreen.dart';
 import 'screens/schedule/schedulescreen.dart';
 import 'screens/setting/settings.dart';
+import './sqlite//dbSqliteHelper.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -15,6 +16,14 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  @override
+  void initState() {
+    super.initState();
+    DatabaseHelper.instance.initializeDB().whenComplete(() async {
+      setState(() {});
+    });
+  }
+
   int index = 0;
 
   selectedPage(int selectedTitle) {

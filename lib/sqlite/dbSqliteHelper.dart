@@ -1,6 +1,6 @@
 import 'CaptionsModel.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqflite.dart' show Database, Sqflite, getDatabasesPath, openDatabase;
 
 class DatabaseHelper {
   static final _databaseName = "database.db";
@@ -13,11 +13,16 @@ class DatabaseHelper {
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
-  static Database _database = DatabaseHelper._database;
-  Future<Database> get database async {
+  static Database? _database;
+  Future<Database?> get database async {
     if (_database != null) return _database;
     _database = await _initDatabase();
     return _database;
+  }
+
+  Future<Database> initializeDB() async {
+    String path = await getDatabasesPath();
+    return openDatabase(join(path, _databaseName), onCreate: _onCreate);
   }
 
   _initDatabase() async {
@@ -29,7 +34,7 @@ class DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
         CREATE TABLE $table (
-            $columnId INTERGER PRIMARY KEY AUTOINCREMENT,
+            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
             $columnContent TEXT NOT NULL
         )
 ''');
@@ -37,40 +42,40 @@ class DatabaseHelper {
 
   // Helper methods
   Future<int> insert(Caption caption) async {
-    Database db = await instance.database;
-    return await db.insert(table, {"content": caption.content});
+    Database? db = await instance.database;
+    return await db!.insert(table, {"content": caption.content});
   }
 
   // get all rows
   Future<List<Map<String, dynamic>>> getAllRows() async {
-    Database db = await instance.database;
-    return await db.query(table);
+    Database? db = await instance.database;
+    return await db!.query(table);
   }
 
   // query row
   Future<List<Map<String, dynamic>>> queryRows(name) async {
-    Database db = await instance.database;
-    return await db.query(table, where: "$columnContent LIKE '%name%'");
+    Database? db = await instance.database;
+    return await db!.query(table, where: "$columnContent LIKE '%name%'");
   }
 
   // query row count
   Future<int?> getRowCount() async {
-    Database db = await instance.database;
+    Database? db = await instance.database;
     return Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT (*) FROM $table'));
+        await db!.rawQuery('SELECT COUNT (*) FROM $table'));
   }
 
   // update
   Future<int> update(Caption caption) async {
-    Database db = await instance.database;
+    Database? db = await instance.database;
     int id = caption.toMap()['id'];
-    return await db.update(table, caption.toMap(),
+    return await db!.update(table, caption.toMap(),
         where: '$columnId = ?', whereArgs: [id]);
   }
 
   // delete
   Future<int> delete(int id) async {
-    Database db = await instance.database;
-    return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+    Database? db = await instance.database;
+    return await db!.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 }

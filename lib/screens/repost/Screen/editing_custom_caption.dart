@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import '../../../sqlite/CaptionsModel.dart';
+import '../../../sqlite/dbSqliteHelper.dart';
 
 class EditingCustomCaption extends StatefulWidget {
   const EditingCustomCaption({Key? key}) : super(key: key);
@@ -8,6 +12,19 @@ class EditingCustomCaption extends StatefulWidget {
 }
 
 class _EditingCustomCaptionState extends State<EditingCustomCaption> {
+  final dbHelper = DatabaseHelper.instance;
+  List<Caption> captions = [];
+
+  TextEditingController contentController = TextEditingController();
+
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  void _showMessageInScaffold(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +43,8 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const TextField(
+          TextField(
+            controller: contentController,
             decoration: InputDecoration(
                 focusColor: Colors.grey,
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
@@ -41,7 +59,6 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                   SizedBox(
                     height: 45,
                     child: ElevatedButton(
-                      
                         style: ElevatedButton.styleFrom(
                             primary: Color.fromARGB(255, 125, 64, 121)),
                         onPressed: () {},
@@ -54,7 +71,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                     width: 10,
                   ),
                   SizedBox(
-                                        height: 45,
+                    height: 45,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             primary: Color.fromARGB(255, 125, 64, 121)),
@@ -69,12 +86,14 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
               Padding(
                 padding: const EdgeInsets.only(left: 68, right: 68),
                 child: SizedBox(
-                  
                     width: double.infinity,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             primary: Color.fromARGB(255, 73, 65, 125)),
                         onPressed: () {
+                          String content = contentController.text;
+
+                          _insert(content);
                           Navigator.pop(context);
                         },
                         child: Text("Save"))),
@@ -87,5 +106,14 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
         ],
       ),
     );
+  }
+
+  void _insert(content) async {
+    Map<String, dynamic> row = {DatabaseHelper.columnContent: content};
+    Caption caption = Caption.fromMap(row);
+    log(row.toString());
+    final id = await dbHelper.insert(caption);
+
+    _showMessageInScaffold("Caption was inserted 👍");
   }
 }
