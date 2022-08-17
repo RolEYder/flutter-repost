@@ -6,10 +6,21 @@ class DatabaseHelper {
   static final _databaseName = "database.db";
   static final _databaseVersion = 1;
 
+  /// table captions
   static final table = "captions";
   static final columnId = "id";
   static final columnContent = "content";
   static final columnTitle = "title";
+  ///table schedules
+  static final tableSchedulePosts = "schedule_post";
+  static final columnIdSchedulePosts= "id";
+  static final columnTitleSchedulePosts = "title";
+  static final columnContentSchedulePosts = "content";
+  static final columnPhotoSchedulePosts = "photo";
+  static final columnDateEndSchedulePosts = "date_end";
+  static final columnHashtagsSchedulePosts = "hashtags";
+
+
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
@@ -37,9 +48,20 @@ class DatabaseHelper {
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
             $columnTitle TEXT NOT NULL,
             $columnContent TEXT NOT NULL 
-        )
+        );
 ''');
+    await db.execute('''
+      CREATE TABLE $tableSchedulePosts (
+        $columnIdSchedulePosts  INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnTitleSchedulePosts TEXT NOT NULL,
+        $columnContentSchedulePosts TEXT NOT NULL,
+        $columnPhotoSchedulePosts BLOB NOT NULL,
+        $columnDateEndSchedulePosts DATETIME NOT NULL,
+        $columnHashtagsSchedulePosts TEXT NOT NULL
+      )
+    ''');
   }
+
 
   // Helper methods
   Future<int> insert(Captions caption) async {
