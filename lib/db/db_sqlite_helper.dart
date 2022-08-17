@@ -1,4 +1,5 @@
 import '../model/caption.dart';
+import '../model/schedule-post.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;
 
@@ -64,10 +65,16 @@ class DatabaseHelper {
 
 
   // Helper methods
+  Future<int> insert_schedule_post(SchedulePosts schedulePosts) async {
+    Database? db = await instance.database;
+    return await db!.insert(tableSchedulePosts, {"title": schedulePosts.title, "content": schedulePosts.content,
+    "photo": schedulePosts.photo, "date_end": schedulePosts.date_end, "hashtags": schedulePosts.hashtags});
+  }
   Future<int> insert(Captions caption) async {
     Database? db = await instance.database;
     return await db!.insert(table, {"content": caption.content, "title": caption.title});
   }
+
 
   // get all rows
   Future<List<Map<String, dynamic>>> getAllRows() async {

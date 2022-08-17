@@ -145,6 +145,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
   void _insert(title, content) async {
     Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
     Captions caption = Captions.fromMap(row);
+    final id = DatabaseHelper.instance.insert(caption); 
     _showMessageInScaffold("Caption was inserted 👍 ");
   }
 }

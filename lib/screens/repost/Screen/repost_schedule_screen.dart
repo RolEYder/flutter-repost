@@ -142,7 +142,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
                                     CustomCaption:
                                         widget.CustomCaption.toString())));
                       },
-                      child: waterMarks("Caption", "original Caption")),
+                      child: waterMarks("Caption", "")),
                   const Divider(
                     color: Colors.grey,
                   ),
@@ -153,7 +153,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
                             MaterialPageRoute(
                                 builder: (context) => RepostHastags()));
                       },
-                      child: waterMarks("Hashtags", "None")),
+                      child: waterMarks("Hashtags", "")),
                   const SizedBox(
                     height: 20,
                   ),

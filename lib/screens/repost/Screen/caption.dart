@@ -40,7 +40,6 @@ class _CaptionState extends State<Caption> {
       _isLoading = true;
       _getALlCaptions();
     });
-    Future.delayed(const Duration(seconds: 3));
     setState(() {
       _isLoading = false;
     });
@@ -87,7 +86,7 @@ class _CaptionState extends State<Caption> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _savedCaptions[index]["title"] == Null ? "" : _savedCaptions[index]["title"],
+                    _savedCaptions.isEmpty? " " : _savedCaptions[index]["title"],
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -98,7 +97,7 @@ class _CaptionState extends State<Caption> {
                     children: [
                       Expanded(
                           child: Text(
-                            _savedCaptions[index]["content"],
+                            _savedCaptions.isEmpty ? " " : _savedCaptions[index]["content"],
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           )),
                       SizedBox(width: 8),
@@ -143,6 +142,7 @@ class _CaptionState extends State<Caption> {
   }
   void _getALlCaptions() async {
     final allRows = await dbHelper.getAllRows();
+    log(allRows.toString());
     if (allRows.isNotEmpty) {
       log(allRows.toString());
       captions.clear();
@@ -153,7 +153,9 @@ class _CaptionState extends State<Caption> {
       });
     }
     else {
-      _savedCaptions.add({"title": "Custom", "content": "Choose to Edit"});
+     setState(() {
+       _savedCaptions.add({"title": "Custom", "content": "Choose to Edit"});
+     });
     }
   }
 }
