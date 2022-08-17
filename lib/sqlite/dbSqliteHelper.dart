@@ -1,6 +1,6 @@
 import 'CaptionsModel.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart' show Database, Sqflite, getDatabasesPath, openDatabase;
+import 'package:sqflite/sqflite.dart' show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;
 
 class DatabaseHelper {
   static final _databaseName = "database.db";
@@ -9,7 +9,7 @@ class DatabaseHelper {
   static final table = "captions";
   static final columnId = "id";
   static final columnContent = "content";
-
+  static final columnTitle = "title";
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
@@ -35,15 +35,16 @@ class DatabaseHelper {
     await db.execute('''
         CREATE TABLE $table (
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-            $columnContent TEXT NOT NULL
+            $columnTitle TEXT NOT NULL,
+            $columnContent TEXT NOT NULL 
         )
 ''');
   }
 
   // Helper methods
-  Future<int> insert(Caption caption) async {
+  Future<int> insert(Captions caption) async {
     Database? db = await instance.database;
-    return await db!.insert(table, {"content": caption.content});
+    return await db!.insert(table, {"content": caption.content, "title": caption.title});
   }
 
   // get all rows
@@ -66,7 +67,7 @@ class DatabaseHelper {
   }
 
   // update
-  Future<int> update(Caption caption) async {
+  Future<int> update(Captions caption) async {
     Database? db = await instance.database;
     int id = caption.toMap()['id'];
     return await db!.update(table, caption.toMap(),
@@ -78,4 +79,18 @@ class DatabaseHelper {
     Database? db = await instance.database;
     return await db!.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
+
+  // delete databse
+Future<Database> deleteDatabase() async{
+    try {
+      String path = await getDatabasesPath();
+      databaseFactory.deleteDatabase(join(path, _databaseName));
+    }
+    catch(e) {
+      print(e);
+    }
+    throw (e) {
+      print(e);
+    };
+}
 }

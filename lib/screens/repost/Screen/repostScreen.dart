@@ -17,7 +17,6 @@ class RepostScreen extends StatefulWidget {
 
 class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
-  bool ishowPost = false;
   bool _isLoading = false;
   late List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
@@ -35,7 +34,7 @@ class _RepostScreenState extends State<RepostScreen> {
     "Sundshade3",
     "Cakior22"
   ];
-  void _getStoriesByUsername(String _username) async {
+  void _getPostsByUsername(String _username) async {
     //_storiesModel = (await ApiService().getStoriesByUsername(_username));
     //var _stories = await ApiService().getStoriesByUsername(_username);
     var _posts = await ApiService().getPostsByUsername(_username);
@@ -58,13 +57,6 @@ class _RepostScreenState extends State<RepostScreen> {
       log(_posts.toString());
       POSTS = _posts;
     }
-
-    // for (var i = 0; i < _stories.length; i++) {
-    //   if (_stories[i]["thumbnail"] != null) {
-    //     STORIES.add(_stories[i]["thumbnail"].toString());
-    //     log(_stories[i]["thumbnail"].toString());
-    //   }
-    // }
   }
 
   // Widget function to show instagram posts
@@ -74,34 +66,10 @@ class _RepostScreenState extends State<RepostScreen> {
             username: e["username"],
             text: (e["text"].toString()),
             thumbnail: e["display_url"].toString(),
-            profilepic: e["profile_pic"].toString(),
+            profilePic: e["profile_pic"].toString(),
           ))
     ]);
   }
-
-  // Widget _gesturePostsDetector(BuildContext buildContext) {
-  //   return new GestureDetector(
-  //       onTap: () {
-  //         POSTS.map((e) => {
-  //               Navigator.push(buildContext,
-  //                   MaterialPageRoute<Widget>(builder: (buildContext) {
-  //                 try {
-  //                   RepostSchedule(
-  //                       picprofile: e["display_url"].toString().isEmpty
-  //                           ? "/assets/category4.png"
-  //                           : e["display_url"].toString());
-  //                 } catch (e) {}
-  //                 throw (e) {
-  //                   log(e.toString());
-  //                 };
-  //               }))
-  //             });
-  //       },
-  //       child: Padding(
-  //         padding: const EdgeInsets.only(right: 12),
-  //         child: showInstagramPosts(),
-  //       ));
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -117,10 +85,9 @@ class _RepostScreenState extends State<RepostScreen> {
                 style: const TextStyle(fontSize: 16),
                 onSubmitted: (value) async {
                   if (value.isNotEmpty) {
-                    _getStoriesByUsername(value.toString());
+                    _getPostsByUsername(value.toString());
                     setState(() {
                       _isLoading = true;
-                      ishowPost = true;
                     });
                     await Future.delayed(const Duration(seconds: 10));
                     setState(() {

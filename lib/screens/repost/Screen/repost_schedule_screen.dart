@@ -3,7 +3,6 @@ import 'package:repost/screens/repost/Screen/reposthastags.dart';
 import 'package:repost/screens/schedule/notifyscreen.dart';
 import 'package:repost/screens/watermark/watermark.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import 'caption.dart';
 
 class RepostSchedule extends StatefulWidget {

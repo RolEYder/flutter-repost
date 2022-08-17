@@ -6,13 +6,13 @@ class Posts extends StatefulWidget {
   final String username;
   final String text;
   final String thumbnail;
-  final String profilepic;
+  late final  String profilePic;
   Posts(
       {Key? key,
       required this.username,
       required this.text,
       required this.thumbnail,
-      required this.profilepic})
+      required this.profilePic})
       : super(key: key);
   @override
   State<Posts> createState() => _PostState();
@@ -87,7 +87,7 @@ class _PostState extends State<Posts> {
                                       CircleAvatar(
                                         radius: 18,
                                         backgroundImage: NetworkImage(
-                                            widget.profilepic.toString()),
+                                            widget.profilePic.toString()),
                                       ),
                                       SizedBox(
                                         width: 10,

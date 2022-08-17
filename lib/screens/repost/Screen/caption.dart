@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:repost/sqlite/CaptionsModel.dart';
 import 'editing_custom_caption.dart';
+import '../../../sqlite/dbSqliteHelper.dart';
+import 'dart:developer';
 
 class Caption extends StatefulWidget {
   final String CustomCaption;
@@ -8,18 +11,40 @@ class Caption extends StatefulWidget {
 
   @override
   State<Caption> createState() => _CaptionState();
+
 }
 
 class _CaptionState extends State<Caption> {
   bool rememberMe = false;
-
+  final dbHelper = DatabaseHelper.instance;
+  List<Captions> captions = [];
+  bool _isLoading = false;
+  List<Map<String, dynamic>> _savedCaptions = [];
   List isCheckedbox = [];
   late List<dynamic> data = [
     {"title": "Custom", "description": "Choose to Edit"},
     {"title": "Original", "description": widget.CustomCaption.toString()}
   ];
 
+
+  void _showMessageInScaffold(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _isLoading = true;
+      _getALlCaptions();
+    });
+    Future.delayed(const Duration(seconds: 3));
+    setState(() {
+      _isLoading = false;
+    });
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Container(
@@ -46,23 +71,23 @@ class _CaptionState extends State<Caption> {
         ),
         title: Text("Caption"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: !_isLoading ? Padding(
+        padding:  EdgeInsets.all(8.0),
         child: ListView.builder(
-          itemCount: data.length,
+          itemCount: _savedCaptions.length == 0? 1 : _savedCaptions.length ,
           itemBuilder: ((context, index) {
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EditingCustomCaption()));
+                        builder: (context) => EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),content: _savedCaptions[index]["content"].toString())));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    data[index]["title"],
+                    _savedCaptions[index]["title"] == Null ? "" : _savedCaptions[index]["title"],
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -73,9 +98,9 @@ class _CaptionState extends State<Caption> {
                     children: [
                       Expanded(
                           child: Text(
-                        data[index]["description"],
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      )),
+                            _savedCaptions[index]["content"],
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          )),
                       SizedBox(width: 8),
                       GestureDetector(
                         onTap: () {
@@ -89,17 +114,17 @@ class _CaptionState extends State<Caption> {
                         },
                         child: isCheckedbox.contains(index)
                             ? Icon(
-                                Icons.check_circle,
-                                color: Color.fromARGB(255, 0, 8, 239),
-                                size: 22,
-                              )
+                          Icons.check_circle,
+                          color: Color.fromARGB(255, 0, 8, 239),
+                          size: 22,
+                        )
                             : Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white)),
-                                width: 22,
-                                height: 22,
-                              ),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white)),
+                          width: 22,
+                          height: 22,
+                        ),
                       )
                     ],
                   ),
@@ -113,7 +138,23 @@ class _CaptionState extends State<Caption> {
             );
           }),
         ),
-      ),
+      ) : const CircularProgressIndicator(),
     );
   }
+  void _getALlCaptions() async {
+    final allRows = await dbHelper.getAllRows();
+    if (allRows.isNotEmpty) {
+      log(allRows.toString());
+      captions.clear();
+      allRows.forEach((row) => captions.add(Captions.fromMap(row)));
+      _showMessageInScaffold("Query done.");
+      setState(() {
+        _savedCaptions = allRows;
+      });
+    }
+    else {
+      _savedCaptions.add({"title": "Custom", "content": "Choose to Edit"});
+    }
+  }
 }
+

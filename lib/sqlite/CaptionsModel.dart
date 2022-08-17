@@ -1,13 +1,15 @@
 import 'dbSqliteHelper.dart';
 
-class Caption {
+class Captions {
   late int? id;
   late String? content;
+  late String? title;
 
-  Caption(this.id, this.content);
+  Captions(this.id, this.content);
 
-  Caption.fromMap(Map<String, dynamic> map) {
+  Captions.fromMap(Map<String, dynamic> map) {
     id = map["id"];
+    title = map["title"];
     content = map["content"];
   }
 
