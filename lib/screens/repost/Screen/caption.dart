@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:repost/sqlite/CaptionsModel.dart';
+import 'package:repost/model/caption.dart';
 import 'editing_custom_caption.dart';
-import '../../../sqlite/dbSqliteHelper.dart';
+import '../../../db/db_sqlite_helper.dart';
 import 'dart:developer';
 
 class Caption extends StatefulWidget {

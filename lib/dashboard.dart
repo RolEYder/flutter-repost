@@ -3,10 +3,10 @@ import 'package:repost/helper/StringExtension.dart';
 import 'screens/hastag/hastag.dart';
 import 'screens/more/morescreen.dart';
 import 'screens/pro/proscreen.dart';
-import 'screens/repost/Screen/repostScreen.dart';
-import 'screens/schedule/schedulescreen.dart';
+import 'screens/repost/Screen/repost_screen.dart';
+import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
-import './sqlite//dbSqliteHelper.dart';
+import './db/db_sqlite_helper.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);

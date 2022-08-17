@@ -1,4 +1,4 @@
-import 'dbSqliteHelper.dart';
+import '../db/db_sqlite_helper.dart';
 
 class Captions {
   late int? id;
@@ -14,6 +14,6 @@ class Captions {
   }
 
   Map<String, dynamic> toMap() {
-    return {DatabaseHelper.columnId: id, DatabaseHelper.columnContent: content};
+    return {DatabaseHelper.columnId: id, DatabaseHelper.columnTitle: title , DatabaseHelper.columnContent: content};
   }
 }

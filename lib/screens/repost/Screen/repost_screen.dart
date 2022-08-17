@@ -4,7 +4,7 @@ import 'package:repost/api/storiesModel.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
-import 'package:repost/screens/schedule/schedulescreen.dart';
+import 'package:repost/screens/schedule/schedule_screen.dart';
 import '../../../api/api_servicer.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 

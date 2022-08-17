@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:repost/screens/repost/Screen/reposthastags.dart';
-import 'package:repost/screens/schedule/notifyscreen.dart';
+import 'package:repost/screens/repost/Screen/repost_hastags.dart';
+import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/screens/watermark/watermark.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'caption.dart';

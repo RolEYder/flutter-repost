@@ -1,4 +1,4 @@
-import 'CaptionsModel.dart';
+import '../model/caption.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;
 
