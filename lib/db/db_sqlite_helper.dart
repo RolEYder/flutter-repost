@@ -19,6 +19,7 @@ class DatabaseHelper {
   static final columnContentSchedulePosts = "content";
   static final columnPhotoSchedulePosts = "photo";
   static final columnDateEndSchedulePosts = "date_end";
+  static final columnCreateAtSchedulePosts = "created_at";
   static final columnHashtagsSchedulePosts = "hashtags";
 
 
@@ -58,6 +59,7 @@ class DatabaseHelper {
         $columnContentSchedulePosts TEXT NOT NULL,
         $columnPhotoSchedulePosts BLOB NOT NULL,
         $columnDateEndSchedulePosts DATETIME NOT NULL,
+        $columnCreateAtSchedulePosts DATETIME NOT NULL, 
         $columnHashtagsSchedulePosts TEXT NOT NULL
       )
     ''');
@@ -68,7 +70,7 @@ class DatabaseHelper {
   Future<int> insert_schedule_post(SchedulePosts schedulePosts) async {
     Database? db = await instance.database;
     return await db!.insert(tableSchedulePosts, {"title": schedulePosts.title, "content": schedulePosts.content,
-    "photo": schedulePosts.photo, "date_end": schedulePosts.date_end, "hashtags": schedulePosts.hashtags});
+    "photo": schedulePosts.photo, "date_end": schedulePosts.date_end, "create_at": schedulePosts.created_at, "hashtags": schedulePosts.hashtags});
   }
   Future<int> insert(Captions caption) async {
     Database? db = await instance.database;
@@ -77,6 +79,10 @@ class DatabaseHelper {
 
 
   // get all rows
+  Future<List<Map<String, dynamic>>> getAllSchedulePostsRows() async {
+    Database? db = await instance.database;
+    return db!.query(tableSchedulePosts);
+  }
   Future<List<Map<String, dynamic>>> getAllRows() async {
     Database? db = await instance.database;
     return await db!.query(table);

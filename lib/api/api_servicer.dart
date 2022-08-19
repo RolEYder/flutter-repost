@@ -40,7 +40,7 @@ class ApiService {
           "https://instagram-best-experience.p.rapidapi.com/profile?username=" +
               _username;
       final profile_pic_res = await http.get(Uri.parse(url), headers: {
-        "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+        "X-RapidAPI-Key": "1dd2847dccmsh4e6f3a50d4eb9a9p146807jsnbcfe144d7761",
         'X-RapidAPI-Host': 'instagram-best-experience.p.rapidapi.com'
       });
       final profile_pic = json.decode(profile_pic_res.body);

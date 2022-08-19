@@ -125,10 +125,10 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                           if (content
                               .toString()
                               .isNotEmpty && title.toString().isNotEmpty) {
-                            _insert(title, content);
-                            Navigator.pop(context);
+                            _insert(title, content); // inserting caption
+                            Navigator.pop(context, "save"); // unmound widget
                           } else {
-                            Navigator.pop(context);
+                            Navigator.pop(context, "not save");
                           }
                         },
                         child: Text("Save"))),
@@ -144,8 +144,8 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
   }
   void _insert(title, content) async {
     Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
-    Captions caption = Captions.fromMap(row);
-    final id = DatabaseHelper.instance.insert(caption); 
+    Captions caption = Captions.fromMap(row) ;
+    final id = DatabaseHelper.instance.insert(caption);
     _showMessageInScaffold("Caption was inserted 👍 ");
   }
 }

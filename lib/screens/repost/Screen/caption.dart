@@ -3,12 +3,12 @@ import 'package:repost/model/caption.dart';
 import 'editing_custom_caption.dart';
 import '../../../db/db_sqlite_helper.dart';
 import 'dart:developer';
+import '../../../model/caption.dart';
+import '../../../db/db_sqlite_helper.dart';
 
 class Caption extends StatefulWidget {
   final String CustomCaption;
-
   const Caption({Key? key, required this.CustomCaption}) : super(key: key);
-
   @override
   State<Caption> createState() => _CaptionState();
 
@@ -25,14 +25,11 @@ class _CaptionState extends State<Caption> {
     {"title": "Custom", "description": "Choose to Edit"},
     {"title": "Original", "description": widget.CustomCaption.toString()}
   ];
-
-
   void _showMessageInScaffold(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
-
   @override
   void initState() {
     super.initState();
@@ -77,10 +74,11 @@ class _CaptionState extends State<Caption> {
           itemBuilder: ((context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),content: _savedCaptions[index]["content"].toString())));
+                _saveCaption(context, index);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),content: _savedCaptions[index]["content"].toString())));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,6 +138,22 @@ class _CaptionState extends State<Caption> {
       ) : const CircularProgressIndicator(),
     );
   }
+
+  Future<void> _saveCaption(BuildContext context, int index) async {
+    final result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),
+        content: _savedCaptions[index]["content"].toString())));
+    if (!mounted) return;
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    if (result == "save") {
+      _getALlCaptions();
+    }
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('New caption added succesffuly 👍')));
+  }
+
+
   void _getALlCaptions() async {
     final allRows = await dbHelper.getAllRows();
     log(allRows.toString());

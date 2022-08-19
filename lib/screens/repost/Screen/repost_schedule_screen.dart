@@ -4,7 +4,10 @@ import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/screens/watermark/watermark.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'caption.dart';
+import '../../../model/caption.dart';
+import '../../../db/db_sqlite_helper.dart';
 
+// REPOSTS SCHEDULE
 class RepostSchedule extends StatefulWidget {
   final String picprofile;
   final String CustomCaption;
@@ -221,3 +224,4 @@ class _RepostScheduleState extends State<RepostSchedule> {
     );
   }
 }
+
