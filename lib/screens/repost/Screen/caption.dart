@@ -13,6 +13,13 @@ class Caption extends StatefulWidget {
 
 }
 
+
+void _showMessageInScaffold(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
 class _CaptionState extends State<Caption> {
   bool rememberMe = false;
   final dbHelper = DatabaseHelper.instance;
@@ -133,6 +140,8 @@ class _CaptionState extends State<Caption> {
             onDismissed: (DismissDirection dir) {
               List<Map<String, dynamic>> map = List<Map<String, dynamic>>.from(this._savedCaptions);
               map.removeAt(index);
+              // removing from database
+              DatabaseHelper.delete(index);
               setState(() => {
                this._savedCaptions = map
               });
@@ -152,6 +161,13 @@ class _CaptionState extends State<Caption> {
                     onPressed: () {
                       List<Map<String, dynamic>> map = List<Map<String, dynamic>>.from(this._savedCaptions);
                       map.insert(index, item);
+                      // inserting to database 
+                      // Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
+                      Captions caption = Captions.fromMap(item);
+                      final id = DatabaseHelper.instance.insert(caption);
+                      if (id < 0) {
+                          _showMessageInScaffold("error to undo deletetion");
+                      };
                      setState(() {
                        this._savedCaptions = map;
                      });
