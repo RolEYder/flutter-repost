@@ -125,10 +125,12 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                           if (content
                               .toString()
                               .isNotEmpty && title.toString().isNotEmpty) {
+                            if (content.length ==  widget.content.length && title.length == widget.title.length) {
+                              Navigator.pop(context);
+                            }
+                          } else if (content.length != widget.content.length || title != widget.title.length) {
                             _insert(title, content); // inserting caption
                             Navigator.pop(context, "save"); // unmound widget
-                          } else {
-                            Navigator.pop(context, "not save");
                           }
                         },
                         child: Text("Save"))),

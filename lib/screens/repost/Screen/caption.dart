@@ -4,7 +4,6 @@ import 'editing_custom_caption.dart';
 import '../../../db/db_sqlite_helper.dart';
 import 'dart:developer';
 import '../../../model/caption.dart';
-import '../../../db/db_sqlite_helper.dart';
 
 class Caption extends StatefulWidget {
   final String CustomCaption;
@@ -19,7 +18,7 @@ class _CaptionState extends State<Caption> {
   final dbHelper = DatabaseHelper.instance;
   List<Captions> captions = [];
   bool _isLoading = false;
-  List<Map<String, dynamic>> _savedCaptions = [];
+  late List<Map<String, dynamic>> _savedCaptions = [];
   List isCheckedbox = [];
   late List<dynamic> data = [
     {"title": "Custom", "description": "Choose to Edit"},
@@ -72,13 +71,10 @@ class _CaptionState extends State<Caption> {
         child: ListView.builder(
           itemCount: _savedCaptions.length == 0? 1 : _savedCaptions.length ,
           itemBuilder: ((context, index) {
-            return GestureDetector(
+            Map<String, dynamic>  item = _savedCaptions[index];
+            return Dismissible(key: UniqueKey(), child: GestureDetector(
               onTap: () {
                 _saveCaption(context, index);
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),content: _savedCaptions[index]["content"].toString())));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +128,49 @@ class _CaptionState extends State<Caption> {
                   ),
                 ],
               ),
-            );
+            ),
+            direction: DismissDirection.startToEnd,
+            onDismissed: (DismissDirection dir) {
+              List<Map<String, dynamic>> map = List<Map<String, dynamic>>.from(this._savedCaptions);
+              map.removeAt(index);
+              setState(() => {
+               this._savedCaptions = map
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(duration: const Duration(seconds: 3), content: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.error_outline, size: 32),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(dir == DismissDirection.startToEnd ? '`${this._savedCaptions[index]["title"]}` removed' : '$index update'),
+                      ),
+                    ],
+                  ),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      List<Map<String, dynamic>> map = List<Map<String, dynamic>>.from(this._savedCaptions);
+                      map.insert(index, item);
+                     setState(() {
+                       this._savedCaptions = map;
+                     });
+                    },
+                  )),
+                );
+            },
+             background: Container(
+               color: Colors.red,
+               alignment: Alignment.centerLeft,
+               child: const Icon(Icons.delete)
+             ),
+             secondaryBackground: Container(
+               color: Colors.green,
+               alignment: Alignment.centerRight,
+               child: const Icon(Icons.save),
+             )
+              ,);
+
           }),
         ),
       ) : const CircularProgressIndicator(),
@@ -143,7 +181,7 @@ class _CaptionState extends State<Caption> {
     final result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),
         content: _savedCaptions[index]["content"].toString())));
     if (!mounted) return;
-    // After the Selection Screen returns a result, hide any previous snackbars
+    // After the Selection Screen returns a result, hide any previous nackbars
     // and show the new result.
     if (result == "save") {
       _getALlCaptions();
@@ -161,7 +199,7 @@ class _CaptionState extends State<Caption> {
       log(allRows.toString());
       captions.clear();
       allRows.forEach((row) => captions.add(Captions.fromMap(row)));
-      _showMessageInScaffold("Query done.");
+      _showMessageInScaffold("Captions done!");
       setState(() {
         _savedCaptions = allRows;
       });
