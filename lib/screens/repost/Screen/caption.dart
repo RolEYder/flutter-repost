@@ -13,13 +13,6 @@ class Caption extends StatefulWidget {
 
 }
 
-
-void _showMessageInScaffold(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
 class _CaptionState extends State<Caption> {
   bool rememberMe = false;
   final dbHelper = DatabaseHelper.instance;
@@ -31,11 +24,7 @@ class _CaptionState extends State<Caption> {
     {"title": "Custom", "description": "Choose to Edit"},
     {"title": "Original", "description": widget.CustomCaption.toString()}
   ];
-  void _showMessageInScaffold(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
+
   @override
   void initState() {
     super.initState();
@@ -72,13 +61,33 @@ class _CaptionState extends State<Caption> {
           child: Image.asset("assets/back.png"),
         ),
         title: Text("Caption"),
+        actions: [
+          PopupMenuButton(
+            onSelected: (res) {
+              if(res == 0) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditingCustomCaption(title: "", content: "")));
+              };
+            },
+            itemBuilder: (ctx) {
+              return [
+                  PopupMenuItem(
+                  value: 0,
+                  child:
+                  Row(
+                      children:
+                      [Icon(Icons.add, color: Colors.black),
+                        Text('Add caption')])),
+                  ];
+              },
+          )
+        ],
       ),
       body: !_isLoading ? Padding(
         padding:  EdgeInsets.all(8.0),
         child: ListView.builder(
           itemCount: _savedCaptions.length == 0? 1 : _savedCaptions.length ,
           itemBuilder: ((context, index) {
-            Map<String, dynamic>  item = _savedCaptions[index];
+            Map<String, dynamic>  item = (_savedCaptions[index].isEmpty) ? {"title": "Custom", "content": "Choose to Edit"} : _savedCaptions[index];
             return Dismissible(key: UniqueKey(), child: GestureDetector(
               onTap: () {
                 _saveCaption(context, index);
@@ -141,7 +150,7 @@ class _CaptionState extends State<Caption> {
               List<Map<String, dynamic>> map = List<Map<String, dynamic>>.from(this._savedCaptions);
               map.removeAt(index);
               // removing from database
-              DatabaseHelper.delete(index);
+              DatabaseHelper.instance.delete(this._savedCaptions[index]["id"]);
               setState(() => {
                this._savedCaptions = map
               });
@@ -152,7 +161,7 @@ class _CaptionState extends State<Caption> {
                       Icon(Icons.error_outline, size: 32),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: Text(dir == DismissDirection.startToEnd ? '`${this._savedCaptions[index]["title"]}` removed' : '$index update'),
+                        child: Text(dir == DismissDirection.startToEnd ? 'removed' : '$index update'),
                       ),
                     ],
                   ),
@@ -165,9 +174,9 @@ class _CaptionState extends State<Caption> {
                       // Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
                       Captions caption = Captions.fromMap(item);
                       final id = DatabaseHelper.instance.insert(caption);
-                      if (id < 0) {
-                          _showMessageInScaffold("error to undo deletetion");
-                      };
+                      // if (id != 0) {
+                      //     _showMessageInScaffold("error to undo deletetion");
+                      // };
                      setState(() {
                        this._savedCaptions = map;
                      });
@@ -193,20 +202,42 @@ class _CaptionState extends State<Caption> {
     );
   }
 
+  PopupMenuItem _buildPopupMenuItem( String title, IconData iconData) {
+    return PopupMenuItem(
+        value: 0,
+        child:
+            Row(
+              children:
+              [Icon(iconData, color: Colors.black),
+                Text(title)]), onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditingCustomCaption(title: "", content: "")));
+            });
+  }
+  void _showMessageInScaffold(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   Future<void> _saveCaption(BuildContext context, int index) async {
     final result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),
-        content: _savedCaptions[index]["content"].toString())));
+        content: _savedCaptions[index]["content"].toString(), id: _savedCaptions[index]["id"])));
     if (!mounted) return;
     // After the Selection Screen returns a result, hide any previous nackbars
     // and show the new result.
     if (result == "save") {
       _getALlCaptions();
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text('New caption added successfully 👍')));
     }
-    ScaffoldMessenger.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('New caption added succesffuly 👍')));
+    else if (result == "update") {
+      _getALlCaptions();
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text('New caption updated successfully 👍')));
+    }
   }
-
 
   void _getALlCaptions() async {
     final allRows = await dbHelper.getAllRows();

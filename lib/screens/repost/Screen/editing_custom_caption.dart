@@ -4,9 +4,10 @@ import '../../../model/caption.dart';
 import '../../../db/db_sqlite_helper.dart';
 
 class EditingCustomCaption extends StatefulWidget {
-  final String title;
-  final String content;
-  const EditingCustomCaption({Key? key, required this.title, required this.content}) : super(key: key);
+  final String? title;
+  final String? content;
+  final int? id;
+  const EditingCustomCaption({Key? key,  this.title,  this.content, this.id}) : super(key: key);
 
   @override
   State<EditingCustomCaption> createState() => _EditingCustomCaptionState();
@@ -45,10 +46,10 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
         backgroundColor: Colors.black,
         leading: GestureDetector(
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context, "back");
             },
             child: Image.asset("assets/back.png")),
-        title: Text("Editing Custom Caption"),
+        title: widget.title == "" ? Text("Inserting Custom Caption") : Text("Editing Custom Caption") ,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,10 +61,12 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                 _title = value.toString();
               });
             },
+            style: TextStyle(fontSize: 12, color: Colors.white),
             decoration: InputDecoration(
                 focusColor: Colors.grey,
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
                 hintText: "Enter Custom Title",
+
                 contentPadding: EdgeInsets.only(left: 10)),
           ),
           TextField(
@@ -73,6 +76,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                 _content = value.toString();
               });
             },
+            style: TextStyle(fontSize: 12, color: Colors.white),
             decoration: InputDecoration(
                 focusColor: Colors.grey,
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
@@ -82,36 +86,36 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
 
           Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 45,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 125, 64, 121)),
-                        onPressed: () {},
-                        child: const Text(
-                          "Insert Original\nUsername",
-                          textAlign: TextAlign.center,
-                        )),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                    height: 45,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 125, 64, 121)),
-                        onPressed: () {},
-                        child: const Text(
-                          "Insert Original\nCaption",
-                          textAlign: TextAlign.center,
-                        )),
-                  )
-                ],
+             if (widget.title == "") Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 45,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Color.fromARGB(255, 125, 64, 121)),
+                    onPressed: () {},
+                    child: const Text(
+                      "Insert Original\nUsername",
+                      textAlign: TextAlign.center,
+                    )),
               ),
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                height: 45,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Color.fromARGB(255, 125, 64, 121)),
+                    onPressed: () {},
+                    child: const Text(
+                      "Insert Original\nCaption",
+                      textAlign: TextAlign.center,
+                    )),
+              )
+            ],
+          ) else SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.only(left: 68, right: 68),
                 child: SizedBox(
@@ -125,15 +129,18 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                           if (content
                               .toString()
                               .isNotEmpty && title.toString().isNotEmpty) {
-                            if (content.length ==  widget.content.length && title.length == widget.title.length) {
-                              Navigator.pop(context);
+                            if (widget.title == "" && widget.content == "") {
+                              _insert(title, content); // inserting caption
+                              Navigator.pop(context, "save"); // unmound widget
                             }
-                          } else if (content.length != widget.content.length || title != widget.title.length) {
-                            _insert(title, content); // inserting caption
-                            Navigator.pop(context, "save"); // unmound widget
+                            else if (widget.title!.isNotEmpty && widget.content!.isNotEmpty) {
+                              // update
+                              _update(title, content, widget.id);
+                              Navigator.pop(context, "update");
+                            }
                           }
                         },
-                        child: Text("Save"))),
+                        child: (widget.title != "") ? Text("Update") : Text("Save"))),
               ),
               SizedBox(
                 height: 10,
@@ -143,6 +150,13 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
         ],
       ),
     );
+  }
+
+  void _update(title, content, Id) async {
+    Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title, DatabaseHelper.columnId: Id};
+    Captions caption = Captions.fromMap(row) ;
+    final id = DatabaseHelper.instance.update(caption);
+    _showMessageInScaffold("Caption was updated 👍 ");
   }
   void _insert(title, content) async {
     Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
