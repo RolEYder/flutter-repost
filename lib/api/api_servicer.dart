@@ -24,6 +24,11 @@ class ApiService {
         "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a";
     dio.options.headers['X-RapidAPI-Host'] =
         "instagram-scraper-2022.p.rapidapi.com";
+    dio.options.headers["Cookie"] = "PHPSESSID=bcmf0d1qph5houlg8k8qo3fm1l";
+    dio.options.headers["Cache-Control"] = "no-cache";
+    dio.options.headers["Accept"] = "*/*";
+    dio.options.headers["Accept-Encoding"] = "gzip, deflate, br, json";
+
     var res = await dio.get(url);
     if (res.statusCode == 200) {
       var post_url =
