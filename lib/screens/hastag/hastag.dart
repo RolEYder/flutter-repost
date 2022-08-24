@@ -21,8 +21,7 @@ class _HastagState extends State<Hastag> {
   List<String> _listHashtags = [];
   bool showPostDetail = false;
   String? selectedTitle;
-
-  // int stoyindex = 0;
+  bool _isLoadingHashtagList = false;
   Function(String)? selectedStory;
   var selectedhastag = [];
 
@@ -109,6 +108,7 @@ class _HastagState extends State<Hastag> {
   ];
   String selectedCategory = "";
   void _fetchHashtagByCategory(String category) async {
+
     List<String> _hashtags = [];
     // url
     final url = "https://instahashtag.p.rapidapi.com/instahashtag?tag=" + category;
@@ -123,8 +123,10 @@ class _HastagState extends State<Hastag> {
        _hashtags.add("API hashtag failure");
     }
     log(_hashtags.toString());
+    log(_hashtags.toString());
     setState(() {
       _listHashtags = _hashtags;
+      _isLoadingHashtagList = false;
     });
   }
 
@@ -132,9 +134,9 @@ class _HastagState extends State<Hastag> {
   void initState() {
     super.initState();
     showPostDetail = false;
-    // _fetchHashtagByCategory("TOP8");
+    _fetchHashtagByCategory("TOP8");
     selectedCategory = categoryTitleArr![0];
-    selectedhastag = List.filled(hastag.length, false);
+    selectedhastag = List.filled(100, false);
   }
 
   @override
@@ -246,16 +248,6 @@ class _HastagState extends State<Hastag> {
                     SizedBox(
                       height: 10,
                     ),
-                    // Stories(
-                    //   titleArr: categoryTitleArr,
-                    //   imgArr: categoryImgArr,
-                    //   selectedTitle: selectedCategory,
-                    //   selectedStory: (title) {
-                    //     setState(() {
-                    //       selectedCategory = title;
-                    //     });
-                    //   },
-                    // ),
                    SingleChildScrollView(scrollDirection: Axis.horizontal,
                      child:  Row(
                        children: [
@@ -264,12 +256,16 @@ class _HastagState extends State<Hastag> {
                              padding: const EdgeInsets.all(8.0),
                              child: GestureDetector(
                                onTap: () {
-                                 log(this.categoryTitleArr![i].toString());
-                                 if (this.selectedStory != null) {
-                                setState(() {
-                                     this.selectedCategory = this.categoryTitleArr![i];
-                                     this.selectedStory!(this.categoryTitleArr![i]);
-                                   });
+                                  setState(() {
+                                    selectedCategory = this.categoryTitleArr![i].toString();
+                                    this._isLoadingHashtagList = true;
+                                    _fetchHashtagByCategory(this.categoryTitleArr![i].toString().replaceAll(' ', ''));
+                                  });
+                                   if (this.selectedStory != null) {
+                                  setState(() {
+                                       this.selectedCategory = this.categoryTitleArr![i];
+                                       this.selectedStory!(this.categoryTitleArr![i]);
+                                     });
                                  }
                                  if (showPostDetail) {
                                    Navigator.push(
@@ -339,46 +335,47 @@ class _HastagState extends State<Hastag> {
                     SizedBox(
                       height: 10,
                     ),
-                    Card(
-                      color: Color.fromARGB(255, 125, 125, 125),
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Wrap(
-                          children: [
-                            for (int i = 0; i < hastag.length; i++) ...[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 4, left: 4, bottom: 4),
-                                child: SizedBox(
-                                    height: 30,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selectedhastag[i] =
-                                              !selectedhastag[i];
-                                        });
-                                      },
-                                      child: Chip(
-                                        backgroundColor: selectedhastag[i]
-                                            ? Color.fromARGB(255, 70, 62, 147)
-                                            : Colors.grey,
-                                        label: Text(
-                                          hastag[i],
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    )),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              )
-                            ],
-                          ],
-                        ),
-                      ),
-                    )
+                   !_isLoadingHashtagList?  Card(
+                     color: Color.fromARGB(255, 125, 125, 125),
+                     child: Padding(
+                       padding: EdgeInsets.all(8),
+                       child:  Wrap(
+                         children: [
+                           for (int i = 0; i < _listHashtags.length; i++) ...[
+                             Padding(
+                               padding: const EdgeInsets.only(
+                                   top: 4, left: 4, bottom: 4),
+                               child: SizedBox(
+                                   height: 30,
+                                   child: GestureDetector(
+                                     onTap: () {
+                                       setState(() {
+                                         selectedhastag[i] =
+                                         !selectedhastag[i];
+                                       });
+                                     },
+                                     child: Chip(
+                                       backgroundColor: selectedhastag[i]
+                                           ? Color.fromARGB(255, 70, 62, 147)
+                                           : Colors.grey,
+                                       label: Text(
+                                         _listHashtags[i],
+                                         style: const TextStyle(
+                                             fontSize: 12,
+                                             color: Colors.white),
+                                       ),
+                                     ),
+                                   )),
+                             ),
+                             const SizedBox(
+                               width: 4,
+                             )
+                           ],
+                         ],
+                       ),
+                     ),
+                   ) :  SizedBox(height: 50, width: 50,
+                   child: CircularProgressIndicator()),
                   ],
                 ),
               ),
