@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
-
+import 'package:http/http.dart' as http;
+import '../repost/Screen/repost_schedule_screen.dart';
 import 'selected_hastag.dart';
-
+import 'package:repost/helper/herpers.dart' as Helpers;
 class Hastag extends StatefulWidget {
   const Hastag({Key? key}) : super(key: key);
 
@@ -15,8 +18,12 @@ class _HastagState extends State<Hastag> {
   Color color1 = Colors.grey;
   Color color2 = Color.fromARGB(255, 70, 62, 147);
   final TextEditingController _post = TextEditingController();
-  // int stoyindex = 0;
+  List<String> _listHashtags = [];
+  bool showPostDetail = false;
+  String? selectedTitle;
 
+  // int stoyindex = 0;
+  Function(String)? selectedStory;
   var selectedhastag = [];
 
   var hastag = [
@@ -72,7 +79,7 @@ class _HastagState extends State<Hastag> {
     "#TEST"
   ];
 
-  List<String> categoryTitleArr = [
+  List<String>? categoryTitleArr = [
     "TOP 8",
     "HOLIDAYS",
     "BUSINESS",
@@ -86,7 +93,7 @@ class _HastagState extends State<Hastag> {
     "PETS",
     "TRAVEL"
   ];
-  List<String> categoryImgArr = [
+  List<String>? categoryImgArr = [
     "category1.png",
     "category2.png",
     "category3.png",
@@ -101,11 +108,32 @@ class _HastagState extends State<Hastag> {
     "category12.png",
   ];
   String selectedCategory = "";
+  void _fetchHashtagByCategory(String category) async {
+    List<String> _hashtags = [];
+    // url
+    final url = "https://instahashtag.p.rapidapi.com/instahashtag?tag=" + category;
+    final http.Response response = await http.get(Uri.parse(url), headers: {
+      "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
+      "X-RapidAPI-Host": "instahashtag.p.rapidapi.com",
+    });
+    if (response.statusCode == 200) {
+      _hashtags = Helpers.getHashtagsFromString(response.body.toString());
+    }
+    else {
+       _hashtags.add("API hashtag failure");
+    }
+    log(_hashtags.toString());
+    setState(() {
+      _listHashtags = _hashtags;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    selectedCategory = categoryTitleArr[0];
+    showPostDetail = false;
+    // _fetchHashtagByCategory("TOP8");
+    selectedCategory = categoryTitleArr![0];
     selectedhastag = List.filled(hastag.length, false);
   }
 
@@ -218,16 +246,85 @@ class _HastagState extends State<Hastag> {
                     SizedBox(
                       height: 10,
                     ),
-                    Stories(
-                      titleArr: categoryTitleArr,
-                      imgArr: categoryImgArr,
-                      selectedTitle: selectedCategory,
-                      selectedStory: (title) {
-                        setState(() {
-                          selectedCategory = title;
-                        });
-                      },
-                    ),
+                    // Stories(
+                    //   titleArr: categoryTitleArr,
+                    //   imgArr: categoryImgArr,
+                    //   selectedTitle: selectedCategory,
+                    //   selectedStory: (title) {
+                    //     setState(() {
+                    //       selectedCategory = title;
+                    //     });
+                    //   },
+                    // ),
+                   SingleChildScrollView(scrollDirection: Axis.horizontal,
+                     child:  Row(
+                       children: [
+                         for (int i = 0; i < this.categoryTitleArr!.length; i++) ...[
+                           Padding(
+                             padding: const EdgeInsets.all(8.0),
+                             child: GestureDetector(
+                               onTap: () {
+                                 log(this.categoryTitleArr![i].toString());
+                                 if (this.selectedStory != null) {
+                                setState(() {
+                                     this.selectedCategory = this.categoryTitleArr![i];
+                                     this.selectedStory!(this.categoryTitleArr![i]);
+                                   });
+                                 }
+                                 if (showPostDetail) {
+                                   Navigator.push(
+                                       context,
+                                       MaterialPageRoute(
+                                           builder: ((context) => RepostSchedule(
+                                             picprofile: "/assets/category4.png",
+                                             CustomCaption: "Custom",
+                                           ))));
+                                 }
+                               },
+                               child: Column(
+                                 children: [
+                                   Container(
+                                     padding: EdgeInsets.all(2),
+                                     width: 67,
+                                     height: 67,
+                                     decoration: BoxDecoration(
+                                         color: Colors.white,
+                                         shape: BoxShape.circle,
+                                         gradient: (this.categoryTitleArr![i] == this.selectedTitle)
+                                             ? LinearGradient(
+                                             begin: Alignment.topCenter,
+                                             end: Alignment.bottomCenter,
+                                             colors: [
+                                               Color(0xFF9B2282),
+                                               Color(0xFFEEA863)
+                                             ])
+                                             : null),
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                           boxShadow: [
+                                             BoxShadow(color: Colors.grey, spreadRadius: 1)
+                                           ],
+                                           color: Colors.grey,
+                                           shape: BoxShape.circle,
+                                           image: this.categoryImgArr != null
+                                               ?  DecorationImage(
+                                               image:  AssetImage("assets/${this.categoryImgArr![i]}"))
+                                               : null),
+                                       width: 60,
+                                       height: 60,
+                                     ),
+                                   ),
+                                   SizedBox(height: 5),
+                                   Text(this.categoryTitleArr![i],
+                                       style:  TextStyle(fontSize: 13, color: secondaryTxtColor))
+                                 ],
+                               ),
+                             ),
+                           ),
+                         ]
+                       ],
+                     )
+                     ),
                     SizedBox(
                       height: 10,
                     ),

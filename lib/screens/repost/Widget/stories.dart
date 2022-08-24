@@ -68,8 +68,8 @@ class Stories extends StatelessWidget {
                             color: Colors.grey,
                             shape: BoxShape.circle,
                             image: imgArr != null
-                                ? DecorationImage(
-                                    image: NetworkImage("${imgArr![i]}"))
+                                ?  DecorationImage(
+                                    image:  AssetImage("assets/${imgArr![i]}"))
                                 : null),
                         width: 60,
                         height: 60,
