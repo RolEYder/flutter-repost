@@ -33,7 +33,7 @@ class _CaptionState extends State<Caption> {
       _getALlCaptions();
     });
     setState(() {
-      _isLoading = false;
+
     });
   }
   Widget build(BuildContext context) {
@@ -46,7 +46,9 @@ class _CaptionState extends State<Caption> {
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                   primary: const Color.fromARGB(255, 73, 65, 125)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context, _savedCaptions[this.isCheckedbox[0]]);
+              },
               child: Text("Save")),
         ),
       ),
@@ -117,6 +119,7 @@ class _CaptionState extends State<Caption> {
                             if (isCheckedbox.contains(index)) {
                               isCheckedbox.remove(index);
                             } else {
+                              isCheckedbox.clear();
                               isCheckedbox.add(index);
                             }
                           });
@@ -151,9 +154,9 @@ class _CaptionState extends State<Caption> {
               map.removeAt(index);
               // removing from database
               DatabaseHelper.instance.delete(this._savedCaptions[index]["id"]);
-              setState(() => {
-               this._savedCaptions = map
-              });
+                setState(() => {
+                 this._savedCaptions = map
+                });
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(duration: const Duration(seconds: 3), content: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -174,12 +177,9 @@ class _CaptionState extends State<Caption> {
                       // Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
                       Captions caption = Captions.fromMap(item);
                       final id = DatabaseHelper.instance.insert(caption);
-                      // if (id != 0) {
-                      //     _showMessageInScaffold("error to undo deletetion");
-                      // };
-                     setState(() {
-                       this._savedCaptions = map;
-                     });
+                       setState(() {
+                         this._savedCaptions = map;
+                       });
                     },
                   )),
                 );
@@ -202,23 +202,11 @@ class _CaptionState extends State<Caption> {
     );
   }
 
-  PopupMenuItem _buildPopupMenuItem( String title, IconData iconData) {
-    return PopupMenuItem(
-        value: 0,
-        child:
-            Row(
-              children:
-              [Icon(iconData, color: Colors.black),
-                Text(title)]), onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditingCustomCaption(title: "", content: "")));
-            });
-  }
   void _showMessageInScaffold(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
-
   Future<void> _saveCaption(BuildContext context, int index) async {
     final result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  EditingCustomCaption(title: _savedCaptions[index]["title"].toString(),
         content: _savedCaptions[index]["content"].toString(), id: _savedCaptions[index]["id"])));
@@ -249,11 +237,13 @@ class _CaptionState extends State<Caption> {
       _showMessageInScaffold("Captions done!");
       setState(() {
         _savedCaptions = allRows;
+        _isLoading = false;
       });
     }
     else {
      setState(() {
        _savedCaptions.add({"title": "Custom", "content": "Choose to Edit"});
+       _isLoading = false;
      });
     }
   }

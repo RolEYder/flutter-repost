@@ -57,9 +57,9 @@ class DatabaseHelper {
         $columnIdSchedulePosts  INTEGER PRIMARY KEY AUTOINCREMENT,
         $columnTitleSchedulePosts TEXT NOT NULL,
         $columnContentSchedulePosts TEXT NOT NULL,
-        $columnPhotoSchedulePosts BLOB NOT NULL,
-        $columnDateEndSchedulePosts DATETIME NOT NULL,
-        $columnCreateAtSchedulePosts DATETIME NOT NULL, 
+        $columnPhotoSchedulePosts TEXT NOT NULL,
+        $columnDateEndSchedulePosts TEXT NOT NULL,
+        $columnCreateAtSchedulePosts TEXT NOT NULL, 
         $columnHashtagsSchedulePosts TEXT NOT NULL
       )
     ''');
@@ -70,7 +70,7 @@ class DatabaseHelper {
   Future<int> insert_schedule_post(SchedulePosts schedulePosts) async {
     Database? db = await instance.database;
     return await db!.insert(tableSchedulePosts, {"title": schedulePosts.title, "content": schedulePosts.content,
-    "photo": schedulePosts.photo, "date_end": schedulePosts.date_end, "create_at": schedulePosts.created_at, "hashtags": schedulePosts.hashtags});
+    "photo": schedulePosts.photo, "date_end": schedulePosts.date_end, "created_at": schedulePosts.created_at, "hashtags": schedulePosts.hashtags});
   }
   Future<int> insert(Captions caption) async {
     Database? db = await instance.database;
@@ -115,6 +115,20 @@ class DatabaseHelper {
     return await db!.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
+
+  Future<int> DropTableByName(String tableName) async {
+   try {
+     String path = await getDatabasesPath();
+     Database db = await openDatabase(path);
+     await db.execute("DROP TABLE IF EXISTS $tableName");
+   }
+   catch (e) {
+     print(e);
+   }
+   throw (e) {
+     print(e);
+   };
+  }
   // delete databse
 Future<Database> deleteDatabase() async{
     try {
@@ -129,3 +143,4 @@ Future<Database> deleteDatabase() async{
     };
 }
 }
+

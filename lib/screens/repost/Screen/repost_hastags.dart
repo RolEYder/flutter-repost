@@ -14,6 +14,7 @@ class RepostHastags extends StatefulWidget {
 
 class _RepostHastags extends State<RepostHastags> {
   List<String> _listHashtags = [];
+  List<String> _clickedHashtags = [];
   bool showPostDetail = false;
   String? selectedTitle;
   bool _isLoadingHashtagList = false;
@@ -81,6 +82,7 @@ List<String>? categoryTitleArr = [
       _hashtags = Helpers.getHashtagsFromString(response.body.toString());
     }
     else {
+      log(response.body.toString());
       _hashtags.add("API hashtag failure");
     }
     setState(() {
@@ -223,6 +225,7 @@ List<String>? categoryTitleArr = [
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
+                                    _clickedHashtags.add(_listHashtags[i]);
                                     selectedhastag[i] =
                                     !selectedhastag[i];
                                   });
@@ -282,7 +285,9 @@ List<String>? categoryTitleArr = [
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               primary: Color.fromARGB(255, 70, 62, 147)),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context, _clickedHashtags);
+                          },
                           child: Text("Save"))))
             ],
           ),

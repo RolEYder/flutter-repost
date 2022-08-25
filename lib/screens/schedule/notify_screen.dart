@@ -1,3 +1,5 @@
+import 'dart:developer';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -10,8 +12,19 @@ class ScheduleRepost extends StatefulWidget {
 
 class _ScheduleRepostState extends State<ScheduleRepost> {
   TimeOfDay date = TimeOfDay.now();
+   late DateTime  _getDate;
+   late TimeOfDay  _getTime;
 
   @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _getTime = TimeOfDay.now();
+      _getDate =  DateTime.now();
+    });
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 28, 28, 28),
@@ -50,9 +63,16 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SfDateRangePicker(),
+                         SfDateRangePicker(onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                           final dynamic value = args.value;
+                           setState(() {
+                             _getDate = value;
+                           });
+                           log(_getDate.toString());
+                         }),
+
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(6.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -67,11 +87,18 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
                                           initialEntryMode:
                                               TimePickerEntryMode.input,
                                           context: context,
-                                          initialTime: date);
+                                          initialTime: _getTime).then(( value) {
+                                            if(value != null) {
+                                              setState(() {
+                                                _getTime = value;
+                                              });
+                                              log(_getTime.toString());
+                                            }
+                                      });
                                     },
                                     child: Chip(
                                         label: Text(
-                                      date.toString().substring(11, 15),
+                                      _getTime.toString().substring(11, 15),
                                       style: TextStyle(fontSize: 14),
                                     ))),
                               ],
@@ -88,7 +115,11 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               primary: Color.fromARGB(255, 73, 65, 125)),
-                          onPressed: () {},
+                          onPressed: () {
+                            String dateTime = DateFormat('yyyy-mm-dd').format(_getDate).toString() + ' ' +  _getTime.hour.toString() + ':' + _getTime.minute.toString();
+                            final DateEnd = DateTime.parse(dateTime);
+                            Navigator.pop(context, DateEnd);
+                          },
                           child: Text("Schedule"))),
                 )
               ],
@@ -97,5 +128,6 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
         ),
       ),
     );
+
   }
 }

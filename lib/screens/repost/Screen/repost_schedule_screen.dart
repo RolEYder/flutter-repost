@@ -4,13 +4,15 @@ import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/screens/watermark/watermark.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'caption.dart';
-import '../../../model/caption.dart';
+import '../../../model/schedule-post.dart';
 import '../../../db/db_sqlite_helper.dart';
+import 'dart:developer';
 
 // REPOSTS SCHEDULE
 class RepostSchedule extends StatefulWidget {
   final String picprofile;
   final String CustomCaption;
+
   const RepostSchedule(
       {Key? key, required this.picprofile, required this.CustomCaption})
       : super(key: key);
@@ -24,6 +26,9 @@ class _RepostScheduleState extends State<RepostSchedule> {
   final _controller = PageController(initialPage: 0);
   String selectedWatermark = "off";
   int pageIndex = 0;
+  List<dynamic>_captionSelected = [];
+  List<dynamic> _hashtagSelected = [];
+  DateTime _scheduleSelected = DateTime.now();
 
   List image = ["smallgirl.png", "smallgirl.png", "smallgirl.png"];
   List watermarks = ["Top Left", "Top Right", "Bottom Left", "Bottom Right"];
@@ -138,12 +143,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
                   ),
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Caption(
-                                    CustomCaption:
-                                        widget.CustomCaption.toString())));
+                       _gettingCaptionAfterSelected(context);
                       },
                       child: waterMarks("Caption", "")),
                   const Divider(
@@ -151,10 +151,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
                   ),
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RepostHastags()));
+                        _gettingHashtagsAfterSelected(context);
                       },
                       child: waterMarks("Hashtags", "")),
                   const SizedBox(
@@ -170,10 +167,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
                                 primary:
                                     const Color.fromARGB(255, 125, 64, 121)),
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ScheduleRepost()));
+                              _gettingScheduleAfterSelected(context);
                             },
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -198,7 +192,11 @@ class _RepostScheduleState extends State<RepostSchedule> {
                             style: ElevatedButton.styleFrom(
                                 primary:
                                     const Color.fromARGB(255, 73, 65, 125)),
-                            onPressed: () {},
+                            onPressed: () {
+                               _insert(_captionSelected[0]["title"], _captionSelected[0]["content"], widget.picprofile.toString(),
+                                   _scheduleSelected.toString(), DateTime.now().toString(), _hashtagSelected.toString());
+                               Navigator.pop(context, "save");
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -223,5 +221,58 @@ class _RepostScheduleState extends State<RepostSchedule> {
       ),
     );
   }
+
+  void _insert(title, content, photo, date_end, created_at, hashtags) async {
+    Map<String, dynamic> row = {DatabaseHelper.columnTitleSchedulePosts: title,
+    DatabaseHelper.columnContentSchedulePosts: content, DatabaseHelper.columnPhotoSchedulePosts: photo,
+    DatabaseHelper.columnDateEndSchedulePosts: date_end, DatabaseHelper.columnCreateAtSchedulePosts: created_at,
+    DatabaseHelper.columnHashtagsSchedulePosts: hashtags};
+    SchedulePosts schedulePosts = SchedulePosts.fromMap(row);
+    DatabaseHelper.instance.insert_schedule_post(schedulePosts);
+    _showMessageInScaffold("Posts was Scheduled 👍 ");
+  }
+
+  void _showMessageInScaffold(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  Future<void> _gettingScheduleAfterSelected(BuildContext context) async {
+    final result = await  Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ScheduleRepost()));
+    if (!mounted) return;
+    setState(() {
+      _scheduleSelected = result;
+    });
+    log(result.toString());
+  }
+  Future<void> _gettingHashtagsAfterSelected(BuildContext context) async {
+    final result =  await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RepostHastags()));
+    if(!mounted) return;
+    setState(() {
+      _hashtagSelected = result;
+    });
+  }
+  Future<void> _gettingCaptionAfterSelected(BuildContext context) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Caption(
+                CustomCaption:
+                widget.CustomCaption.toString())));
+
+              if (!mounted) return;
+                setState(() {
+                 _captionSelected.add({"id": result["id"], "title": result["title"], "content": result["content"]});
+                });
+
+
+      }
 }
 

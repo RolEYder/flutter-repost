@@ -6,10 +6,10 @@ class SchedulePosts {
   late int? id;
   late String? content;
   late String? title;
-  late  Uint8List? photo;
-  late DateTime? date_end;
+  late String? photo;
+  late String? date_end;
   late String? hashtags;
-  late DateTime? created_at;
+  late String? created_at;
 
   SchedulePosts(this.id, this.title, this.content, this.photo, this.date_end, this.created_at, this.hashtags);
 
@@ -25,6 +25,7 @@ class SchedulePosts {
 
   Map<String, dynamic> toMap() {
     return {DatabaseHelper.columnIdSchedulePosts: id, DatabaseHelper.columnTitleSchedulePosts: title , DatabaseHelper.columnContentSchedulePosts: content,
-    DatabaseHelper.columnPhotoSchedulePosts: photo, DatabaseHelper.columnDateEndSchedulePosts: date_end, DatabaseHelper.columnCreateAtSchedulePosts: created_at,  DatabaseHelper.columnHashtagsSchedulePosts: hashtags};
+    DatabaseHelper.columnPhotoSchedulePosts: photo, DatabaseHelper.columnDateEndSchedulePosts: date_end, DatabaseHelper.columnCreateAtSchedulePosts: created_at,
+      DatabaseHelper.columnHashtagsSchedulePosts: hashtags};
   }
 }

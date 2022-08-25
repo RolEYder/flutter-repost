@@ -20,7 +20,9 @@ class _DashBoardState extends State<DashBoard> {
   void initState() {
     super.initState();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
-      setState(() {});
+      setState(() {
+
+      });
     });
   }
 
