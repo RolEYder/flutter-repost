@@ -10,6 +10,28 @@ class ApiService {
     return "hello" as List<Map<String, dynamic>>;
   }
 
+  /// Function to get post giving its shortcode
+  Future<Map<String, dynamic>?> getPostByShortCode(String shortcode) async {
+    Map<String, dynamic> dataParsed = {};
+    var url = "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" + shortcode;
+    final http.Response response =
+    await http.get(Uri.parse(url), headers: {
+      "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+      "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+    });
+
+    final data = json.decode(response.body);
+    dataParsed = {
+      "id": data["id"],
+      "shortcode": data["shortcode"],
+      "image": data["display_resources"][0]["src"],
+      "is_video": data["is_video"],
+      "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
+      "accessibility_caption" : data["accessibility_caption"]
+    };
+    return dataParsed;
+  }
+
   /// Function to get stories giving their usernames
   Future<List<dynamic>?> getPostsByUsername(String _username) async {
     List<dynamic> dataParsed = [];

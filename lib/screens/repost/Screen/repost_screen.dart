@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:repost/api/storiesModel.dart';
+import 'package:repost/helper/herpers.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
@@ -34,6 +35,20 @@ class _RepostScreenState extends State<RepostScreen> {
     "Sundshade3",
     "Cakior22"
   ];
+  void _getPostByShortCode(String _shortcode) async {
+    final _posts  = await ApiService().getPostByShortCode(_shortcode);
+    String? image = _posts?["image"].toString() as String;
+    String? caption = _posts?["caption"].toString() as String;
+    log(_posts.toString());
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => RepostSchedule(
+              picprofile: image,
+              CustomCaption: caption,
+            ))));
+
+  }
   void _getPostsByUsername(String _username) async {
     //_storiesModel = (await ApiService().getStoriesByUsername(_username));
     //var _stories = await ApiService().getStoriesByUsername(_username);
@@ -85,10 +100,19 @@ class _RepostScreenState extends State<RepostScreen> {
                 style: const TextStyle(fontSize: 16),
                 onSubmitted: (value) async {
                   if (value.isNotEmpty) {
-                    _getPostsByUsername(value.toString());
-                    setState(() {
-                      _isLoading = true;
-                    });
+                    /// checking if is an username url or username
+                    if (hasValidUrlString(value.toString())) {
+                            final url = Uri.parse(value);
+                            String shortcode  = url.pathSegments.last;
+                            log(shortcode);
+                            _getPostByShortCode(shortcode.toString());
+                    }
+                    else if ('${value[0].toString()}' == "@") {
+                      _getPostsByUsername(value.toString());
+                      setState(() {
+                        _isLoading = true;
+                      });
+                    }
                     await Future.delayed(const Duration(seconds: 10));
                     setState(() {
                       _isLoading = false;
@@ -115,7 +139,7 @@ class _RepostScreenState extends State<RepostScreen> {
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     hintStyle: const TextStyle(color: Colors.grey),
-                    hintText: "Enter Instagram username...",
+                    hintText: "Enter Instagram username or post url",
                     suffixIcon: IconButton(
                       onPressed: _post.clear,
                       icon: Icon(Icons.clear),

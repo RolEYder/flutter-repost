@@ -271,8 +271,6 @@ class _RepostScheduleState extends State<RepostSchedule> {
                 setState(() {
                  _captionSelected.add({"id": result["id"], "title": result["title"], "content": result["content"]});
                 });
-
-
       }
 }
 
