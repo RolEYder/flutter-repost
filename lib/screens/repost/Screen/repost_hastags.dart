@@ -158,6 +158,8 @@ List<String>? categoryTitleArr = [
                                         builder: ((context) => RepostSchedule(
                                           picprofile: "/assets/category4.png",
                                           CustomCaption: "Custom",
+                                          username: "",
+                                          uid: "",
                                         ))));
                               }
                             },

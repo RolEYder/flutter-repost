@@ -39,6 +39,8 @@ class Stories extends StatelessWidget {
                             builder: ((context) => RepostSchedule(
                                   picprofile: "/assets/category4.png",
                                   CustomCaption: "Custom",
+                                  username: "username",
+                                  uid: "uid",
                                 ))));
                   }
                 },

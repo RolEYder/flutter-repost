@@ -16,12 +16,12 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+
   @override
   void initState() {
     super.initState();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
       setState(() {
-
       });
     });
   }

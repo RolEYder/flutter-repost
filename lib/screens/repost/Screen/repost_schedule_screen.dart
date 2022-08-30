@@ -3,6 +3,7 @@ import 'package:repost/screens/repost/Screen/repost_hastags.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/screens/watermark/watermark.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../../../model/searcher-posts.dart';
 import 'caption.dart';
 import '../../../model/schedule-post.dart';
 import '../../../db/db_sqlite_helper.dart';
@@ -12,9 +13,12 @@ import 'dart:developer';
 class RepostSchedule extends StatefulWidget {
   final String picprofile;
   final String CustomCaption;
+  final String uid;
+  final String username;
+
 
   const RepostSchedule(
-      {Key? key, required this.picprofile, required this.CustomCaption})
+      {Key? key, required this.picprofile, required this.CustomCaption, required this.uid, required this.username})
       : super(key: key);
 
   @override
@@ -63,6 +67,10 @@ class _RepostScheduleState extends State<RepostSchedule> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -221,7 +229,6 @@ class _RepostScheduleState extends State<RepostSchedule> {
       ),
     );
   }
-
   void _insert(title, content, photo, date_end, created_at, hashtags) async {
     Map<String, dynamic> row = {DatabaseHelper.columnTitleSchedulePosts: title,
     DatabaseHelper.columnContentSchedulePosts: content, DatabaseHelper.columnPhotoSchedulePosts: photo,

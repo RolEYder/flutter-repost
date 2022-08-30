@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:repost/model/searcher-posts.dart';
+
 import '../model/caption.dart';
 import '../model/schedule-post.dart';
 import 'package:path/path.dart';
@@ -21,6 +25,17 @@ class DatabaseHelper {
   static final columnDateEndSchedulePosts = "date_end";
   static final columnCreateAtSchedulePosts = "created_at";
   static final columnHashtagsSchedulePosts = "hashtags";
+
+  /// table post-searches
+  static final tablePostsSearches = "searches_posts";
+  static final columnIdPostsSearches = "id";
+  static final columnCodePostSearches = "uid";
+  static final columnContentPostsSearches = "content";
+  static final columnTitlePostsSearches = "title";
+  static final columnProfilePicPostsSearches = "profilepic";
+  static final columnThumbnailPicPostsSearches = "thumbnailpic";
+  static final columnUsernamePostsSearches = "username";
+  static final columnCreatedAtPostsSearches = "created_at";
 
 
   DatabaseHelper._privateConstructor();
@@ -63,10 +78,38 @@ class DatabaseHelper {
         $columnHashtagsSchedulePosts TEXT NOT NULL
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE $tablePostsSearches (
+        $columnIdPostsSearches INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnCodePostSearches TEXT NOT NULL, 
+        $columnContentPostsSearches TEXT NOT NULL, 
+        $columnProfilePicPostsSearches TEXT NOT NULL,
+        $columnThumbnailPicPostsSearches TEXT NOT NULL,
+        $columnUsernamePostsSearches TEXT NOT NULL,
+        $columnCreatedAtPostsSearches TEXT NOT NULL
+      )
+    ''');
   }
-
-
   // Helper methods
+  Future<int> insert_searcher_post(SearchersPosts searchersPosts) async {
+  try {
+    // check if the post already exists
+    final response = await getPostByUid(searchersPosts.uid.toString());
+    log(response.toString());
+    if(response == 0 ) {
+      Database? db = await instance.database;
+      return await db!.insert(tablePostsSearches, {
+        "uid": searchersPosts.uid.toString(),
+        "content": searchersPosts.content.toString(),
+        "profilepic": searchersPosts.profilepic.toString(),
+        "thumbnailpic": searchersPosts.thumbnailpic.toString(),
+        "username": searchersPosts.username.toString(),
+        "created_at": searchersPosts.created_at.toString()});
+    }
+  } catch(Exception) {print(Exception); rethrow; }
+    return 0;
+ }
   Future<int> insert_schedule_post(SchedulePosts schedulePosts) async {
     Database? db = await instance.database;
     return await db!.insert(tableSchedulePosts, {"title": schedulePosts.title, "content": schedulePosts.content,
@@ -76,8 +119,6 @@ class DatabaseHelper {
     Database? db = await instance.database;
     return await db!.insert(table, {"content": caption.content, "title": caption.title});
   }
-
-
   // get all rows
   Future<List<Map<String, dynamic>>> getAllSchedulePostsRows() async {
     Database? db = await instance.database;
@@ -87,13 +128,19 @@ class DatabaseHelper {
     Database? db = await instance.database;
     return await db!.query(table);
   }
-
   // query row
   Future<List<Map<String, dynamic>>> queryRows(name) async {
     Database? db = await instance.database;
     return await db!.query(table, where: "$columnContent LIKE '%name%'");
   }
 
+  // get a post by uid
+  Future<int?> getPostByUid(String _uid) async {
+    Database? db = await instance.database;
+    return Sqflite.firstIntValue(
+      await db!.rawQuery('SELECT COUNT (*) FROM $tablePostsSearches WHERE $columnCodePostSearches = $_uid')
+    );
+  }
   // query row count
   Future<int?> getRowCount() async {
     Database? db = await instance.database;

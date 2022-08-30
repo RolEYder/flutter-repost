@@ -45,6 +45,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           builder: (context) => RepostSchedule(
                                 picprofile: "/assets/category4.png",
                                 CustomCaption: "Custom",
+                                username: "username",
+                                uid: "uid"
+
                               )));
                 },
                 child: Text("Example"))

@@ -6,16 +6,18 @@ import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
 import 'package:repost/screens/schedule/schedule_screen.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import '../../../api/api_servicer.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../../db/db_sqlite_helper.dart';
+import '../../../model/searcher-posts.dart';
+
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key? key}) : super(key: key);
-
   @override
   State<RepostScreen> createState() => _RepostScreenState();
 }
-
 class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
@@ -39,20 +41,27 @@ class _RepostScreenState extends State<RepostScreen> {
     final _posts  = await ApiService().getPostByShortCode(_shortcode);
     String? image = _posts?["image"].toString() as String;
     String? caption = _posts?["caption"].toString() as String;
+    String? uid = _posts?["id"].toString() as String;
+    String? username = _posts?["username"] as String;
+    String? thumbnailpic = _posts?["thumbnailpic"] as String;
     log(_posts.toString());
+    //save posts
+    _saveClickedPosts(caption, uid, image, thumbnailpic, username);
+    // open up Reposts schedule
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: ((context) => RepostSchedule(
               picprofile: image,
               CustomCaption: caption,
+              uid: uid,
+              username: username,
             ))));
 
   }
   void _getPostsByUsername(String _username) async {
-    //_storiesModel = (await ApiService().getStoriesByUsername(_username));
-    //var _stories = await ApiService().getStoriesByUsername(_username);
     var _posts = await ApiService().getPostsByUsername(_username);
+    log(_posts.toString());
     if (_posts![0]["type"] == "error") {
       Alert(
               buttons: [
@@ -60,7 +69,7 @@ class _RepostScreenState extends State<RepostScreen> {
               onPressed: () => Navigator.pop(context),
               child: Text(
                 "Ok!",
-                style: TextStyle(color: Colors.red, fontSize: 2),
+                style: TextStyle(color: Colors.red, fontSize: 5),
               ),
             )
           ],
@@ -69,25 +78,29 @@ class _RepostScreenState extends State<RepostScreen> {
               desc: _posts[0]["message"] + " of user " + _username.toString())
           .show();
     } else {
-      log(_posts.toString());
-      POSTS = _posts;
+      setState(() {
+        POSTS = _posts;
+      });
     }
   }
-
   // Widget function to show instagram posts
   Widget showInstagramPosts() {
-    return new Column(children: <Widget>[
+    return new GestureDetector(
+        child: Column(children: <Widget>[
       ...POSTS.map((e) => Posts(
+            uid: e["id"],
             username: e["username"],
             text: (e["text"].toString()),
             thumbnail: e["display_url"].toString(),
             profilePic: e["profile_pic"].toString(),
           ))
-    ]);
+    ]));
   }
 
   @override
   Widget build(BuildContext context) {
+    ProgressDialog pr = new ProgressDialog(context);
+    pr.style(message: 'Please wait...');
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 28, 28, 28),
       body: Padding(
@@ -104,34 +117,58 @@ class _RepostScreenState extends State<RepostScreen> {
                     if (hasValidUrlString(value.toString())) {
                             final url = Uri.parse(value);
                             String shortcode  = url.pathSegments.last;
-                            log(shortcode);
-                            _getPostByShortCode(shortcode.toString());
+                            pr.show();
+                            Future.delayed(Duration(seconds: 5)).then((value) => {
+                              pr.hide().whenComplete(() => {
+                                setState(() {
+                                  _getPostByShortCode(shortcode.toString());
+                                })
+                              })
+                            });
+
                     }
                     else if ('${value[0].toString()}' == "@") {
-                      _getPostsByUsername(value.toString());
+                      _getPostsByUsername(value.toString().substring(1));
+                      Future.delayed(Duration(seconds: 10)).then((value) => {
+                        pr.hide().whenComplete(() => {
+                          setState(() {
+                          _isLoading = false;
+                          })
+                        })
+                      });
                       setState(() {
                         _isLoading = true;
                       });
                     }
-                    await Future.delayed(const Duration(seconds: 10));
-                    setState(() {
-                      _isLoading = false;
-                    });
+                    else  {
+                      _getPostsByUsername(value.toString());
+                      pr.show();
+                      Future.delayed(Duration(seconds: 10)).then((value) => {
+                        pr.hide().whenComplete(() => {
+                          setState(() {
+                            _isLoading = false;
+                          })
+                        })
+                      });
+                      setState(() {
+                        _isLoading = true;
+                      });
+                    }
                   } else {
                     Alert(
-                            buttons: [
+                        buttons: [
                           DialogButton(
                             onPressed: () => Navigator.pop(context),
                             child: Text(
                               "Ok!",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 2),
+                              TextStyle(color: Colors.white, fontSize: 2),
                             ),
                           )
                         ],
-                            context: context,
-                            title: "Oops!🤔",
-                            desc: "You must enter a proper Instagram username")
+                        context: context,
+                        title: "Oops!🤔",
+                        desc: "You must enter a proper Instagram username")
                         .show();
                   }
                 },
@@ -196,6 +233,7 @@ class _RepostScreenState extends State<RepostScreen> {
                           ),
 
                           GestureDetector(
+
                               child: Padding(
                             padding: const EdgeInsets.only(right: 12),
                             child: showInstagramPosts(),
@@ -209,5 +247,14 @@ class _RepostScreenState extends State<RepostScreen> {
         ),
       ),
     );
+  }
+  //save clicked posts
+  Future<void> _saveClickedPosts(content, uid, profilepic, thumbnailpic, username) async {
+    Map<String, dynamic> row = {DatabaseHelper.columnContentPostsSearches: content,
+      DatabaseHelper.columnCodePostSearches: uid, DatabaseHelper.columnProfilePicPostsSearches: profilepic,
+      DatabaseHelper.columnThumbnailPicPostsSearches: thumbnailpic,
+      DatabaseHelper.columnUsernamePostsSearches: username, DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()};
+    SearchersPosts searchersPosts = SearchersPosts.fromMap(row);
+    DatabaseHelper.instance.insert_searcher_post(searchersPosts);
   }
 }

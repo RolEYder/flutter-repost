@@ -27,6 +27,8 @@ class ApiService {
       "image": data["display_resources"][0]["src"],
       "is_video": data["is_video"],
       "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
+      "thumbnailpic": data["owner"]["profile_pic_url"],
+      "username": data["owner"]["username"],
       "accessibility_caption" : data["accessibility_caption"]
     };
     return dataParsed;
@@ -74,7 +76,7 @@ class ApiService {
       log(data_res.body.toString());
       if (json.decode(data_res.body)["data"] == null) {
         List<dynamic> err = [
-          {"type": "error", "message": "Error to fecth Posts"}
+          {"type": "error", "message": "Error to fetch Posts"}
         ];
         return err;
       }
@@ -90,6 +92,7 @@ class ApiService {
             "height": element["node"]["display_resources"][2]["config_height"],
             "width": element["node"]["display_resources"][1]["config_width"]
           },
+          "id": element["node"]["id"],
           "display_url":
               element["node"]["display_resources"][0]["src"].toString(),
           "is_video": element["node"]["is_video"],
@@ -109,9 +112,6 @@ class ApiService {
       if (data_res.statusCode != 200) {
         return null;
       }
-      // log(dataParsed.toString());
-
-      //final postdata = List<Map<String, dynamic>>.from(jsonDecode(data_res.body));
     } else {
       log("Unable to load posts");
     }
