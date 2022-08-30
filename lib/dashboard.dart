@@ -7,10 +7,10 @@ import 'screens/repost/Screen/repost_screen.dart';
 import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
 import './db/db_sqlite_helper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
-
   @override
   State<DashBoard> createState() => _DashBoardState();
 }
@@ -27,7 +27,6 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   int index = 0;
-
   selectedPage(int selectedTitle) {
     setState(() {
       index = selectedTitle;
@@ -44,7 +43,7 @@ class _DashBoardState extends State<DashBoard> {
   List pages = [
     {"title": "Report +"},
     {"title": "Schedule"},
-    {"title": "Hastag"},
+    {"title": "Hashtag"},
     {"title": "Pro"},
     {"title": "More"}
   ];
@@ -76,7 +75,9 @@ class _DashBoardState extends State<DashBoard> {
                 Icons.settings_sharp,
                 size: 20,
               )),
-          actions: [Image.asset("assets/post.png")],
+          actions:  [IconButton(onPressed:() {
+            _launchInstagramApp(Uri.parse("https://www.instagram.com/"));
+          }, icon: Image.asset("assets/post.png"))],
           centerTitle: true,
           title: Text(pages[index]["title"]),
         ),
@@ -116,5 +117,10 @@ class _DashBoardState extends State<DashBoard> {
         ]),
       ),
     );
+  }
+  Future<void> _launchInstagramApp(_url) async {
+    if (!await launchUrl(_url)) {
+      throw 'Could not launch $_url';
+    }
   }
 }

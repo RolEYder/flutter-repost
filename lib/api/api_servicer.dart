@@ -34,6 +34,8 @@ class ApiService {
     return dataParsed;
   }
 
+
+
   /// Function to get stories giving their usernames
   Future<List<dynamic>?> getPostsByUsername(String _username) async {
     List<dynamic> dataParsed = [];

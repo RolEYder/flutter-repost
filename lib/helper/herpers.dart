@@ -19,9 +19,33 @@ bool hasValidUrlString(String url){
   else if (!regExp.hasMatch(url)) {
     return false;
   }
-
   return true ;
 }
+
+bool isPostUrl(String _urlPosts) {
+  String pattern = r'/p.*/([^/]+)/?$';
+  RegExp regExp = new RegExp(pattern);
+  if (_urlPosts.length == 0) {
+    return false;
+  }
+   else if (!regExp.hasMatch(_urlPosts)) {
+     return false;
+  }
+   return true;
+}
+
+String getShortCodeFromUrl(String url) {
+  String pattern = r'[^/]+(?=/$|$)';
+  RegExp  regExp = new RegExp(pattern);
+  if (url.length == 0) {
+    return "none";
+  }
+  else if (!regExp.hasMatch(url)) {
+    return "none";
+  }
+  return regExp.stringMatch(url).toString();
+}
+
 String getHashtagsFromList(List<String> hashtags, int n) {
   List<String> str = [];
   for (int i = 0; i < n; i++) {

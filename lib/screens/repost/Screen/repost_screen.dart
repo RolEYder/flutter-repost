@@ -9,9 +9,9 @@ import 'package:repost/screens/schedule/schedule_screen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import '../../../api/api_servicer.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 import '../../../db/db_sqlite_helper.dart';
 import '../../../model/searcher-posts.dart';
+import '../../../db/db_sqlite_helper.dart' as dbHelper;
 
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key? key}) : super(key: key);
@@ -21,9 +21,11 @@ class RepostScreen extends StatefulWidget {
 class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
+  String HEADER = "";
   late List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
+  List<dynamic> CLICKED_POSTS  = [];
   List<dynamic> errors = [];
   List<String> titleArr = [
     "Rayshean32",
@@ -37,6 +39,7 @@ class _RepostScreenState extends State<RepostScreen> {
     "Sundshade3",
     "Cakior22"
   ];
+
   void _getPostByShortCode(String _shortcode) async {
     final _posts  = await ApiService().getPostByShortCode(_shortcode);
     String? image = _posts?["image"].toString() as String;
@@ -59,6 +62,8 @@ class _RepostScreenState extends State<RepostScreen> {
             ))));
 
   }
+
+
   void _getPostsByUsername(String _username) async {
     var _posts = await ApiService().getPostsByUsername(_username);
     log(_posts.toString());
@@ -84,20 +89,40 @@ class _RepostScreenState extends State<RepostScreen> {
     }
   }
   // Widget function to show instagram posts
+
   Widget showInstagramPosts() {
     return new GestureDetector(
         child: Column(children: <Widget>[
-      ...POSTS.map((e) => Posts(
-            uid: e["id"],
+          ...POSTS.map((e) => Posts(
+            uid: e["id"].toString(),
             username: e["username"],
             text: (e["text"].toString()),
             thumbnail: e["display_url"].toString(),
             profilePic: e["profile_pic"].toString(),
           ))
-    ]));
+        ]));
   }
 
+  Widget showInstagramClickedPosts() {
+    return new GestureDetector(
+        child: Column(children: <Widget>[
+          ...CLICKED_POSTS.map((e) => Posts(
+            uid: e["uid"],
+            username: e["username"],
+            text: (e["content"].toString()),
+            thumbnail: e["profilepic"].toString(),
+            profilePic: e["thumbnailpic"].toString(),
+          ))
+        ]));
+  }
   @override
+  void initState() {
+    super.initState();
+    _getAllClickedPosts();
+    setState(() {
+      HEADER = "RECENT POSTS";
+    });
+  }
   Widget build(BuildContext context) {
     ProgressDialog pr = new ProgressDialog(context);
     pr.style(message: 'Please wait...');
@@ -111,22 +136,52 @@ class _RepostScreenState extends State<RepostScreen> {
               padding: const EdgeInsets.only(right: 8.0),
               child: TextField(
                 style: const TextStyle(fontSize: 16),
+                onChanged:(value) {
+                  if(value.length == 0) {
+                    _getAllClickedPosts();
+                   setState(() {
+                     HEADER = "RECENT POSTS";
+                   });
+                  }
+                },
                 onSubmitted: (value) async {
+                  CLICKED_POSTS = [];
+                  setState(() {
+                    HEADER = "POSTS";
+                  });
                   if (value.isNotEmpty) {
                     /// checking if is an username url or username
                     if (hasValidUrlString(value.toString())) {
-                            final url = Uri.parse(value);
-                            String shortcode  = url.pathSegments.last;
-                            pr.show();
-                            Future.delayed(Duration(seconds: 5)).then((value) => {
-                              pr.hide().whenComplete(() => {
-                                setState(() {
-                                  _getPostByShortCode(shortcode.toString());
+                           /// if is a post
+                            if (isPostUrl(value.toString())) {
+                              String shortcode = getShortCodeFromUrl(value.toString());
+                              pr.show();
+                              Future.delayed(Duration(seconds: 5)).then((value) => {
+                                pr.hide().whenComplete(() => {
+                                  setState(() {
+                                    _getPostByShortCode(shortcode.toString());
+                                  })
                                 })
-                              })
-                            });
-
+                              });
+                            }
+                            else {
+                              /// then, is a username
+                              String username = getShortCodeFromUrl(value.toString());
+                              _getPostsByUsername(username);
+                              pr.show();
+                              Future.delayed(Duration(seconds: 10)).then((value) => {
+                                pr.hide().whenComplete(() => {
+                                  setState(() {
+                                    _isLoading = false;
+                                  })
+                                })
+                              });
+                              setState(() {
+                                _isLoading = true;
+                              });
+                            }
                     }
+                    // if is a username
                     else if ('${value[0].toString()}' == "@") {
                       _getPostsByUsername(value.toString().substring(1));
                       Future.delayed(Duration(seconds: 10)).then((value) => {
@@ -155,6 +210,10 @@ class _RepostScreenState extends State<RepostScreen> {
                       });
                     }
                   } else {
+                    setState(() {
+                      _getAllClickedPosts();
+                      HEADER = "RECENT POSTS";
+                    });
                     Alert(
                         buttons: [
                           DialogButton(
@@ -221,23 +280,22 @@ class _RepostScreenState extends State<RepostScreen> {
                           ///Story///
                           Stories(titleArr: titleArr, showPostDetail: true),
 
-                          const Text(
-                            "POSTS",
+
+                          Text(
+                            HEADER.toString(),
                             style: TextStyle(
                                 fontSize: 52,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w900),
                           ),
-                          const SizedBox(
+                          SizedBox(
                             height: 10,
                           ),
-
                           GestureDetector(
-
                               child: Padding(
-                            padding: const EdgeInsets.only(right: 12),
-                            child: showInstagramPosts(),
-                          ))
+                                padding:  EdgeInsets.only(right: 12),
+                                child: (CLICKED_POSTS.isNotEmpty) ? showInstagramClickedPosts() : showInstagramPosts(),
+                              ))
                         ],
                       ),
                     ),
@@ -256,5 +314,19 @@ class _RepostScreenState extends State<RepostScreen> {
       DatabaseHelper.columnUsernamePostsSearches: username, DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()};
     SearchersPosts searchersPosts = SearchersPosts.fromMap(row);
     DatabaseHelper.instance.insert_searcher_post(searchersPosts);
+  }
+  void _getAllClickedPosts() async {
+    final allClickPosts = await dbHelper.DatabaseHelper.instance.getAllSearchersRowsPosts();
+    if(allClickPosts.isNotEmpty){
+      setState(() {
+        CLICKED_POSTS = allClickPosts;
+        POSTS = allClickPosts;
+      });
+    }
+    else {
+      setState(() {
+        CLICKED_POSTS.add({"message": "There aren't post saves yet! Get started now!"});
+      });
+    }
   }
 }

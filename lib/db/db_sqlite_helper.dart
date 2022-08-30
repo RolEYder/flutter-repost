@@ -128,6 +128,11 @@ class DatabaseHelper {
     Database? db = await instance.database;
     return await db!.query(table);
   }
+
+  Future<List<Map<String, dynamic>>> getAllSearchersRowsPosts() async {
+    Database? db = await instance.database;
+    return await db!.query(tablePostsSearches);
+  }
   // query row
   Future<List<Map<String, dynamic>>> queryRows(name) async {
     Database? db = await instance.database;
