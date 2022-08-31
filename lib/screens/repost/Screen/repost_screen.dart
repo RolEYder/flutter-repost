@@ -12,13 +12,14 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../db/db_sqlite_helper.dart';
 import '../../../model/searcher-posts.dart';
 import '../../../db/db_sqlite_helper.dart' as dbHelper;
-
+import '../../../helper/dialogs.dart'  as dialogsHelper;
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key? key}) : super(key: key);
   @override
   State<RepostScreen> createState() => _RepostScreenState();
 }
 class _RepostScreenState extends State<RepostScreen> {
+
   final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
   String HEADER = "";
@@ -214,21 +215,7 @@ class _RepostScreenState extends State<RepostScreen> {
                       _getAllClickedPosts();
                       HEADER = "RECENT POSTS";
                     });
-                    Alert(
-                        buttons: [
-                          DialogButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(
-                              "Ok!",
-                              style:
-                              TextStyle(color: Colors.white, fontSize: 2),
-                            ),
-                          )
-                        ],
-                        context: context,
-                        title: "Oops!🤔",
-                        desc: "You must enter a proper Instagram username")
-                        .show();
+                    _dialogBuilder(context, "Oops!🤔", "You must enter a proper Instagram username, url post or url username");
                   }
                 },
                 controller: _post,
@@ -304,6 +291,28 @@ class _RepostScreenState extends State<RepostScreen> {
           ],
         ),
       ),
+    );
+  }
+  Future<void> _dialogBuilder(BuildContext context, String title, String content) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  Text(title.toString()),
+          content:  Text(content.toString()),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
   //save clicked posts
