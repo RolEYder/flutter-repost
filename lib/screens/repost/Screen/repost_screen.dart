@@ -63,26 +63,11 @@ class _RepostScreenState extends State<RepostScreen> {
             ))));
 
   }
-
-
-  void _getPostsByUsername(String _username) async {
+  void _getPostsByUsername(BuildContext context,  _username) async {
     var _posts = await ApiService().getPostsByUsername(_username);
     log(_posts.toString());
     if (_posts![0]["type"] == "error") {
-      Alert(
-              buttons: [
-            DialogButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                "Ok!",
-                style: TextStyle(color: Colors.red, fontSize: 5),
-              ),
-            )
-          ],
-              context: context,
-              title: "Something unexpected occur",
-              desc: _posts[0]["message"] + " of user " + _username.toString())
-          .show();
+      _dialogBuilder(context, "Something unexpected occur", _posts[0]["message"] + " of user " + _username.toString());
     } else {
       setState(() {
         POSTS = _posts;
@@ -168,7 +153,7 @@ class _RepostScreenState extends State<RepostScreen> {
                             else {
                               /// then, is a username
                               String username = getShortCodeFromUrl(value.toString());
-                              _getPostsByUsername(username);
+                              _getPostsByUsername(context, username);
                               pr.show();
                               Future.delayed(Duration(seconds: 10)).then((value) => {
                                 pr.hide().whenComplete(() => {
@@ -184,7 +169,7 @@ class _RepostScreenState extends State<RepostScreen> {
                     }
                     // if is a username
                     else if ('${value[0].toString()}' == "@") {
-                      _getPostsByUsername(value.toString().substring(1));
+                      _getPostsByUsername(context, toString().substring(1));
                       Future.delayed(Duration(seconds: 10)).then((value) => {
                         pr.hide().whenComplete(() => {
                           setState(() {
@@ -197,7 +182,7 @@ class _RepostScreenState extends State<RepostScreen> {
                       });
                     }
                     else  {
-                      _getPostsByUsername(value.toString());
+                      _getPostsByUsername(context, value.toString());
                       pr.show();
                       Future.delayed(Duration(seconds: 10)).then((value) => {
                         pr.hide().whenComplete(() => {
