@@ -1,4 +1,5 @@
 import 'dart:core';
+
 import 'package:repost/db/db_sqlite_helper.dart';
 
 class SearchersPosts {
@@ -19,16 +20,18 @@ class SearchersPosts {
     content = map['content'];
     thumbnailpic = map['thumbnailpic'];
     profilepic = map['profilepic'];
-    username  = map['username'];
+    username = map['username'];
     created_at = map['created_at'];
   }
 
   Map<String, dynamic> toMap() {
     return {
-      DatabaseHelper.columnIdSchedulePosts: id, DatabaseHelper.columnCodePostSearches: uid,
+      DatabaseHelper.columnIdSchedulePosts: id,
+      DatabaseHelper.columnCodePostSearches: uid,
       DatabaseHelper.columnContentPostsSearches: content,
-     DatabaseHelper.columnThumbnailPicPostsSearches:thumbnailpic,
-      DatabaseHelper.columnProfilePicPostsSearches: profilepic, DatabaseHelper.columnUsernamePostsSearches: username,
+      DatabaseHelper.columnThumbnailPicPostsSearches: thumbnailpic,
+      DatabaseHelper.columnProfilePicPostsSearches: profilepic,
+      DatabaseHelper.columnUsernamePostsSearches: username,
       DatabaseHelper.columnCreatedAtPostsSearches: created_at
     };
   }

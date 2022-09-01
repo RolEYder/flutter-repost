@@ -14,6 +14,10 @@ class Captions {
   }
 
   Map<String, dynamic> toMap() {
-    return {DatabaseHelper.columnId: id, DatabaseHelper.columnTitle: title , DatabaseHelper.columnContent: content};
+    return {
+      DatabaseHelper.columnId: id,
+      DatabaseHelper.columnTitle: title,
+      DatabaseHelper.columnContent: content
+    };
   }
 }
