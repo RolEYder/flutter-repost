@@ -176,7 +176,7 @@ class _CaptionState extends State<Caption> {
                       // inserting to database 
                       // Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
                       Captions caption = Captions.fromMap(item);
-                      final id = DatabaseHelper.instance.insert(caption);
+                      DatabaseHelper.instance.insert(caption);
                        setState(() {
                          this._savedCaptions = map;
                        });

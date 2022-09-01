@@ -76,7 +76,7 @@ class _DashBoardState extends State<DashBoard> {
                 size: 20,
               )),
           actions:  [IconButton(onPressed:() {
-            _launchInstagramApp(Uri.parse("https://www.instagram.com/"));
+            _launchInstagramApp(Uri.parse("https://www.instagram.com"));
           }, icon: Image.asset("assets/post.png"))],
           centerTitle: true,
           title: Text(pages[index]["title"]),

@@ -117,42 +117,75 @@ class ApiService {
     }
     return dataParsed;
   }
-
-  Future<List<dynamic>> getStoriesByUsername(String _username) async {
+  Future<List<Map<String, dynamic>>?> getStoriesByUserName(String _username) async {
     try {
-      //first at all, get the user id by their username
-      var url_id =
-          "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/?user=" +
-              _username;
-      var dio = Dio();
-      dio.options.headers['X-RapidAPI-Key'] =
-          "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a";
-      dio.options.headers['X-RapidAPI-Host'] =
-          "instagram-scraper-2022.p.rapidapi.com";
-      var url_id_reponse = await dio.get(url_id);
-      if (url_id_reponse.statusCode == 200) {
-        var ID_USERNAME = url_id_reponse.data["id"].toString();
-        // then get stories by username id
-        var stories_url =
-            "https://instagram-stories1.p.rapidapi.com/user_stories?userid=" +
-                ID_USERNAME;
-        dio.options.headers['X-RapidAPI-Host'] =
-            "instagram-stories1.p.rapidapi.com";
-        final reponse = await dio.get(stories_url);
-        if (reponse.statusCode == 200) {
-          //log(reponse.data.toString());
-          return reponse.data["downloadLinks"] as List<dynamic>;
-        } else {
-          log("Unable to load stories");
-        }
-      } else {
-        log("Unable to load stories");
-      }
-    } catch (e) {
-      throw Exception(e);
+      // getting user id
+      var url = "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/?user=" + _username;
+      final http.Response reponseUserId = await http.get(Uri.parse(url), headers: {
+        "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+        "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+      });
+      final userid = json.decode(reponseUserId.body)["id"];
+      // getting stories
+      var urlStories = "https://instagram-best-experience.p.rapidapi.com/stories?user_id="+userid.toString();
+      final http.Response responseStories = await http.get(Uri.parse(urlStories), headers: {
+        "X-RapidAPI-Key": "1dd2847dccmsh4e6f3a50d4eb9a9p146807jsnbcfe144d7761",
+        'X-RapidAPI-Host': 'instagram-best-experience.p.rapidapi.com'
+      });
+
+       if (responseStories.statusCode == 200) {
+         List<Map<String, dynamic>> stories = List.castFrom(json.decode(responseStories.body));
+         stories.forEach((element) {
+           // final data = {
+           //   "pk": element["pk"],
+           //   "id": element["id"],
+           //   "taken_at": element["taken_at"],
+           //   "expiring_at":  element["expiring_at"],
+           //   ""
+           //
+           // };
+         });
+       }
     }
-    throw (e) {
-      throw Exception('Unexpected error occured!');
-    };
+    catch(Exception) {print(Exception);}
   }
+
+
+  // Future<List<dynamic>> getStoriesByUsername(String _username) async {
+  //   try {
+  //     //first at all, get the user id by their username
+  //     var url_id =
+  //         "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/?user=" +
+  //             _username;
+  //     var dio = Dio();
+  //     dio.options.headers['X-RapidAPI-Key'] =
+  //         "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a";
+  //     dio.options.headers['X-RapidAPI-Host'] =
+  //         "instagram-scraper-2022.p.rapidapi.com";
+  //     var url_id_reponse = await dio.get(url_id);
+  //     if (url_id_reponse.statusCode == 200) {
+  //       var ID_USERNAME = url_id_reponse.data["id"].toString();
+  //       // then get stories by username id
+  //       var stories_url =
+  //           "https://instagram-stories1.p.rapidapi.com/user_stories?userid=" +
+  //               ID_USERNAME;
+  //       dio.options.headers['X-RapidAPI-Host'] =
+  //           "instagram-stories1.p.rapidapi.com";
+  //       final reponse = await dio.get(stories_url);
+  //       if (reponse.statusCode == 200) {
+  //         //log(reponse.data.toString());
+  //         return reponse.data["downloadLinks"] as List<dynamic>;
+  //       } else {
+  //         log("Unable to load stories");
+  //       }
+  //     } else {
+  //       log("Unable to load stories");
+  //     }
+  //   } catch (e) {
+  //     throw Exception(e);
+  //   }
+  //   throw (e) {
+  //     throw Exception('Unexpected error occured!');
+  //   };
+  // }
 }

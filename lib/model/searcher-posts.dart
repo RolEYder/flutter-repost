@@ -2,7 +2,6 @@ import 'dart:core';
 
 import 'package:repost/db/db_sqlite_helper.dart';
 
-
 class SearchersPosts {
   late int? id;
   late String? uid;

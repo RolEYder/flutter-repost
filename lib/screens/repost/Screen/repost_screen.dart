@@ -67,6 +67,7 @@ class _RepostScreenState extends State<RepostScreen> {
     var _posts = await ApiService().getPostsByUsername(_username);
     log(_posts.toString());
     if (_posts![0]["type"] == "error") {
+      _getAllClickedPosts();
       _dialogBuilder(context, "Something unexpected occur", _posts[0]["message"] + " of user " + _username.toString());
     } else {
       setState(() {
@@ -96,8 +97,8 @@ class _RepostScreenState extends State<RepostScreen> {
             uid: e["uid"],
             username: e["username"],
             text: (e["content"].toString()),
-            thumbnail: e["profilepic"].toString(),
-            profilePic: e["thumbnailpic"].toString(),
+            thumbnail: e["thumbnailpic"].toString(),
+            profilePic: e["profilepic"].toString(),
           ))
         ]));
   }
