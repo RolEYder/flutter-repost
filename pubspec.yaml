@@ -48,6 +48,10 @@ dependencies:
   sqflite: ^2.0.3+1
   progress_dialog: ^1.2.4
   url_launcher: ^6.1.5
+  firebase_core: ^1.21.1
+  firebase_messaging: ^13.0.0
+  overlay_support: ^2.0.1
+  onesignal_flutter: ^3.4.1
  
   
 

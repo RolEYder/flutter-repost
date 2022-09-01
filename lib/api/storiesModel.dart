@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 List<StoriesModel> storiesModelFromJson(String str) => List<StoriesModel>.from(
     json.decode(str).map((x) => StoriesModel.fromJson(x)));
 

@@ -1,6 +1,5 @@
 // ignore: unused_element
 import 'dart:ffi';
-
 List<String> getHashtagsFromString(String _text) {
   List<String> _listHashastags = [];
   RegExp exp = new RegExp(r"\B#\w\w+");

@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:repost/api/storiesModel.dart';
@@ -5,16 +6,13 @@ import 'package:repost/helper/herpers.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
-import 'package:repost/screens/schedule/schedule_screen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import '../../../api/api_servicer.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../db/db_sqlite_helper.dart';
 import '../../../model/searcher-posts.dart';
 import '../../../db/db_sqlite_helper.dart' as dbHelper;
-import '../../../helper/dialogs.dart'  as dialogsHelper;
 class RepostScreen extends StatefulWidget {
-  const RepostScreen({Key? key}) : super(key: key);
+  const RepostScreen({Key key}) : super(key: key);
   @override
   State<RepostScreen> createState() => _RepostScreenState();
 }
@@ -23,7 +21,7 @@ class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
   String HEADER = "";
-  late List<StoriesModel> _storiesModel;
+  List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
   List<dynamic> CLICKED_POSTS  = [];
@@ -43,11 +41,11 @@ class _RepostScreenState extends State<RepostScreen> {
 
   void _getPostByShortCode(String _shortcode) async {
     final _posts  = await ApiService().getPostByShortCode(_shortcode);
-    String? image = _posts?["image"].toString() as String;
-    String? caption = _posts?["caption"].toString() as String;
-    String? uid = _posts?["id"].toString() as String;
-    String? username = _posts?["username"] as String;
-    String? thumbnailpic = _posts?["thumbnailpic"] as String;
+    String image = _posts["image"].toString();
+    String caption = _posts["caption"].toString();
+    String uid = _posts["id"].toString();
+    String username = _posts["username"] as String;
+    String thumbnailpic = _posts["thumbnailpic"] as String;
     log(_posts.toString());
     //save posts
     _saveClickedPosts(caption, uid, image, thumbnailpic, username);
@@ -66,7 +64,7 @@ class _RepostScreenState extends State<RepostScreen> {
   void _getPostsByUsername(BuildContext context,  _username) async {
     var _posts = await ApiService().getPostsByUsername(_username);
     log(_posts.toString());
-    if (_posts![0]["type"] == "error") {
+    if (_posts[0]["type"] == "error") {
       _getAllClickedPosts();
       _dialogBuilder(context, "Something unexpected occur", _posts[0]["message"] + " of user " + _username.toString());
     } else {
@@ -264,11 +262,18 @@ class _RepostScreenState extends State<RepostScreen> {
                           SizedBox(
                             height: 10,
                           ),
+                          (CLICKED_POSTS.isEmpty) ?
                           GestureDetector(
+                              child: Padding(
+                                padding:  EdgeInsets.only(right: 12),
+                                child: (POSTS.isNotEmpty) ? showInstagramPosts() : Text("There aren't current clicked posts"),
+                              )) :
+                            GestureDetector(
                               child: Padding(
                                 padding:  EdgeInsets.only(right: 12),
                                 child: (CLICKED_POSTS.isNotEmpty) ? showInstagramClickedPosts() : showInstagramPosts(),
                               ))
+
                         ],
                       ),
                     ),
@@ -315,12 +320,11 @@ class _RepostScreenState extends State<RepostScreen> {
     if(allClickPosts.isNotEmpty){
       setState(() {
         CLICKED_POSTS = allClickPosts;
-        POSTS = allClickPosts;
       });
     }
     else {
       setState(() {
-        CLICKED_POSTS.add({"message": "There aren't post saves yet! Get started now!"});
+        CLICKED_POSTS.add({});
       });
     }
   }

@@ -8,6 +8,7 @@ import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
 import './db/db_sqlite_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -20,12 +21,19 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     super.initState();
+    initPlatformState();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
       setState(() {
       });
     });
   }
-
+  static final String oneSignalAppId = "48194e35-d4ef-4265-bf2f-d28da15b8ac3";
+  Future<void> initPlatformState() async {
+    OneSignal.shared.setAppId(oneSignalAppId);
+    OneSignal.shared
+        .promptUserForPushNotificationPermission()
+        .then((accepted) {});
+  }
   int index = 0;
   selectedPage(int selectedTitle) {
     setState(() {
