@@ -1,16 +1,16 @@
 // @dart=2.9
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:repost/api/storiesModel.dart';
+import 'package:repost/models/stories_model.dart';
 import 'package:repost/helper/herpers.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import '../../../api/api_servicer.dart';
-import '../../../db/db_sqlite_helper.dart';
-import '../../../model/searcher-posts.dart';
-import '../../../db/db_sqlite_helper.dart' as dbHelper;
+import '../../../services/api_service.dart';
+import '../../../services/database_service.dart';
+import '../../../models/searcherPost_model.dart';
+import '../../../services/database_service.dart' as dbHelper;
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key key}) : super(key: key);
   @override
@@ -266,7 +266,11 @@ class _RepostScreenState extends State<RepostScreen> {
                           GestureDetector(
                               child: Padding(
                                 padding:  EdgeInsets.only(right: 12),
-                                child: (POSTS.isNotEmpty) ? showInstagramPosts() : Text("There aren't current clicked posts"),
+                                child: (POSTS.isNotEmpty) ? showInstagramPosts() : Text("There aren't current clicked posts",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),),
                               )) :
                             GestureDetector(
                               child: Padding(

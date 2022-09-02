@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'package:repost/model/searcher-posts.dart';
-import '../model/caption.dart';
-import '../model/schedule-post.dart';
+import 'package:repost/models/searcherPost_model.dart';
+import '../models/caption_model.dart';
+import '../models/schedulepPost_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;
 

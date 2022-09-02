@@ -1,4 +1,4 @@
-import '../db/db_sqlite_helper.dart';
+import '../services/database_service.dart';
 
 class Captions {
   late int? id;

@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import '../../../model/caption.dart';
-import '../../../db/db_sqlite_helper.dart';
+import '../../../models/caption_model.dart';
+import '../../../services/database_service.dart';
 
 class EditingCustomCaption extends StatefulWidget {
   final String? title;

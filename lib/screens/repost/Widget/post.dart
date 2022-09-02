@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:repost/db/db_sqlite_helper.dart';
+import 'package:repost/services/database_service.dart';
 import 'package:sqflite/sqflite.dart';
 import '../Screen/repost_schedule_screen.dart';
-import '../../../api/api_servicer.dart' as ApiService;
-import '../../../model/searcher-posts.dart';
+import '../../../services/api_service.dart' as ApiService;
+import '../../../models/searcherPost_model.dart';
 
 class Posts extends StatefulWidget {
   final String uid;

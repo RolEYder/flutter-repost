@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:repost/screens/repost/Screen/repost_hastags.dart';
+import 'package:repost/screens/repost/Screen/repost_hastags_screen.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/screens/watermark/watermark.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../../../model/searcher-posts.dart';
-import 'caption.dart';
-import '../../../model/schedule-post.dart';
-import '../../../db/db_sqlite_helper.dart';
+import '../../../models/searcherPost_model.dart';
+import 'caption_screen.dart';
+import '../../../models/schedulepPost_model.dart';
+import '../../../services/database_service.dart';
 import 'dart:developer';
 
 // REPOSTS SCHEDULE

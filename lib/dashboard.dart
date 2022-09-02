@@ -6,7 +6,7 @@ import 'screens/pro/proscreen.dart';
 import 'screens/repost/Screen/repost_screen.dart';
 import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
-import './db/db_sqlite_helper.dart';
+import 'services/database_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
