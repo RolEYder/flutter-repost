@@ -32,7 +32,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
   int pageIndex = 0;
   List<dynamic>_captionSelected = [];
   List<dynamic> _hashtagSelected = [];
-  DateTime _scheduleSelected = DateTime.now();
+  String _scheduleSelected = "";
 
   List image = ["smallgirl.png", "smallgirl.png", "smallgirl.png"];
   List watermarks = ["Top Left", "Top Right", "Bottom Left", "Bottom Right"];
@@ -201,9 +201,24 @@ class _RepostScheduleState extends State<RepostSchedule> {
                                 primary:
                                     const Color.fromARGB(255, 73, 65, 125)),
                             onPressed: () {
-                               _insert(_captionSelected[0]["title"], _captionSelected[0]["content"], widget.picprofile.toString(),
-                                   _scheduleSelected.toString(), DateTime.now().toString(), _hashtagSelected.toString());
-                               Navigator.pop(context, "save");
+
+                              if (_captionSelected.isEmpty && _hashtagSelected.isEmpty && _scheduleSelected.length == 0) {
+                                _dialogBuilder(context, "Oops!", "You must to select a hashtag, a caption, and a remainder date before repost");
+                              }
+                              else if (_captionSelected.isEmpty) {
+                                _dialogBuilder(context, "Oops!", "You must select a caption befor");
+                              }
+                              else if (_hashtagSelected.isEmpty) {
+                                _dialogBuilder(context, "Oops!", "You must select at least one hashtag before");
+                              }
+                              else if (_scheduleSelected.length == 0) {
+                                _dialogBuilder(context, "Oops!", "You must select a date before");
+                              }
+                              else if (_captionSelected.isNotEmpty && _hashtagSelected.isNotEmpty && _scheduleSelected.length != 0) {
+                                _insert(_captionSelected[0]["title"], _captionSelected[0]["content"], widget.picprofile.toString(),
+                                    _scheduleSelected.toString(), DateTime.now().toString(), _hashtagSelected.toString());
+                                Navigator.pop(context, "save");
+                              }
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -244,7 +259,28 @@ class _RepostScheduleState extends State<RepostSchedule> {
       SnackBar(content: Text(message)),
     );
   }
-
+  Future<void> _dialogBuilder(BuildContext context, String title, String content) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  Text(title.toString()),
+          content:  Text(content.toString()),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   Future<void> _gettingScheduleAfterSelected(BuildContext context) async {
     final result = await  Navigator.push(
         context,
@@ -252,7 +288,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
             builder: (context) => ScheduleRepost()));
     if (!mounted) return;
     setState(() {
-      _scheduleSelected = result;
+      _scheduleSelected = result.toString();
     });
     log(result.toString());
   }
