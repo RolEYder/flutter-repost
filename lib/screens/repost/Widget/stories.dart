@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
+import 'package:repost/screens/story/data.dart';
+import 'package:repost/screens/story/story_screen.dart';
+import 'package:repost/screens/repost/Widget/dashed_circle.dart';
+
+import 'package:repost/models/story_model.dart';
 
 class Stories extends StatelessWidget {
   List<String>? titleArr;
   List<String>? imgArr;
   String selectedTitle;
   bool showPostDetail;
+  List<Story> stories;
   Function(String)? selectedStory;
 
   Stories(
@@ -15,6 +21,7 @@ class Stories extends StatelessWidget {
       this.imgArr,
       this.selectedTitle = "",
       this.selectedStory,
+        required this.stories,
       this.showPostDetail = false})
       : super(key: key);
 
@@ -36,12 +43,8 @@ class Stories extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: ((context) => RepostSchedule(
-                                  picprofile: "/assets/category4.png",
-                                  CustomCaption: "Custom",
-                                  username: "username",
-                                  uid: "uid",
-                                ))));
+                            builder: ((context) =>
+                                StoryScreen(stories: stories))));
                   }
                 },
                 child: Column(
@@ -62,17 +65,19 @@ class Stories extends StatelessWidget {
                                       Color(0xFFEEA863)
                                     ])
                               : null),
-                      child: Container(
+                      child:
+                      Container(
                         decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(color: Colors.grey, spreadRadius: 1)
-                            ],
-                            color: Colors.grey,
-                            shape: BoxShape.circle,
-                            image: imgArr != null
-                                ?  DecorationImage(
-                                    image:  AssetImage("assets/${imgArr![i]}"))
-                                : null),
+                          boxShadow: [
+                            BoxShadow(color: Colors.grey, spreadRadius: 1)
+                          ],
+                          color: Colors.grey,
+                          shape: BoxShape.circle,
+                        image: imgArr != null
+                            ? DecorationImage(
+                                image: AssetImage("assets/${imgArr![i]}"))
+                            : DecorationImage(
+                            image: AssetImage("assets/instagramlogo.jpg"))),
                         width: 60,
                         height: 60,
                       ),

@@ -49,7 +49,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   List pages = [
-    {"title": "Report +"},
+    {"title": "Repost +"},
     {"title": "Schedule"},
     {"title": "Hashtag"},
     {"title": "Pro"},

@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 import '../repost/Screen/repost_schedule_screen.dart';
 import 'selected_hastag.dart';
 import 'package:repost/helper/herpers.dart' as Helpers;
+import 'package:repost/services/hashtag_servicer.dart';
 class Hastag extends StatefulWidget {
   const Hastag({Key? key}) : super(key: key);
-
   @override
   State<Hastag> createState() => _HastagState();
 }
@@ -108,28 +108,12 @@ class _HastagState extends State<Hastag> {
   ];
   String selectedCategory = "";
   void _fetchHashtagByCategory(String category) async {
-
-    List<String> _hashtags = [];
-    // url
-    final url = "https://instahashtag.p.rapidapi.com/instahashtag?tag=" + category;
-    final http.Response response = await http.get(Uri.parse(url), headers: {
-      "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
-      "X-RapidAPI-Host": "instahashtag.p.rapidapi.com",
-    });
-    if (response.statusCode == 200) {
-      _hashtags = Helpers.getHashtagsFromString(response.body.toString());
-    }
-    else {
-       _hashtags.add("API hashtag failure");
-    }
-    log(_hashtags.toString());
-    log(_hashtags.toString());
+    List<String>? _hashtags = await HashTagService().getListHashTagsByCategory(category);
     setState(() {
-      _listHashtags = _hashtags;
+      _listHashtags = _hashtags!;
       _isLoadingHashtagList = false;
     });
   }
-
   @override
   void initState() {
     super.initState();
@@ -141,7 +125,7 @@ class _HastagState extends State<Hastag> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Stack(children: [ Scaffold(
       backgroundColor: Color.fromARGB(255, 28, 28, 28),
       body: Padding(
         padding: const EdgeInsets.only(
@@ -154,7 +138,14 @@ class _HastagState extends State<Hastag> {
               padding: const EdgeInsets.only(right: 8.0, left: 8),
               child: TextField(
                 style: const TextStyle(fontSize: 16),
-                onSubmitted: (value) {},
+                onSubmitted: (value) {
+                  setState(() {
+                    selectedCategory = value.toString();
+                    _isLoadingHashtagList = true;
+
+                  });
+                  _fetchHashtagByCategory(value.toString());
+                },
                 controller: _post,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 8),
@@ -307,7 +298,8 @@ class _HastagState extends State<Hastag> {
                                            image: this.categoryImgArr != null
                                                ?  DecorationImage(
                                                image:  AssetImage("assets/${this.categoryImgArr![i]}"))
-                                               : null),
+                                               : DecorationImage(
+                                               image:  AssetImage("assets/category1.png"))),
                                        width: 60,
                                        height: 60,
                                      ),
@@ -337,7 +329,7 @@ class _HastagState extends State<Hastag> {
                     SizedBox(
                       height: 10,
                     ),
-                   !_isLoadingHashtagList?  Card(
+                    Card(
                      color: Color.fromARGB(255, 125, 125, 125),
                      child: Padding(
                        padding: EdgeInsets.all(8),
@@ -376,8 +368,7 @@ class _HastagState extends State<Hastag> {
                          ],
                        ),
                      ),
-                   ) :  SizedBox(height: 50, width: 50,
-                   child: CircularProgressIndicator()),
+                   ),
                   ],
                 ),
               ),
@@ -385,6 +376,14 @@ class _HastagState extends State<Hastag> {
           ],
         ),
       ),
-    );
+    ), if (_isLoadingHashtagList)
+      const Opacity(
+        opacity: 0.8,
+        child: ModalBarrier(dismissible: false, color: Colors.black),
+      ),
+      if (_isLoadingHashtagList)
+        const Center(
+          child: CircularProgressIndicator(),
+        ),]);
   }
 }

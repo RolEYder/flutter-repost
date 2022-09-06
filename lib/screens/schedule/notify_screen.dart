@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ScheduleRepost extends StatefulWidget {
@@ -12,19 +13,45 @@ class ScheduleRepost extends StatefulWidget {
 
 class _ScheduleRepostState extends State<ScheduleRepost> {
   TimeOfDay date = TimeOfDay.now();
-   late DateTime  _getDate;
-   late TimeOfDay  _getTime;
+
+    DateTime? _getDate;
+    TimeOfDay?  _getTime;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
+    loadInitial();
+    setState(()  {
       _getTime = TimeOfDay.now();
-      _getDate =  DateTime.now();
     });
   }
+  @override
+void dispose() {
+    setDate(_getDate);
+    super.dispose();
+  }
 
+  void setDate(_getDate) async{
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('Date', _getDate.toString());
+  }
 
+  Future<void> loadInitial() async {
+
+    final prefs =  await SharedPreferences.getInstance();
+    print(prefs.getString('Date').toString());
+    setState(() {
+      _getDate =  (prefs.getString('Date').toString().length != 0)? prefs.getString('Date') as DateTime : DateTime.now();
+    });
+    print(_getDate.toString());
+  }
+  Future<DateTime> getDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _getDate = prefs.getString('Date') as DateTime;
+    });
+    return prefs.getString('Date') as DateTime;
+}
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 28, 28, 28),
@@ -63,9 +90,10 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                         SfDateRangePicker(onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                         SfDateRangePicker(enablePastDates: false, initialSelectedDate: _getDate, onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
                            final dynamic value = args.value;
                            setState(() {
+                             setDate(value);
                              _getDate = value;
                            });
                            log(_getDate.toString());
@@ -87,7 +115,7 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
                                           initialEntryMode:
                                               TimePickerEntryMode.input,
                                           context: context,
-                                          initialTime: _getTime).then(( value) {
+                                          initialTime: _getTime!).then(( value) {
                                             if(value != null) {
                                               setState(() {
                                                 _getTime = value;
@@ -116,7 +144,8 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
                           style: ElevatedButton.styleFrom(
                               primary: Color.fromARGB(255, 73, 65, 125)),
                           onPressed: () {
-                            String dateTime = DateFormat('yyyy-mm-dd').format(_getDate).toString() + ' ' +  _getTime.hour.toString() + ':' + _getTime.minute.toString();
+                            String minute = _getTime!.minute.toString().length == 1 ? "0"+_getTime!.minute.toString() : _getTime!.minute.toString();
+                            String dateTime = DateFormat('yyyy-mm-dd').format(_getDate!).toString() + ' ' +  _getTime!.hour.toString() + ':' + minute ;
                             final DateEnd = DateTime.parse(dateTime);
                             Navigator.pop(context, DateEnd);
                           },

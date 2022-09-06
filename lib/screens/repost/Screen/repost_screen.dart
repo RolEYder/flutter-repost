@@ -7,46 +7,47 @@ import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import '../../../services/api_service.dart';
-import '../../../services/database_service.dart';
-import '../../../models/searcherPost_model.dart';
-import '../../../services/database_service.dart' as dbHelper;
+import 'package:repost/services/story_service.dart';
+import 'package:repost/services/posts_service.dart';
+
+import 'package:repost/services/database_service.dart';
+import 'package:repost/models/searcherPost_model.dart';
+import 'package:repost/services/database_service.dart' as dbHelper;
+
+import 'package:repost/models/story_model.dart';
+
+import 'package:repost/models/user_model.dart';
+import 'package:repost/story/data.dart';
+
+
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key key}) : super(key: key);
   @override
   State<RepostScreen> createState() => _RepostScreenState();
 }
-class _RepostScreenState extends State<RepostScreen> {
 
+class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
   String HEADER = "";
   List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
-  List<dynamic> CLICKED_POSTS  = [];
+  List<dynamic> CLICKED_POSTS = [];
   List<dynamic> errors = [];
+  List<Story> _STORIES;
   List<String> titleArr = [
-    "Rayshean32",
-    "alina.sde1",
-    "Romiansd22",
-    "Sundshade3",
-    "Cakior22",
-    "Rayshean32",
-    "alina.sde1",
-    "Romiansd22",
-    "Sundshade3",
-    "Cakior22"
+    "Rayshean32"
   ];
 
   void _getPostByShortCode(String _shortcode) async {
-    final _posts  = await ApiService().getPostByShortCode(_shortcode);
+    final _posts = await PostService().getPostByShortCode(_shortcode);
     String image = _posts["image"].toString();
     String caption = _posts["caption"].toString();
     String uid = _posts["id"].toString();
     String username = _posts["username"] as String;
     String thumbnailpic = _posts["thumbnailpic"] as String;
-    log(_posts.toString());
+    List<Story> STORIES;
     //save posts
     _saveClickedPosts(caption, uid, image, thumbnailpic, username);
     // open up Reposts schedule
@@ -54,19 +55,37 @@ class _RepostScreenState extends State<RepostScreen> {
         context,
         MaterialPageRoute(
             builder: ((context) => RepostSchedule(
-              picprofile: image,
-              CustomCaption: caption,
-              uid: uid,
-              username: username,
-            ))));
-
+                  picprofile: image,
+                  CustomCaption: caption,
+                  uid: uid,
+                  username: username,
+                ))));
   }
-  void _getPostsByUsername(BuildContext context,  _username) async {
-    var _posts = await ApiService().getPostsByUsername(_username);
-    log(_posts.toString());
+
+  void _getStoriesByUsername(BuildContext context, _username) async {
+    var _stories = await StoryService().getStoriesByUserUsername(_username);
+    if (_stories.isEmpty) {
+      _dialogBuilder(context, "Something unexpected occur",
+          "Error to fetch stories username, please try again!");
+    } else {
+     final User user = User(name: _stories[0]["username"].toString(), profileImageUrl: _stories[0]["profile_url"].toString());
+      _stories.forEach((element) {
+        _STORIES.add(Story(
+           url: element["url"],
+           media: (element["media_type"] == 1? MediaType.image : MediaType.video),
+           duration: (element["media_type"] == 2) ? Duration(seconds: 0) : Duration(seconds: element["video_duration"]),
+           user: user));
+      });
+      print(_STORIES.toString());
+    }
+  }
+
+  void _getPostsByUsername(BuildContext context, _username) async {
+    var _posts = await PostService().getPostsByUsername(_username);
     if (_posts[0]["type"] == "error") {
       _getAllClickedPosts();
-      _dialogBuilder(context, "Something unexpected occur", _posts[0]["message"] + " of user " + _username.toString());
+      _dialogBuilder(context, "Something unexpected occur",
+          _posts[0]["message"] + " of user " + _username.toString());
     } else {
       setState(() {
         POSTS = _posts;
@@ -78,36 +97,36 @@ class _RepostScreenState extends State<RepostScreen> {
   Widget showInstagramPosts() {
     return new GestureDetector(
         child: Column(children: <Widget>[
-          ...POSTS.map((e) => Posts(
+      ...POSTS.map((e) => Posts(
             uid: e["id"].toString(),
             username: e["username"],
             text: (e["text"].toString()),
             thumbnail: e["display_url"].toString(),
             profilePic: e["profile_pic"].toString(),
           ))
-        ]));
+    ]));
   }
 
   Widget showInstagramClickedPosts() {
     return new GestureDetector(
         child: Column(children: <Widget>[
-          ...CLICKED_POSTS.map((e) => Posts(
+      ...CLICKED_POSTS.map((e) => Posts(
             uid: e["uid"],
             username: e["username"],
             text: (e["content"].toString()),
             thumbnail: e["thumbnailpic"].toString(),
             profilePic: e["profilepic"].toString(),
           ))
-        ]));
+    ]));
   }
+
   @override
   void initState() {
     super.initState();
     _getAllClickedPosts();
-    setState(() {
-      HEADER = "RECENT POSTS";
-    });
+
   }
+
   Widget build(BuildContext context) {
     ProgressDialog pr = new ProgressDialog(context);
     pr.style(message: 'Please wait...');
@@ -121,75 +140,77 @@ class _RepostScreenState extends State<RepostScreen> {
               padding: const EdgeInsets.only(right: 8.0),
               child: TextField(
                 style: const TextStyle(fontSize: 16),
-                onChanged:(value) {
-                  if(value.length == 0) {
+                onChanged: (value) {
+                  if (value.length == 0) {
                     _getAllClickedPosts();
-                   setState(() {
-                     HEADER = "RECENT POSTS";
-                   });
+                    setState(() {
+                      HEADER = "RECENT POSTS";
+                    });
                   }
                 },
-                onSubmitted: (value) async {
+                onSubmitted: (inputValue) async {
+                  // testing stories
+                  _getStoriesByUsername(context, inputValue.toString());
                   CLICKED_POSTS = [];
                   setState(() {
                     HEADER = "POSTS";
                   });
-                  if (value.isNotEmpty) {
+                  if (inputValue.isNotEmpty) {
                     /// checking if is an username url or username
-                    if (hasValidUrlString(value.toString())) {
-                           /// if is a post
-                            if (isPostUrl(value.toString())) {
-                              String shortcode = getShortCodeFromUrl(value.toString());
-                              pr.show();
-                              Future.delayed(Duration(seconds: 5)).then((value) => {
-                                pr.hide().whenComplete(() => {
-                                  setState(() {
-                                    _getPostByShortCode(shortcode.toString());
+                    if (hasValidUrlString(inputValue.toString())) {
+                      inputValue = inputValue.substring(0, inputValue.length-1);
+                      /// if is a post
+                      if (isPostUrl(inputValue.toString())) {
+                        String shortcode =
+                            getShortCodeFromUrl(inputValue.toString());
+                        pr.show();
+                        Future.delayed(Duration(seconds: 5)).then((value) => {
+                              pr.hide().whenComplete(() => {
+                                    setState(() {
+                                      _getPostByShortCode(shortcode.toString());
+                                    })
                                   })
-                                })
-                              });
-                            }
-                            else {
-                              /// then, is a username
-                              String username = getShortCodeFromUrl(value.toString());
-                              _getPostsByUsername(context, username);
-                              pr.show();
-                              Future.delayed(Duration(seconds: 10)).then((value) => {
-                                pr.hide().whenComplete(() => {
+                            });
+                      } else {
+                        /// then, is a username
+                        String username = getShortCodeFromUrl(inputValue.toString());
+                        _getPostsByUsername(context, username);
+                        pr.show();
+                        Future.delayed(Duration(seconds: 10)).then((value) => {
+                              pr.hide().whenComplete(() => {
+                                    setState(() {
+                                      _isLoading = false;
+                                    })
+                                  })
+                            });
+                        setState(() {
+                          _isLoading = true;
+                        });
+                      }
+                    }
+                    // if is a username
+                    else if ('${inputValue[0].toString()}' == "@") {
+                      _getPostsByUsername(context, toString().substring(1));
+                      Future.delayed(Duration(seconds: 10)).then((value) => {
+                            pr.hide().whenComplete(() => {
                                   setState(() {
                                     _isLoading = false;
                                   })
                                 })
-                              });
-                              setState(() {
-                                _isLoading = true;
-                              });
-                            }
-                    }
-                    // if is a username
-                    else if ('${value[0].toString()}' == "@") {
-                      _getPostsByUsername(context, toString().substring(1));
-                      Future.delayed(Duration(seconds: 10)).then((value) => {
-                        pr.hide().whenComplete(() => {
-                          setState(() {
-                          _isLoading = false;
-                          })
-                        })
-                      });
+                          });
                       setState(() {
                         _isLoading = true;
                       });
-                    }
-                    else  {
-                      _getPostsByUsername(context, value.toString());
+                    } else {
+                      _getPostsByUsername(context, inputValue.toString());
                       pr.show();
                       Future.delayed(Duration(seconds: 10)).then((value) => {
-                        pr.hide().whenComplete(() => {
-                          setState(() {
-                            _isLoading = false;
-                          })
-                        })
-                      });
+                            pr.hide().whenComplete(() => {
+                                  setState(() {
+                                    _isLoading = false;
+                                  })
+                                })
+                          });
                       setState(() {
                         _isLoading = true;
                       });
@@ -199,7 +220,8 @@ class _RepostScreenState extends State<RepostScreen> {
                       _getAllClickedPosts();
                       HEADER = "RECENT POSTS";
                     });
-                    _dialogBuilder(context, "Oops!🤔", "You must enter a proper Instagram username, url post or url username");
+                    _dialogBuilder(context, "Oops!🤔",
+                        "You must enter a proper Instagram username, url post or url username");
                   }
                 },
                 controller: _post,
@@ -249,9 +271,7 @@ class _RepostScreenState extends State<RepostScreen> {
                           ),
 
                           ///Story///
-                          Stories(titleArr: titleArr, showPostDetail: true),
-
-
+                          Stories(titleArr: titleArr, showPostDetail: true, stories: _STORIES,),
                           Text(
                             HEADER.toString(),
                             style: TextStyle(
@@ -262,22 +282,27 @@ class _RepostScreenState extends State<RepostScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          (CLICKED_POSTS.isEmpty) ?
-                          GestureDetector(
-                              child: Padding(
-                                padding:  EdgeInsets.only(right: 12),
-                                child: (POSTS.isNotEmpty) ? showInstagramPosts() : Text("There aren't current clicked posts",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),),
-                              )) :
-                            GestureDetector(
-                              child: Padding(
-                                padding:  EdgeInsets.only(right: 12),
-                                child: (CLICKED_POSTS.isNotEmpty) ? showInstagramClickedPosts() : showInstagramPosts(),
-                              ))
-
+                          (CLICKED_POSTS.isEmpty)
+                              ? GestureDetector(
+                                  child: Padding(
+                                  padding: EdgeInsets.only(right: 12),
+                                  child: (POSTS.isNotEmpty)
+                                      ? showInstagramPosts()
+                                      : Text(
+                                          "There aren't current clicked posts",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                ))
+                              : GestureDetector(
+                                  child: Padding(
+                                  padding: EdgeInsets.only(right: 12),
+                                  child: (CLICKED_POSTS.isNotEmpty)
+                                      ? showInstagramClickedPosts()
+                                      : showInstagramPosts(),
+                                ))
                         ],
                       ),
                     ),
@@ -288,13 +313,15 @@ class _RepostScreenState extends State<RepostScreen> {
       ),
     );
   }
-  Future<void> _dialogBuilder(BuildContext context, String title, String content) {
+
+  Future<void> _dialogBuilder(
+      BuildContext context, String title, String content) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:  Text(title.toString()),
-          content:  Text(content.toString()),
+          title: Text(title.toString()),
+          content: Text(content.toString()),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
@@ -310,23 +337,31 @@ class _RepostScreenState extends State<RepostScreen> {
       },
     );
   }
+
   //save clicked posts
-  Future<void> _saveClickedPosts(content, uid, profilepic, thumbnailpic, username) async {
-    Map<String, dynamic> row = {DatabaseHelper.columnContentPostsSearches: content,
-      DatabaseHelper.columnCodePostSearches: uid, DatabaseHelper.columnProfilePicPostsSearches: profilepic,
+  Future<void> _saveClickedPosts(
+      content, uid, profilepic, thumbnailpic, username) async {
+    Map<String, dynamic> row = {
+      DatabaseHelper.columnContentPostsSearches: content,
+      DatabaseHelper.columnCodePostSearches: uid,
+      DatabaseHelper.columnProfilePicPostsSearches: profilepic,
       DatabaseHelper.columnThumbnailPicPostsSearches: thumbnailpic,
-      DatabaseHelper.columnUsernamePostsSearches: username, DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()};
+      DatabaseHelper.columnUsernamePostsSearches: username,
+      DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()
+    };
     SearchersPosts searchersPosts = SearchersPosts.fromMap(row);
     DatabaseHelper.instance.insert_searcher_post(searchersPosts);
   }
+
   void _getAllClickedPosts() async {
-    final allClickPosts = await dbHelper.DatabaseHelper.instance.getAllSearchersRowsPosts();
-    if(allClickPosts.isNotEmpty){
+    final allClickPosts =
+        await dbHelper.DatabaseHelper.instance.getAllSearchersRowsPosts();
+    if (allClickPosts.isNotEmpty) {
       setState(() {
         CLICKED_POSTS = allClickPosts;
+          HEADER = "RECENT POSTS";
       });
-    }
-    else {
+    } else {
       setState(() {
         CLICKED_POSTS.add({});
       });

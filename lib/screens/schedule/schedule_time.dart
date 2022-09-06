@@ -37,7 +37,7 @@ class _SceduleTimeState extends State<SceduleTime> {
                   color: Colors.red,
                   child: DatePickerDialog(
                       initialDate: DateTime.now(),
-                      firstDate: DateTime.utc(2000),
+                      firstDate: DateTime.now().subtract(Duration(days: 1)),
                       lastDate: DateTime.utc(3000)),
                 )),
             Expanded(
