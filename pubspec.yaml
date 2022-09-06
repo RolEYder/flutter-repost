@@ -56,6 +56,7 @@ dependencies:
   dashed_circle: ^0.0.2
   get_it: ^7.2.0
   shared_preferences: ^2.0.15
+  flutter_cache_manager: ^3.3.0
  
   
 

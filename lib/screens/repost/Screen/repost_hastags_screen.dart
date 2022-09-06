@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:developer';
 import '../../../helper/theme.dart';
 import '../../repost/Screen/repost_schedule_screen.dart';
+import 'package:repost/services/hashtag_servicer.dart';
 
 class RepostHastags extends StatefulWidget {
   const RepostHastags({Key? key}) : super(key: key);
@@ -21,26 +22,6 @@ class _RepostHastags extends State<RepostHastags> {
   Function(String)? selectedStory;
   List selectedhastags = [];
   var selectedhastag = [];
-  List hashtags = [
-    "#DLORENZW",
-    "#ALDORENZW",
-    "#XORENZW",
-    "#QORENZW",
-    "#AXOUF",
-    "#HURTY",
-    "#DOLRENZW",
-    "#GOTYU",
-    "#LOOKIU",
-    "#LEISURE",
-    "#XYZ",
-    "#DLORENZW",
-    "#DLORENZW",
-    "#ALDORENZW",
-    "#XORENZW",
-    "#QORENZW",
-    "#AXOUF"
-  ];
-
 List<String>? categoryTitleArr = [
     "TOP 8",
     "HOLIDAYS",
@@ -72,18 +53,9 @@ List<String>? categoryTitleArr = [
   String selectedCategory = "";
   void _fetchHashtagByCategory(String category) async {
     List<String> _hashtags = [];
-    // url
-    final url = "https://instahashtag.p.rapidapi.com/instahashtag?tag=" + category;
-    final http.Response response = await http.get(Uri.parse(url), headers: {
-      "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
-      "X-RapidAPI-Host": "instahashtag.p.rapidapi.com",
-    });
-    if (response.statusCode == 200) {
-      _hashtags = Helpers.getHashtagsFromString(response.body.toString());
-    }
-    else {
-      log(response.body.toString());
-      _hashtags.add("API hashtag failure");
+    _hashtags = HashTagService().getListHashTagsByCategory(category) as List<String>;
+    if (_hashtags.isEmpty) {
+      print("error");
     }
     setState(() {
       _listHashtags = _hashtags;

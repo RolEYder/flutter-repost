@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:repost/models/user_model.dart';
 import 'package:repost/models/story_model.dart';
-
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 class StoryScreen extends StatefulWidget {
   final List<Story> stories;
 
@@ -20,7 +20,7 @@ class _StoryScreenState extends State<StoryScreen>
   AnimationController _animController;
   VideoPlayerController _videoController;
   int _currentIndex = 0;
-
+  DefaultCacheManager manager = new DefaultCacheManager();
   @override
   void initState() {
     super.initState();
@@ -54,6 +54,7 @@ class _StoryScreenState extends State<StoryScreen>
     _pageController.dispose();
     _animController.dispose();
     _videoController?.dispose();
+    manager.emptyCache();
     super.dispose();
   }
 

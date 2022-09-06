@@ -18,7 +18,7 @@ import 'package:repost/models/story_model.dart';
 
 import 'package:repost/models/user_model.dart';
 import 'package:repost/story/data.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key key}) : super(key: key);
@@ -30,15 +30,12 @@ class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
   String HEADER = "";
-  List<StoriesModel> _storiesModel;
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
   List<dynamic> CLICKED_POSTS = [];
   List<dynamic> errors = [];
-  List<Story> _STORIES;
-  List<String> titleArr = [
-    "Rayshean32"
-  ];
+  List<Story> _STORIES = [];
+  List<String> titleArr = [];
 
   void _getPostByShortCode(String _shortcode) async {
     final _posts = await PostService().getPostByShortCode(_shortcode);
@@ -47,7 +44,6 @@ class _RepostScreenState extends State<RepostScreen> {
     String uid = _posts["id"].toString();
     String username = _posts["username"] as String;
     String thumbnailpic = _posts["thumbnailpic"] as String;
-    List<Story> STORIES;
     //save posts
     _saveClickedPosts(caption, uid, image, thumbnailpic, username);
     // open up Reposts schedule
@@ -63,20 +59,27 @@ class _RepostScreenState extends State<RepostScreen> {
   }
 
   void _getStoriesByUsername(BuildContext context, _username) async {
+    _STORIES  = new List<Story>();
     var _stories = await StoryService().getStoriesByUserUsername(_username);
     if (_stories.isEmpty) {
       _dialogBuilder(context, "Something unexpected occur",
           "Error to fetch stories username, please try again!");
     } else {
-     final User user = User(name: _stories[0]["username"].toString(), profileImageUrl: _stories[0]["profile_url"].toString());
+      final User user =  User(
+          name: _stories[0]["username"].toString(),
+          profileImageUrl: _stories[0]["profile_url"].toString());
       _stories.forEach((element) {
-        _STORIES.add(Story(
-           url: element["url"],
-           media: (element["media_type"] == 1? MediaType.image : MediaType.video),
-           duration: (element["media_type"] == 2) ? Duration(seconds: 0) : Duration(seconds: element["video_duration"]),
-           user: user));
+        print(element["video_duration"].toString());
+        _STORIES.add( Story(
+            url: element["url"],
+            media: (element["media_type"] == 1
+                ? MediaType.image
+                : MediaType.video),
+            duration: (element["media_type"] == 2)
+                ? Duration(seconds: 0)
+                : Duration(seconds: element["video_duration"] == null ? 5 : element["video_duration"]),
+            user: user));
       });
-      print(_STORIES.toString());
     }
   }
 
@@ -92,8 +95,8 @@ class _RepostScreenState extends State<RepostScreen> {
       });
     }
   }
-  // Widget function to show instagram posts
 
+  // Widget function to show instagram posts
   Widget showInstagramPosts() {
     return new GestureDetector(
         child: Column(children: <Widget>[
@@ -124,7 +127,6 @@ class _RepostScreenState extends State<RepostScreen> {
   void initState() {
     super.initState();
     _getAllClickedPosts();
-
   }
 
   Widget build(BuildContext context) {
@@ -140,25 +142,32 @@ class _RepostScreenState extends State<RepostScreen> {
               padding: const EdgeInsets.only(right: 8.0),
               child: TextField(
                 style: const TextStyle(fontSize: 16),
-                onChanged: (value) {
+                onChanged: (value) async {
                   if (value.length == 0) {
-                    _getAllClickedPosts();
+                    POSTS.clear();
+                    final prefs = await SharedPreferences.getInstance();
+                    var areThereClickedPosts = prefs.getString('clicked');
+                    if (areThereClickedPosts.toString() == "true") {
+                      _getAllClickedPosts();
+                    }
                     setState(() {
                       HEADER = "RECENT POSTS";
                     });
                   }
                 },
                 onSubmitted: (inputValue) async {
-                  // testing stories
-                  _getStoriesByUsername(context, inputValue.toString());
                   CLICKED_POSTS = [];
+                  titleArr.clear();
+                  titleArr.add(inputValue);
                   setState(() {
                     HEADER = "POSTS";
                   });
                   if (inputValue.isNotEmpty) {
                     /// checking if is an username url or username
                     if (hasValidUrlString(inputValue.toString())) {
-                      inputValue = inputValue.substring(0, inputValue.length-1);
+                      inputValue =
+                          inputValue.substring(0, inputValue.length - 1);
+
                       /// if is a post
                       if (isPostUrl(inputValue.toString())) {
                         String shortcode =
@@ -173,7 +182,8 @@ class _RepostScreenState extends State<RepostScreen> {
                             });
                       } else {
                         /// then, is a username
-                        String username = getShortCodeFromUrl(inputValue.toString());
+                        String username =
+                            getShortCodeFromUrl(inputValue.toString());
                         _getPostsByUsername(context, username);
                         pr.show();
                         Future.delayed(Duration(seconds: 10)).then((value) => {
@@ -223,6 +233,8 @@ class _RepostScreenState extends State<RepostScreen> {
                     _dialogBuilder(context, "Oops!🤔",
                         "You must enter a proper Instagram username, url post or url username");
                   }
+                  // testing stories
+                  _getStoriesByUsername(context, inputValue.toString());
                 },
                 controller: _post,
                 decoration: InputDecoration(
@@ -270,8 +282,12 @@ class _RepostScreenState extends State<RepostScreen> {
                             height: 20,
                           ),
 
-                          ///Story///
-                          Stories(titleArr: titleArr, showPostDetail: true, stories: _STORIES,),
+                           Stories(
+                                    titleArr: titleArr,
+                                    showPostDetail: true,
+                                    stories: _STORIES,
+                                  ),
+
                           Text(
                             HEADER.toString(),
                             style: TextStyle(
@@ -356,14 +372,17 @@ class _RepostScreenState extends State<RepostScreen> {
   void _getAllClickedPosts() async {
     final allClickPosts =
         await dbHelper.DatabaseHelper.instance.getAllSearchersRowsPosts();
+    final prefs = await SharedPreferences.getInstance();
     if (allClickPosts.isNotEmpty) {
+
+      prefs.setString('clicked', "true");
       setState(() {
         CLICKED_POSTS = allClickPosts;
-          HEADER = "RECENT POSTS";
+        HEADER = "RECENT POSTS";
       });
     } else {
       setState(() {
-        CLICKED_POSTS.add({});
+        prefs.setString('clicked', "false");
       });
     }
   }
