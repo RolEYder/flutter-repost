@@ -1,4 +1,6 @@
 //@dart=2.1
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
@@ -278,7 +280,11 @@ class AnimatedBar extends StatelessWidget {
 class UserInfo extends StatefulWidget {
   final String username;
   final String profileUrl;
-  const UserInfo({Key key, this.username, this.profileUrl}) : super(key: key);
+  final Int media_type;
+  final String Url;
+  const UserInfo(
+      {Key key, this.username, this.profileUrl, this.media_type, this.Url})
+      : super(key: key);
 
   @override
   State<UserInfo> createState() => _UserInfoState();
