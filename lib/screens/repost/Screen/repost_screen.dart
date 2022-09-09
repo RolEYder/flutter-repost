@@ -17,7 +17,6 @@ import 'package:repost/services/database_service.dart' as dbHelper;
 import 'package:repost/models/story_model.dart';
 
 import 'package:repost/models/user_model.dart';
-import 'package:repost/story/data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RepostScreen extends StatefulWidget {
@@ -68,18 +67,18 @@ class _RepostScreenState extends State<RepostScreen> {
       final User user =  User(
           name: _stories[0]["username"].toString(),
           profileImageUrl: _stories[0]["profile_url"].toString());
-      _stories.forEach((element) {
-        print(element["video_duration"].toString());
+      for (var  element = 1; element < _stories.length; element++) {
         _STORIES.add( Story(
-            url: element["url"],
-            media: (element["media_type"] == 1
+            url: _stories[element]["url"],
+            media: (_stories[element]["media_type"] == 1
                 ? MediaType.image
                 : MediaType.video),
-            duration: (element["media_type"] == 2)
+            duration: (_stories[element]["media_type"] == 2)
                 ? Duration(seconds: 0)
-                : Duration(seconds: element["video_duration"] == null ? 5 : element["video_duration"]),
+                : Duration(seconds: _stories[element]["video_duration"] == null ? 5 : _stories[element]["video_duration"]),
             user: user));
-      });
+      }
+
     }
   }
 
@@ -287,7 +286,6 @@ class _RepostScreenState extends State<RepostScreen> {
                                     showPostDetail: true,
                                     stories: _STORIES,
                                   ),
-
                           Text(
                             HEADER.toString(),
                             style: TextStyle(

@@ -5,7 +5,7 @@ class HashTagService {
 
   /// Get List of hashtags by category
   /// @_category [String] category hashtag
-  Future<List<String>?> getListHashTagsByCategory(String _category) async {
+  Future<List<String>> getListHashTagsByCategory(String _category) async {
     List<String> _hashtags = [];
     final url = "https://instahashtag.p.rapidapi.com/instahashtag?tag=" + _category;
     final http.Response response = await http.get(Uri.parse(url), headers: {

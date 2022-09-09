@@ -1,13 +1,14 @@
 //@dart=2.1
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
+
 import 'package:video_player/video_player.dart';
-import 'package:repost/models/user_model.dart';
 import 'package:repost/models/story_model.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 class StoryScreen extends StatefulWidget {
   final List<Story> stories;
-
   const StoryScreen({this.stories});
 
   @override
@@ -20,6 +21,8 @@ class _StoryScreenState extends State<StoryScreen>
   AnimationController _animController;
   VideoPlayerController _videoController;
   int _currentIndex = 0;
+  bool _currentIsPlaying = false;
+  AnimationController _playController;
   DefaultCacheManager manager = new DefaultCacheManager();
   @override
   void initState() {
@@ -123,9 +126,17 @@ class _StoryScreenState extends State<StoryScreen>
                       horizontal: 1.5,
                       vertical: 10.0,
                     ),
-                    child: UserInfo(
-                      user: story.user,
-                      key: null,
+                    child: GestureDetector(
+                      onTap: () {
+                        print("clicked");
+                        _animController.stop();
+                        _videoController.pause();
+                      },
+                      child: UserInfo(
+                        username: widget.stories[0].user.name,
+                        profileUrl: widget.stories[0].user.profileImageUrl,
+                        key: null,
+                      ),
                     ),
                   ),
                 ],
@@ -266,13 +277,20 @@ class AnimatedBar extends StatelessWidget {
   }
 }
 
-class UserInfo extends StatelessWidget {
-  final User user;
+class UserInfo extends StatefulWidget {
+  final String username;
+  final String profileUrl;
+  const UserInfo({Key key, this.username, this.profileUrl}) : super(key: key);
 
-  const UserInfo({
-    key,
-    this.user,
-  }) : super(key: key);
+  @override
+  State<UserInfo> createState() => _UserInfoState();
+}
+
+class _UserInfoState extends State<UserInfo> {
+  String _selectedDate;
+  String _selectedTime;
+
+  _UserInfoState();
 
   @override
   Widget build(BuildContext context) {
@@ -282,19 +300,38 @@ class UserInfo extends StatelessWidget {
           radius: 20.0,
           backgroundColor: Colors.grey[300],
           backgroundImage: CachedNetworkImageProvider(
-            user.profileImageUrl,
+            widget.profileUrl,
           ),
         ),
         const SizedBox(width: 10.0),
         Expanded(
           child: Text(
-            user.name,
+            widget.username,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18.0,
               fontWeight: FontWeight.w600,
             ),
           ),
+        ),
+        IconButton(
+          icon: const Icon(
+            Icons.add,
+            size: 30.0,
+            color: Colors.white,
+          ),
+          onPressed: () => {
+            DatePicker.showDatePicker(context,
+                dateFormat: 'dd MMM yyyy HH:mm',
+                initialDateTime: DateTime.now(),
+                minDateTime: DateTime.now(),
+                maxDateTime: DateTime(3000),
+                locale: DateTimePickerLocale.en_us,
+                onMonthChangeStartWithFirstDate: true,
+                onConfirm: ((dateTime, selectedIndex) {
+              print(dateTime);
+            }))
+          },
         ),
         IconButton(
           icon: const Icon(

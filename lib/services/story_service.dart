@@ -46,6 +46,7 @@ class StoryService {
       } else {
         //parsing data
         var data = {};
+
         data.addAll({
           "username": stories[0]["user"]["username"],
           "is_private": stories[0]["user"]["is_private"],
@@ -53,6 +54,7 @@ class StoryService {
           "is_verified": stories[0]["user"]["is_verified"],
           "pk": stories[0]["user"]["pk"]
         });
+        dataParsed.add(data);
         stories.forEach((element) {
           data = {
             "pk": element["pk"],

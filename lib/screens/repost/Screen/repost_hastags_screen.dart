@@ -52,13 +52,12 @@ List<String>? categoryTitleArr = [
   ];
   String selectedCategory = "";
   void _fetchHashtagByCategory(String category) async {
-    List<String> _hashtags = [];
-    _hashtags = HashTagService().getListHashTagsByCategory(category) as List<String>;
+    List<String>? _hashtags = await HashTagService().getListHashTagsByCategory(category);
     if (_hashtags.isEmpty) {
       print("error");
     }
     setState(() {
-      _listHashtags = _hashtags;
+      _listHashtags = _hashtags!;
       _isLoadingHashtagList = false;
     });
   }
