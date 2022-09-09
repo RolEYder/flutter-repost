@@ -28,10 +28,10 @@ class _WatermarkState extends State<Watermark> {
             padding: const EdgeInsets.only(left: 80, right: 80, top: 12),
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 73, 65, 125),
+                  backgroundColor: Color.fromARGB(255, 73, 65, 125),
                 ),
                 onPressed: () {
-                  Navigator.pop(context,selectedAlignment);
+                  Navigator.pop(context, selectedAlignment);
                 },
                 child: Text("Select")),
           ),
@@ -52,42 +52,51 @@ class _WatermarkState extends State<Watermark> {
         // mainAxisAlignment: MainAxisAlignment.center,
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         Expanded(
-           child: Container(
-            color: Colors.green,
-             child: Stack(children: [
-               Container(
-                  width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-    image: DecorationImage(
-      fit: BoxFit.fill,
-      image: AssetImage("assets/smallgirl.png"),
-    ),
-  ),),
-              // Container(width: MediaQuery.of(context).size.width,height: 120,decoration: BoxDecoration(color: Colors.yellow,image: DecorationImage(image: AssetImage("assets/smallgirl.png"))),),
-                    if(selectedAlignment >= 0)...[
-Align(
-                  alignment: alignmentArr[selectedAlignment],
-                  child: Image.asset(
-                    "assets/watermark_img.png",
-                    fit: BoxFit.fill,
+          Expanded(
+            child: Container(
+              color: Colors.green,
+              child: Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage("assets/smallgirl.png"),
+                      ),
+                    ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: GestureDetector(onTap: (){
-                    setState(() {
-                      selectedAlignment = -1;
-                    });
-                  },child: Text("Deactivate Watermark",style: TextStyle(color: Colors.white,fontSize: 10,fontWeight: FontWeight.bold),),),
-                )
-                    ]
-                    
-             ],),
-           ),
-         ),
-
-      
+                  // Container(width: MediaQuery.of(context).size.width,height: 120,decoration: BoxDecoration(color: Colors.yellow,image: DecorationImage(image: AssetImage("assets/smallgirl.png"))),),
+                  if (selectedAlignment >= 0) ...[
+                    Align(
+                      alignment: alignmentArr[selectedAlignment],
+                      child: Image.asset(
+                        "assets/watermark_img.png",
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedAlignment = -1;
+                          });
+                        },
+                        child: Text(
+                          "Deactivate Watermark",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )
+                  ]
+                ],
+              ),
+            ),
+          ),
           Expanded(
             child: CupertinoPicker(
                 itemExtent: 64,

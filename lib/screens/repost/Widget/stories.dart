@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
-import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
-import 'package:repost/screens/story/data.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:repost/screens/story/story_screen.dart';
-import 'package:repost/screens/repost/Widget/dashed_circle.dart';
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:repost/models/story_model.dart';
 
+// ignore: must_be_immutable
 class Stories extends StatelessWidget {
   List<String>? titleArr;
   List<String>? imgArr;
@@ -21,7 +21,7 @@ class Stories extends StatelessWidget {
       this.imgArr,
       this.selectedTitle = "",
       this.selectedStory,
-        required this.stories,
+      required this.stories,
       this.showPostDetail = false})
       : super(key: key);
 
@@ -65,19 +65,19 @@ class Stories extends StatelessWidget {
                                       Color(0xFFEEA863)
                                     ])
                               : null),
-                      child:
-                      Container(
+                      child: Container(
                         decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(color: Colors.grey, spreadRadius: 1)
-                          ],
-                          color: Colors.grey,
-                          shape: BoxShape.circle,
-                        image: imgArr != null
-                            ? DecorationImage(
-                                image: AssetImage("assets/${imgArr![i]}"))
-                            : DecorationImage(
-                            image: AssetImage("assets/instagramlogo.jpg"))),
+                            boxShadow: [
+                              BoxShadow(color: Colors.grey, spreadRadius: 1)
+                            ],
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                            image: imgArr != null
+                                ? DecorationImage(
+                                    image: AssetImage("assets/${imgArr![i]}"))
+                                : DecorationImage(
+                                    image: AssetImage(
+                                        "assets/instagramlogo.jpg"))),
                         width: 60,
                         height: 60,
                       ),

@@ -10,13 +10,12 @@ class ProScreen extends StatefulWidget {
 }
 
 class _ProScreenState extends State<ProScreen> {
-
-int selectedTrial = -1;
+  int selectedTrial = -1;
 
   Widget customCard(String header, String number, String weeks,
-      String topHeading, String image,int indexNo) {
+      String topHeading, String image, int indexNo) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         setState(() {
           selectedTrial = indexNo;
         });
@@ -29,16 +28,18 @@ int selectedTrial = -1;
               style: TextStyle(color: Colors.blue),
             ),
             Card(
-              color: selectedTrial == indexNo ? primaryColor: secondaryColor,
+              color: selectedTrial == indexNo ? primaryColor : secondaryColor,
               child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 20, bottom: 20, left: 18, right: 18),
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 20, left: 18, right: 18),
                 child: Column(
                   children: [
                     Text(
                       "$header",
-                      style:  TextStyle(
-                          color: selectedTrial == indexNo ? primaryTxtColor: secondaryTxtColor,
+                      style: TextStyle(
+                          color: selectedTrial == indexNo
+                              ? primaryTxtColor
+                              : secondaryTxtColor,
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
@@ -46,14 +47,18 @@ int selectedTrial = -1;
                       height: 15,
                     ),
                     SizedBox(
-                        width: 75, height: 75, child: Image.asset("assets/$image")),
+                        width: 75,
+                        height: 75,
+                        child: Image.asset("assets/$image")),
                     const SizedBox(
                       height: 15,
                     ),
                     Text(
                       number,
-                      style:  TextStyle(
-                          color: selectedTrial == indexNo ? primaryTxtColor: secondaryTxtColor,
+                      style: TextStyle(
+                          color: selectedTrial == indexNo
+                              ? primaryTxtColor
+                              : secondaryTxtColor,
                           fontSize: 45,
                           fontWeight: FontWeight.bold),
                     ),
@@ -62,7 +67,9 @@ int selectedTrial = -1;
                     ),
                     Text(weeks,
                         style: TextStyle(
-                            color: selectedTrial == indexNo ? primaryTxtColor: secondaryTxtColor,
+                            color: selectedTrial == indexNo
+                                ? primaryTxtColor
+                                : secondaryTxtColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold))
                   ],
@@ -87,8 +94,7 @@ int selectedTrial = -1;
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(leading,
-                style: TextStyle(color: secondaryTxtColor)),
+            Text(leading, style: TextStyle(color: secondaryTxtColor)),
             Image.asset("assets/$image")
           ],
         ),
@@ -152,7 +158,7 @@ int selectedTrial = -1;
                               // color: Colors.blue,
                               width: 80,
                               height: 28,
-                              child:  Center(
+                              child: Center(
                                 child: Text(
                                   "PREMIUM",
                                   style: TextStyle(
@@ -205,11 +211,11 @@ int selectedTrial = -1;
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  customCard("Free", "3", "Days", "Free Trial", "trial.png",0),
+                  customCard("Free", "3", "Days", "Free Trial", "trial.png", 0),
                   customCard("\$99.99", "6", "Months", "Best Offer",
-                      "best_offer.png",1),
+                      "best_offer.png", 1),
                   customCard("\$19.99", "1", "Month", "Good Discount",
-                      "good_discount.png",2),
+                      "good_discount.png", 2),
                 ],
               ),
               const SizedBox(
@@ -218,8 +224,8 @@ int selectedTrial = -1;
               SizedBox(
                 height: 49,
                 child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: primaryColor),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: primaryColor),
                     onPressed: () {},
                     child: const Text(
                       "Subscribe",

@@ -1,7 +1,6 @@
 // @dart=2.9
-import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:repost/models/stories_model.dart';
 import 'package:repost/helper/herpers.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
@@ -58,27 +57,29 @@ class _RepostScreenState extends State<RepostScreen> {
   }
 
   void _getStoriesByUsername(BuildContext context, _username) async {
-    _STORIES  = new List<Story>();
+    _STORIES = [];
     var _stories = await StoryService().getStoriesByUserUsername(_username);
     if (_stories.isEmpty) {
       _dialogBuilder(context, "Something unexpected occur",
           "Error to fetch stories username, please try again!");
     } else {
-      final User user =  User(
+      final User user = User(
           name: _stories[0]["username"].toString(),
           profileImageUrl: _stories[0]["profile_url"].toString());
-      for (var  element = 1; element < _stories.length; element++) {
-        _STORIES.add( Story(
+      for (var element = 1; element < _stories.length; element++) {
+        _STORIES.add(Story(
             url: _stories[element]["url"],
             media: (_stories[element]["media_type"] == 1
                 ? MediaType.image
                 : MediaType.video),
             duration: (_stories[element]["media_type"] == 2)
                 ? Duration(seconds: 0)
-                : Duration(seconds: _stories[element]["video_duration"] == null ? 5 : _stories[element]["video_duration"]),
+                : Duration(
+                    seconds: _stories[element]["video_duration"] == null
+                        ? 5
+                        : _stories[element]["video_duration"]),
             user: user));
       }
-
     }
   }
 
@@ -280,12 +281,11 @@ class _RepostScreenState extends State<RepostScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-
-                           Stories(
-                                    titleArr: titleArr,
-                                    showPostDetail: true,
-                                    stories: _STORIES,
-                                  ),
+                          Stories(
+                            titleArr: titleArr,
+                            showPostDetail: true,
+                            stories: _STORIES,
+                          ),
                           Text(
                             HEADER.toString(),
                             style: TextStyle(
@@ -372,7 +372,6 @@ class _RepostScreenState extends State<RepostScreen> {
         await dbHelper.DatabaseHelper.instance.getAllSearchersRowsPosts();
     final prefs = await SharedPreferences.getInstance();
     if (allClickPosts.isNotEmpty) {
-
       prefs.setString('clicked', "true");
       setState(() {
         CLICKED_POSTS = allClickPosts;

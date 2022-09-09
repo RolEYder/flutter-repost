@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:repost/helper/herpers.dart' as Helpers;
-import 'package:http/http.dart' as http;
-import 'dart:developer';
-import '../../../helper/theme.dart';
-import '../../repost/Screen/repost_schedule_screen.dart';
+import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/services/hashtag_servicer.dart';
+import 'package:repost/helper/theme.dart';
 
 class RepostHastags extends StatefulWidget {
   const RepostHastags({Key? key}) : super(key: key);
@@ -22,7 +19,7 @@ class _RepostHastags extends State<RepostHastags> {
   Function(String)? selectedStory;
   List selectedhastags = [];
   var selectedhastag = [];
-List<String>? categoryTitleArr = [
+  List<String>? categoryTitleArr = [
     "TOP 8",
     "HOLIDAYS",
     "BUSINESS",
@@ -52,12 +49,13 @@ List<String>? categoryTitleArr = [
   ];
   String selectedCategory = "";
   void _fetchHashtagByCategory(String category) async {
-    List<String>? _hashtags = await HashTagService().getListHashTagsByCategory(category);
+    List<String>? _hashtags =
+        await HashTagService().getListHashTagsByCategory(category);
     if (_hashtags.isEmpty) {
       print("error");
     }
     setState(() {
-      _listHashtags = _hashtags!;
+      _listHashtags = _hashtags;
       _isLoadingHashtagList = false;
     });
   }
@@ -69,8 +67,8 @@ List<String>? categoryTitleArr = [
     _fetchHashtagByCategory("TOP8");
     selectedCategory = categoryTitleArr![0];
     selectedhastag = List.filled(100, false);
-
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 28, 28, 28),
@@ -103,23 +101,32 @@ List<String>? categoryTitleArr = [
               SizedBox(
                 height: 15,
               ),
-              SingleChildScrollView(scrollDirection: Axis.horizontal,
-                  child:  Row(
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
                     children: [
-                      for (int i = 0; i < this.categoryTitleArr!.length; i++) ...[
+                      for (int i = 0;
+                          i < this.categoryTitleArr!.length;
+                          i++) ...[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
-                                selectedCategory = this.categoryTitleArr![i].toString();
+                                selectedCategory =
+                                    this.categoryTitleArr![i].toString();
                                 this._isLoadingHashtagList = true;
-                                _fetchHashtagByCategory(this.categoryTitleArr![i].toString().replaceAll(' ', ''));
+                                _fetchHashtagByCategory(this
+                                    .categoryTitleArr![i]
+                                    .toString()
+                                    .replaceAll(' ', ''));
                               });
                               if (this.selectedStory != null) {
                                 setState(() {
-                                  this.selectedCategory = this.categoryTitleArr![i];
-                                  this.selectedStory!(this.categoryTitleArr![i]);
+                                  this.selectedCategory =
+                                      this.categoryTitleArr![i];
+                                  this.selectedStory!(
+                                      this.categoryTitleArr![i]);
                                 });
                               }
                               if (showPostDetail) {
@@ -127,11 +134,12 @@ List<String>? categoryTitleArr = [
                                     context,
                                     MaterialPageRoute(
                                         builder: ((context) => RepostSchedule(
-                                          picprofile: "/assets/category4.png",
-                                          CustomCaption: "Custom",
-                                          username: "",
-                                          uid: "",
-                                        ))));
+                                              picprofile:
+                                                  "/assets/category4.png",
+                                              CustomCaption: "Custom",
+                                              username: "",
+                                              uid: "",
+                                            ))));
                               }
                             },
                             child: Column(
@@ -143,25 +151,29 @@ List<String>? categoryTitleArr = [
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       shape: BoxShape.circle,
-                                      gradient: (this.categoryTitleArr![i] == this.selectedTitle)
+                                      gradient: (this.categoryTitleArr![i] ==
+                                              this.selectedTitle)
                                           ? LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            Color(0xFF9B2282),
-                                            Color(0xFFEEA863)
-                                          ])
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                  Color(0xFF9B2282),
+                                                  Color(0xFFEEA863)
+                                                ])
                                           : null),
                                   child: Container(
                                     decoration: BoxDecoration(
                                         boxShadow: [
-                                          BoxShadow(color: Colors.grey, spreadRadius: 1)
+                                          BoxShadow(
+                                              color: Colors.grey,
+                                              spreadRadius: 1)
                                         ],
                                         color: Colors.grey,
                                         shape: BoxShape.circle,
                                         image: this.categoryImgArr != null
-                                            ?  DecorationImage(
-                                            image:  AssetImage("assets/${this.categoryImgArr![i]}"))
+                                            ? DecorationImage(
+                                                image: AssetImage(
+                                                    "assets/${this.categoryImgArr![i]}"))
                                             : null),
                                     width: 60,
                                     height: 60,
@@ -169,62 +181,67 @@ List<String>? categoryTitleArr = [
                                 ),
                                 SizedBox(height: 5),
                                 Text(this.categoryTitleArr![i],
-                                    style:  TextStyle(fontSize: 13, color: secondaryTxtColor))
+                                    style: TextStyle(
+                                        fontSize: 13, color: secondaryTxtColor))
                               ],
                             ),
                           ),
                         ),
                       ]
                     ],
-                  )
-              ),
+                  )),
               Text(selectedCategory,
                   style: TextStyle(
                       fontSize: 38,
                       fontWeight: FontWeight.bold,
                       color: Colors.white)),
-              !_isLoadingHashtagList?  Card(
-                color: Color.fromARGB(255, 125, 125, 125),
-                child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child:  Wrap(
-                    children: [
-                      for (int i = 0; i < _listHashtags.length; i++) ...[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 4, left: 4, bottom: 4),
-                          child: SizedBox(
-                              height: 30,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _clickedHashtags.add(_listHashtags[i]);
-                                    selectedhastag[i] =
-                                    !selectedhastag[i];
-                                  });
-                                },
-                                child: Chip(
-                                  backgroundColor: selectedhastag[i]
-                                      ? Color.fromARGB(255, 70, 62, 147)
-                                      : Colors.grey,
-                                  label: Text(
-                                    _listHashtags[i],
-                                    style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              )),
+              !_isLoadingHashtagList
+                  ? Card(
+                      color: Color.fromARGB(255, 125, 125, 125),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Wrap(
+                          children: [
+                            for (int i = 0; i < _listHashtags.length; i++) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 4, left: 4, bottom: 4),
+                                child: SizedBox(
+                                    height: 30,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _clickedHashtags
+                                              .add(_listHashtags[i]);
+                                          selectedhastag[i] =
+                                              !selectedhastag[i];
+                                        });
+                                      },
+                                      child: Chip(
+                                        backgroundColor: selectedhastag[i]
+                                            ? Color.fromARGB(255, 70, 62, 147)
+                                            : Colors.grey,
+                                        label: Text(
+                                          _listHashtags[i],
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    )),
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              )
+                            ],
+                          ],
                         ),
-                        const SizedBox(
-                          width: 4,
-                        )
-                      ],
-                    ],
-                  ),
-                ),
-              ) :  SizedBox(height: 50, width: 50,
-                  child: CircularProgressIndicator()),
+                      ),
+                    )
+                  : SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator()),
               SizedBox(
                 height: 15,
               ),
@@ -239,14 +256,15 @@ List<String>? categoryTitleArr = [
                 child: Wrap(
                   children: [
                     for (int i = 0; i < selectedhastags.length; i++) ...[
-                      if(selectedhastags[i])...[
-                      Text(
-                        _listHashtags[i],
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      SizedBox(
-                        width: 4,
-                      )]
+                      if (selectedhastags[i]) ...[
+                        Text(
+                          _listHashtags[i],
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        SizedBox(
+                          width: 4,
+                        )
+                      ]
                     ]
                   ],
                 ),
@@ -257,7 +275,8 @@ List<String>? categoryTitleArr = [
                       height: 45,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: Color.fromARGB(255, 70, 62, 147)),
+                              backgroundColor:
+                                  Color.fromARGB(255, 70, 62, 147)),
                           onPressed: () {
                             Navigator.pop(context, _clickedHashtags);
                           },

@@ -1,4 +1,6 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:repost/models/story_model.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:repost/models/user_model.dart';
 
 final User user = User(

@@ -1,12 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
-import 'package:repost/screens/repost/Widget/stories.dart';
-import 'package:http/http.dart' as http;
 import '../repost/Screen/repost_schedule_screen.dart';
 import 'selected_hastag.dart';
-import 'package:repost/helper/herpers.dart' as Helpers;
 import 'package:repost/services/hashtag_servicer.dart';
 
 class Hastag extends StatefulWidget {
@@ -180,7 +175,8 @@ class _HastagState extends State<Hastag> {
                         width: double.infinity,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: Color.fromARGB(255, 92, 84, 144)),
+                                backgroundColor:
+                                    Color.fromARGB(255, 92, 84, 144)),
                             onPressed: () {
                               List selectedHashTagArr = [];
                               for (var i = 0; i < selectedhastag.length; i++) {

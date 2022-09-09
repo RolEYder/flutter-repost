@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
-import 'package:repost/screens/repost/Widget/post.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({Key? key}) : super(key: key);
@@ -43,12 +42,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => RepostSchedule(
-                                picprofile: "/assets/category4.png",
-                                CustomCaption: "Custom",
-                                username: "username",
-                                uid: "uid"
-
-                              )));
+                              picprofile: "/assets/category4.png",
+                              CustomCaption: "Custom",
+                              username: "username",
+                              uid: "uid")));
                 },
                 child: Text("Example"))
           ],

@@ -1,12 +1,15 @@
 // ignore: unused_element
 import 'package:flutter/material.dart';
-Future<void> _dialogBuilder(BuildContext context, String title, String content) {
+
+// ignore: unused_element
+Future<void> _dialogBuilder(
+    BuildContext context, String title, String content) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title:  Text(title.toString()),
-        content:  Text(content.toString()),
+        title: Text(title.toString()),
+        content: Text(content.toString()),
         actions: <Widget>[
           TextButton(
             style: TextButton.styleFrom(

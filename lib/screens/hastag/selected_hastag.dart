@@ -1,7 +1,7 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 
-
+// ignore: must_be_immutable
 class SelectedHastag extends StatefulWidget {
   var selectedhastag;
 
@@ -111,7 +111,8 @@ class _SelectedHastagState extends State<SelectedHastag> {
                     height: 45,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            primary: const Color.fromARGB(255, 70, 62, 147)),
+                            backgroundColor:
+                                const Color.fromARGB(255, 70, 62, 147)),
                         onPressed: () {
                           showDialog(
                               barrierDismissible: false,
@@ -122,13 +123,15 @@ class _SelectedHastagState extends State<SelectedHastag> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     AlertDialog(
-                                      actionsAlignment: MainAxisAlignment.center,
+                                      actionsAlignment:
+                                          MainAxisAlignment.center,
                                       backgroundColor: const Color(0xff3b3b3d),
                                       title: Center(
                                         child: Text(
                                           "Sucess",
                                           style: const TextStyle(
-                                              color: Colors.white, fontSize: 22),
+                                              color: Colors.white,
+                                              fontSize: 22),
                                         ),
                                       ),
                                       content: Center(
@@ -139,7 +142,8 @@ class _SelectedHastagState extends State<SelectedHastag> {
                                       actions: [
                                         ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                                primary: Colors.transparent,
+                                                backgroundColor:
+                                                    Colors.transparent,
                                                 elevation: 0),
                                             onPressed: () {
                                               Navigator.pop(context);
@@ -155,8 +159,9 @@ class _SelectedHastagState extends State<SelectedHastag> {
                                   ],
                                 );
                               });
-      
-                          FlutterClipboard.copy(widget.selectedhastag.join(" "));
+
+                          FlutterClipboard.copy(
+                              widget.selectedhastag.join(" "));
                           print(widget.selectedhastag.join());
                         },
                         child: const Text("Copy to Clipboard")),

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
@@ -37,7 +36,7 @@ class StoryService {
         "X-RapidAPI-Host": "instagram188.p.rapidapi.com"
       });
       List<dynamic> stories =
-           List<dynamic>.from(json.decode(responseStory.body)["data"]);
+          List<dynamic>.from(json.decode(responseStory.body)["data"]);
       if (stories.isEmpty) {
         return ({
           "Error":
@@ -80,13 +79,12 @@ class StoryService {
           };
           dataParsed.add(data);
         });
-
       }
       if (responseStory.statusCode != 200 || responseId.statusCode != 200) {
         return null;
       }
     } else {
-     throw Exception("Error to fetch username stories");
+      throw Exception("Error to fetch username stories");
     }
     return dataParsed;
   }

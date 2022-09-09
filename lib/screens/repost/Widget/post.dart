@@ -1,21 +1,17 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/services/database_service.dart';
-import 'package:sqflite/sqflite.dart';
-import '../Screen/repost_schedule_screen.dart';
-import '../../../services/api_service.dart' as ApiService;
-import '../../../models/searcherPost_model.dart';
+import 'package:repost/models/searcherPost_model.dart';
 
 class Posts extends StatefulWidget {
   final String uid;
   final String username;
   final String text;
   final String thumbnail;
-  late final  String profilePic;
+  late final String profilePic;
   Posts(
       {Key? key,
-        required this.uid,
+      required this.uid,
       required this.username,
       required this.text,
       required this.thumbnail,
@@ -29,8 +25,8 @@ class _PostState extends State<Posts> {
   @override
   void initState() {
     super.initState();
-
   }
+
   Widget build(BuildContext context) {
     return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
@@ -40,7 +36,8 @@ class _PostState extends State<Posts> {
           return GestureDetector(
               onTap: () {
                 //saving clicked posts
-                _saveClickedPosts(widget.text, widget.uid, widget.profilePic, widget.thumbnail, widget.username);
+                _saveClickedPosts(widget.text, widget.uid, widget.profilePic,
+                    widget.thumbnail, widget.username);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -164,13 +161,17 @@ class _PostState extends State<Posts> {
 
   //save clicked posts
 
-  Future<void> _saveClickedPosts(content, uid, profilepic, thumbnailpic, username) async {
-    Map<String, dynamic> row = {DatabaseHelper.columnContentPostsSearches: content,
-      DatabaseHelper.columnCodePostSearches: uid, DatabaseHelper.columnProfilePicPostsSearches: profilepic,
+  Future<void> _saveClickedPosts(
+      content, uid, profilepic, thumbnailpic, username) async {
+    Map<String, dynamic> row = {
+      DatabaseHelper.columnContentPostsSearches: content,
+      DatabaseHelper.columnCodePostSearches: uid,
+      DatabaseHelper.columnProfilePicPostsSearches: profilepic,
       DatabaseHelper.columnThumbnailPicPostsSearches: thumbnailpic,
-      DatabaseHelper.columnUsernamePostsSearches: username, DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()};
-      SearchersPosts searchersPosts = SearchersPosts.fromMap(row);
-      log(searchersPosts.toString());
-      final id = DatabaseHelper.instance.insert_searcher_post(searchersPosts);
+      DatabaseHelper.columnUsernamePostsSearches: username,
+      DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()
+    };
+    SearchersPosts searchersPosts = SearchersPosts.fromMap(row);
+    DatabaseHelper.instance.insert_searcher_post(searchersPosts);
   }
 }

@@ -21,8 +21,6 @@ class _StoryScreenState extends State<StoryScreen>
   AnimationController _animController;
   VideoPlayerController _videoController;
   int _currentIndex = 0;
-  bool _currentIsPlaying = false;
-  AnimationController _playController;
   DefaultCacheManager manager = new DefaultCacheManager();
   @override
   void initState() {
@@ -287,9 +285,6 @@ class UserInfo extends StatefulWidget {
 }
 
 class _UserInfoState extends State<UserInfo> {
-  String _selectedDate;
-  String _selectedTime;
-
   _UserInfoState();
 
   @override

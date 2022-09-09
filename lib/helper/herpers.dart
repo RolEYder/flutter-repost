@@ -1,5 +1,4 @@
 // ignore: unused_element
-import 'dart:ffi';
 List<String> getHashtagsFromString(String _text) {
   List<String> _listHashastags = [];
   RegExp exp = new RegExp(r"\B#\w\w+");
@@ -9,16 +8,16 @@ List<String> getHashtagsFromString(String _text) {
   return _listHashastags;
 }
 
-bool hasValidUrlString(String url){
-  String pattern = r'(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?';
+bool hasValidUrlString(String url) {
+  String pattern =
+      r'(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?';
   RegExp regExp = new RegExp(pattern);
   if (url.length == 0) {
     return false;
-  }
-  else if (!regExp.hasMatch(url)) {
+  } else if (!regExp.hasMatch(url)) {
     return false;
   }
-  return true ;
+  return true;
 }
 
 bool isPostUrl(String _urlPosts) {
@@ -26,20 +25,18 @@ bool isPostUrl(String _urlPosts) {
   RegExp regExp = new RegExp(pattern);
   if (_urlPosts.length == 0) {
     return false;
+  } else if (!regExp.hasMatch(_urlPosts)) {
+    return false;
   }
-   else if (!regExp.hasMatch(_urlPosts)) {
-     return false;
-  }
-   return true;
+  return true;
 }
 
 String getShortCodeFromUrl(String url) {
   String pattern = r'[^/]+(?=/$|$)';
-  RegExp  regExp = new RegExp(pattern);
+  RegExp regExp = new RegExp(pattern);
   if (url.length == 0) {
     return "none";
-  }
-  else if (!regExp.hasMatch(url)) {
+  } else if (!regExp.hasMatch(url)) {
     return "none";
   }
   return regExp.stringMatch(url).toString();

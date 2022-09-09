@@ -13,9 +13,10 @@ class ApiService {
   /// Function to get post giving its shortcode
   Future<Map<String, dynamic>?> getPostByShortCode(String shortcode) async {
     Map<String, dynamic> dataParsed = {};
-    var url = "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" + shortcode;
-    final http.Response response =
-    await http.get(Uri.parse(url), headers: {
+    var url =
+        "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" +
+            shortcode;
+    final http.Response response = await http.get(Uri.parse(url), headers: {
       "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
       "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
     });
@@ -29,7 +30,7 @@ class ApiService {
       "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
       "thumbnailpic": data["owner"]["profile_pic_url"],
       "username": data["owner"]["username"],
-      "accessibility_caption" : data["accessibility_caption"]
+      "accessibility_caption": data["accessibility_caption"]
     };
     return dataParsed;
   }
@@ -117,39 +118,49 @@ class ApiService {
     }
     return dataParsed;
   }
-  Future<List<Map<String, dynamic>>?> getStoriesByUserName(String _username) async {
+
+  // ignore: body_might_complete_normally_nullable
+  Future<List<Map<String, dynamic>>?> getStoriesByUserName(
+      String _username) async {
     try {
       // getting user id
-      var url = "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/?user=" + _username;
-      final http.Response reponseUserId = await http.get(Uri.parse(url), headers: {
+      var url =
+          "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/?user=" +
+              _username;
+      final http.Response reponseUserId =
+          await http.get(Uri.parse(url), headers: {
         "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
         "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
       });
       final userid = json.decode(reponseUserId.body)["id"];
       // getting stories
-      var urlStories = "https://instagram-best-experience.p.rapidapi.com/stories?user_id="+userid.toString();
-      final http.Response responseStories = await http.get(Uri.parse(urlStories), headers: {
+      var urlStories =
+          "https://instagram-best-experience.p.rapidapi.com/stories?user_id=" +
+              userid.toString();
+      final http.Response responseStories =
+          await http.get(Uri.parse(urlStories), headers: {
         "X-RapidAPI-Key": "1dd2847dccmsh4e6f3a50d4eb9a9p146807jsnbcfe144d7761",
         'X-RapidAPI-Host': 'instagram-best-experience.p.rapidapi.com'
       });
 
-       if (responseStories.statusCode == 200) {
-         List<Map<String, dynamic>> stories = List.castFrom(json.decode(responseStories.body));
-         stories.forEach((element) {
-           // final data = {
-           //   "pk": element["pk"],
-           //   "id": element["id"],
-           //   "taken_at": element["taken_at"],
-           //   "expiring_at":  element["expiring_at"],
-           //   ""
-           //
-           // };
-         });
-       }
+      if (responseStories.statusCode == 200) {
+        List<Map<String, dynamic>> stories =
+            List.castFrom(json.decode(responseStories.body));
+        stories.forEach((element) {
+          // final data = {
+          //   "pk": element["pk"],
+          //   "id": element["id"],
+          //   "taken_at": element["taken_at"],
+          //   "expiring_at":  element["expiring_at"],
+          //   ""
+          //
+          // };
+        });
+      }
+    } catch (Exception) {
+      print(Exception);
     }
-    catch(Exception) {print(Exception);}
   }
-
 
   // Future<List<dynamic>> getStoriesByUsername(String _username) async {
   //   try {

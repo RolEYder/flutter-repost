@@ -3,6 +3,7 @@ import 'package:repost/helper/StringExtension.dart';
 import 'screens/hastag/hastag.dart';
 import 'screens/more/morescreen.dart';
 import 'screens/pro/proscreen.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'screens/repost/Screen/repost_screen.dart';
 import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
@@ -17,16 +18,15 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
-
   @override
   void initState() {
     super.initState();
     initPlatformState();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
-      setState(() {
-      });
+      setState(() {});
     });
   }
+
   static final String oneSignalAppId = "48194e35-d4ef-4265-bf2f-d28da15b8ac3";
   Future<void> initPlatformState() async {
     OneSignal.shared.setAppId(oneSignalAppId);
@@ -34,6 +34,7 @@ class _DashBoardState extends State<DashBoard> {
         .promptUserForPushNotificationPermission()
         .then((accepted) {});
   }
+
   int index = 0;
   selectedPage(int selectedTitle) {
     setState(() {
@@ -83,9 +84,13 @@ class _DashBoardState extends State<DashBoard> {
                 Icons.settings_sharp,
                 size: 20,
               )),
-          actions:  [IconButton(onPressed:() {
-            _launchInstagramApp(Uri.parse("https://www.instagram.com"));
-          }, icon: Image.asset("assets/post.png"))],
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _launchInstagramApp(Uri.parse("https://www.instagram.com"));
+                },
+                icon: Image.asset("assets/post.png"))
+          ],
           centerTitle: true,
           title: Text(pages[index]["title"]),
         ),
@@ -126,6 +131,7 @@ class _DashBoardState extends State<DashBoard> {
       ),
     );
   }
+
   Future<void> _launchInstagramApp(_url) async {
     if (!await launchUrl(_url)) {
       throw 'Could not launch $_url';

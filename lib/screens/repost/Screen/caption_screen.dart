@@ -15,6 +15,7 @@ class _CaptionState extends State<Caption> {
   bool rememberMe = false;
   final dbHelper = DatabaseHelper.instance;
   List<Captions> captions = [];
+  // ignore: unused_field
   bool _isLoading = false;
   late List<Map<String, dynamic>> _savedCaptions = [];
   List isCheckedbox = [];
@@ -42,7 +43,7 @@ class _CaptionState extends State<Caption> {
               const EdgeInsets.only(left: 22, right: 22, top: 18, bottom: 18),
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: const Color.fromARGB(255, 73, 65, 125)),
+                  backgroundColor: const Color.fromARGB(255, 73, 65, 125)),
               onPressed: () {
                 Navigator.pop(context, _savedCaptions[this.isCheckedbox[0]]);
               },
