@@ -133,6 +133,8 @@ class _StoryScreenState extends State<StoryScreen>
                         _videoController.pause();
                       },
                       child: UserInfo(
+                        media_type: widget.stories[_currentIndex].media,
+                        Url: widget.stories[_currentIndex].url,
                         username: widget.stories[0].user.name,
                         profileUrl: widget.stories[0].user.profileImageUrl,
                         key: null,
@@ -280,7 +282,7 @@ class AnimatedBar extends StatelessWidget {
 class UserInfo extends StatefulWidget {
   final String username;
   final String profileUrl;
-  final Int media_type;
+  final MediaType media_type;
   final String Url;
   const UserInfo(
       {Key key, this.username, this.profileUrl, this.media_type, this.Url})
@@ -330,6 +332,10 @@ class _UserInfoState extends State<UserInfo> {
                 locale: DateTimePickerLocale.en_us,
                 onMonthChangeStartWithFirstDate: true,
                 onConfirm: ((dateTime, selectedIndex) {
+              print(widget.username);
+              print(widget.Url);
+              print(widget.profileUrl);
+              print(widget.media_type);
               print(dateTime);
             }))
           },
