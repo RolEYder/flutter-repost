@@ -29,7 +29,7 @@ class _CaptionState extends State<Caption> {
     super.initState();
     setState(() {
       _isLoading = true;
-      _getALlCaptions();
+      getAllUserSavedCaptions();
     });
     setState(() {});
   }
@@ -98,7 +98,7 @@ class _CaptionState extends State<Caption> {
                 key: UniqueKey(),
                 child: GestureDetector(
                   onTap: () {
-                    _saveCaption(context, index);
+                    saveNewCaption(context, index);
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,8 +188,6 @@ class _CaptionState extends State<Caption> {
                                 List<Map<String, dynamic>>.from(
                                     this._savedCaptions);
                             map.insert(index, item);
-                            // inserting to database
-                            // Map<String, dynamic> row = {DatabaseHelper.columnContent: content, DatabaseHelper.columnTitle: title};
                             Captions caption = Captions.fromMap(item);
                             DatabaseHelper.instance.insert(caption);
                             setState(() {
@@ -217,16 +215,16 @@ class _CaptionState extends State<Caption> {
   }
 
   Future refresh() async {
-    _getALlCaptions();
+    getAllUserSavedCaptions();
   }
 
-  void _showMessageInScaffold(String message) {
+  void showMessageInScaffold(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
 
-  Future<void> _saveCaption(BuildContext context, int index) async {
+  Future<void> saveNewCaption(BuildContext context, int index) async {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -238,13 +236,13 @@ class _CaptionState extends State<Caption> {
     // After the Selection Screen returns a result, hide any previous nackbars
     // and show the new result.
     if (result == "save") {
-      _getALlCaptions();
+      getAllUserSavedCaptions();
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(
             SnackBar(content: Text('New caption added successfully 👍')));
     } else if (result == "update") {
-      _getALlCaptions();
+      getAllUserSavedCaptions();
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(
@@ -252,14 +250,14 @@ class _CaptionState extends State<Caption> {
     }
   }
 
-  void _getALlCaptions() async {
+  void getAllUserSavedCaptions() async {
     final allRows = await dbHelper.getAllRows();
     log(allRows.toString());
     if (allRows.isNotEmpty) {
       log(allRows.toString());
       captions.clear();
       allRows.forEach((row) => captions.add(Captions.fromMap(row)));
-      _showMessageInScaffold("Captions done!");
+      showMessageInScaffold("Captions done!");
       setState(() {
         _savedCaptions = allRows;
         _isLoading = false;
