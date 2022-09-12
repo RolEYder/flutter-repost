@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Watermark extends StatefulWidget {
-  const Watermark({Key? key}) : super(key: key);
+  final String postImage;
+  const Watermark({Key? key, required this.postImage}) : super(key: key);
 
   @override
   State<Watermark> createState() => _WatermarkState();
@@ -14,9 +15,10 @@ class _WatermarkState extends State<Watermark> {
     Alignment.topLeft,
     Alignment.topRight,
     Alignment.bottomLeft,
-    Alignment.bottomRight
+    Alignment.bottomRight,
   ];
   int selectedAlignment = 0;
+  bool isShowWaterMark = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,8 @@ class _WatermarkState extends State<Watermark> {
                   backgroundColor: Color.fromARGB(255, 73, 65, 125),
                 ),
                 onPressed: () {
-                  Navigator.pop(context, selectedAlignment);
+                  var out = isShowWaterMark ? 0 : selectedAlignment;
+                  Navigator.pop(context, out);
                 },
                 child: Text("Select")),
           ),
@@ -62,10 +65,11 @@ class _WatermarkState extends State<Watermark> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage("assets/smallgirl.png"),
+                        image: NetworkImage(widget.postImage),
                       ),
                     ),
                   ),
+
                   // Container(width: MediaQuery.of(context).size.width,height: 120,decoration: BoxDecoration(color: Colors.yellow,image: DecorationImage(image: AssetImage("assets/smallgirl.png"))),),
                   if (selectedAlignment >= 0) ...[
                     Align(
@@ -97,11 +101,26 @@ class _WatermarkState extends State<Watermark> {
               ),
             ),
           ),
+          SwitchListTile(
+              title: const Text(
+                'Do not show watermark',
+                style: TextStyle(color: Colors.white),
+              ),
+              value: isShowWaterMark,
+              onChanged: ((value) {
+                setState(() {
+                  isShowWaterMark = value;
+                  if (isShowWaterMark == true) {
+                    selectedAlignment = -1;
+                  }
+                });
+              })),
           Expanded(
             child: CupertinoPicker(
                 itemExtent: 64,
                 onSelectedItemChanged: (indexNo) {
                   setState(() {
+                    isShowWaterMark = false;
                     selectedAlignment = indexNo;
                   });
                 },

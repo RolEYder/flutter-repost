@@ -35,7 +35,7 @@ class _RepostScreenState extends State<RepostScreen> {
   List<Story> _STORIES = [];
   List<String> titleArr = [];
 
-  void _getPostByShortCode(String _shortcode) async {
+  void getPostByShortCode(String _shortcode) async {
     final _posts = await PostService().getPostByShortCode(_shortcode);
     String image = _posts["image"].toString();
     String caption = _posts["caption"].toString();
@@ -43,7 +43,7 @@ class _RepostScreenState extends State<RepostScreen> {
     String username = _posts["username"] as String;
     String thumbnailpic = _posts["thumbnailpic"] as String;
     //save posts
-    _saveClickedPosts(caption, uid, image, thumbnailpic, username);
+    saveClickedPosts(caption, uid, image, thumbnailpic, username);
     // open up Reposts schedule
     Navigator.push(
         context,
@@ -56,7 +56,7 @@ class _RepostScreenState extends State<RepostScreen> {
                 ))));
   }
 
-  void _getStoriesByUsername(BuildContext context, _username) async {
+  void getStoriesByUsername(BuildContext context, _username) async {
     _STORIES = [];
     var _stories = await StoryService().getStoriesByUserUsername(_username);
     if (_stories.isEmpty) {
@@ -83,10 +83,10 @@ class _RepostScreenState extends State<RepostScreen> {
     }
   }
 
-  void _getPostsByUsername(BuildContext context, _username) async {
+  void getPostsByUsername(BuildContext context, _username) async {
     var _posts = await PostService().getPostsByUsername(_username);
     if (_posts[0]["type"] == "error") {
-      _getAllClickedPosts();
+      getAllClickedPosts();
       _dialogBuilder(context, "Something unexpected occur",
           _posts[0]["message"] + " of user " + _username.toString());
     } else {
@@ -126,7 +126,7 @@ class _RepostScreenState extends State<RepostScreen> {
   @override
   void initState() {
     super.initState();
-    _getAllClickedPosts();
+    getAllClickedPosts();
   }
 
   Widget build(BuildContext context) {
@@ -148,7 +148,7 @@ class _RepostScreenState extends State<RepostScreen> {
                     final prefs = await SharedPreferences.getInstance();
                     var areThereClickedPosts = prefs.getString('clicked');
                     if (areThereClickedPosts.toString() == "true") {
-                      _getAllClickedPosts();
+                      getAllClickedPosts();
                     }
                     setState(() {
                       HEADER = "RECENT POSTS";
@@ -176,7 +176,7 @@ class _RepostScreenState extends State<RepostScreen> {
                         Future.delayed(Duration(seconds: 5)).then((value) => {
                               pr.hide().whenComplete(() => {
                                     setState(() {
-                                      _getPostByShortCode(shortcode.toString());
+                                      getPostByShortCode(shortcode.toString());
                                     })
                                   })
                             });
@@ -184,7 +184,7 @@ class _RepostScreenState extends State<RepostScreen> {
                         /// then, is a username
                         String username =
                             getShortCodeFromUrl(inputValue.toString());
-                        _getPostsByUsername(context, username);
+                        getPostsByUsername(context, username);
                         pr.show();
                         Future.delayed(Duration(seconds: 10)).then((value) => {
                               pr.hide().whenComplete(() => {
@@ -200,7 +200,7 @@ class _RepostScreenState extends State<RepostScreen> {
                     }
                     // if is a username
                     else if ('${inputValue[0].toString()}' == "@") {
-                      _getPostsByUsername(context, toString().substring(1));
+                      getPostsByUsername(context, toString().substring(1));
                       Future.delayed(Duration(seconds: 10)).then((value) => {
                             pr.hide().whenComplete(() => {
                                   setState(() {
@@ -212,7 +212,7 @@ class _RepostScreenState extends State<RepostScreen> {
                         _isLoading = true;
                       });
                     } else {
-                      _getPostsByUsername(context, inputValue.toString());
+                      getPostsByUsername(context, inputValue.toString());
                       pr.show();
                       Future.delayed(Duration(seconds: 10)).then((value) => {
                             pr.hide().whenComplete(() => {
@@ -227,14 +227,14 @@ class _RepostScreenState extends State<RepostScreen> {
                     }
                   } else {
                     setState(() {
-                      _getAllClickedPosts();
+                      getAllClickedPosts();
                       HEADER = "RECENT POSTS";
                     });
                     _dialogBuilder(context, "Oops!🤔",
                         "You must enter a proper Instagram username, url post or url username");
                   }
                   // testing stories
-                  _getStoriesByUsername(context, inputValue.toString());
+                  getStoriesByUsername(context, inputValue.toString());
                 },
                 controller: _post,
                 decoration: InputDecoration(
@@ -353,7 +353,7 @@ class _RepostScreenState extends State<RepostScreen> {
   }
 
   //save clicked posts
-  Future<void> _saveClickedPosts(
+  Future<void> saveClickedPosts(
       content, uid, profilepic, thumbnailpic, username) async {
     Map<String, dynamic> row = {
       DatabaseHelper.columnContentPostsSearches: content,
@@ -367,7 +367,7 @@ class _RepostScreenState extends State<RepostScreen> {
     DatabaseHelper.instance.insert_searcher_post(searchersPosts);
   }
 
-  void _getAllClickedPosts() async {
+  void getAllClickedPosts() async {
     final allClickPosts =
         await dbHelper.DatabaseHelper.instance.getAllSearchersRowsPosts();
     final prefs = await SharedPreferences.getInstance();

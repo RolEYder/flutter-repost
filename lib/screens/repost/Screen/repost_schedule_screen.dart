@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repost/models/schedulepPost_model.dart';
+import 'package:repost/screens/pro/proscreen.dart';
 import 'package:repost/screens/repost/Screen/repost_hastags_screen.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/screens/watermark/watermark.dart';
@@ -32,14 +33,20 @@ class RepostSchedule extends StatefulWidget {
 class _RepostScheduleState extends State<RepostSchedule> {
   TextStyle button = const TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   final _controller = PageController(initialPage: 0);
-  String selectedWatermark = "off";
+  String selectedWatermark = "Top left";
   int pageIndex = 0;
   List<dynamic> _captionSelected = [];
-  List<dynamic> _hashtagSelected = [];
+  List<dynamic> _hashtagSelected = ["None"];
   String _scheduleSelected = "";
+  String _hashtagsSelected = "";
 
   List image = ["smallgirl.png", "smallgirl.png", "smallgirl.png"];
-  List watermarks = ["Top Left", "Top Right", "Bottom Left", "Bottom Right"];
+  List watermarks = [
+    "Top Left",
+    "Top Right",
+    "Bottom Left",
+    "Bottom Right",
+  ];
 
   Widget waterMarks(String title, String trailing) {
     return Container(
@@ -73,6 +80,10 @@ class _RepostScheduleState extends State<RepostSchedule> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void dispose() {
+    super.dispose();
   }
 
   Widget build(BuildContext context) {
@@ -140,13 +151,20 @@ class _RepostScheduleState extends State<RepostSchedule> {
                         var resp = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Watermark()));
+                                builder: (context) =>
+                                    Watermark(postImage: widget.picprofile)));
 
                         if (resp != null) {
                           setState(() {
                             selectedWatermark =
-                                resp == -1 ? "off" : watermarks[resp];
+                                resp == 0 ? "Off" : watermarks[resp];
                           });
+                          if (resp == 0) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: ((context) => ProScreen())));
+                          }
                         }
                       },
                       child: waterMarks("Watermark", selectedWatermark)),
@@ -157,15 +175,17 @@ class _RepostScheduleState extends State<RepostSchedule> {
                       onTap: () {
                         _gettingCaptionAfterSelected(context);
                       },
-                      child: waterMarks("Caption", "")),
+                      child: waterMarks("Caption",
+                          _captionSelected[0]['content'].toString())),
                   const Divider(
                     color: Colors.grey,
                   ),
                   GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         _gettingHashtagsAfterSelected(context);
                       },
-                      child: waterMarks("Hashtags", "")),
+                      child: waterMarks(
+                          "Hashtags", _hashtagSelected.take(3).toString())),
                   const SizedBox(
                     height: 20,
                   ),
