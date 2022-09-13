@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:repost/dashboard.dart';
 import 'package:repost/helper/theme.dart';
 
@@ -226,7 +227,9 @@ class _ProScreenState extends State<ProScreen> {
                 child: ElevatedButton(
                     style:
                         ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                    onPressed: () {},
+                    onPressed: () async {
+                      await Purchases.purchaseProduct('respot_20_1m');
+                    },
                     child: const Text(
                       "Subscribe",
                       style: TextStyle(fontSize: 16),

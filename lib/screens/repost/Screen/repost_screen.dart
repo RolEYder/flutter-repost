@@ -149,10 +149,10 @@ class _RepostScreenState extends State<RepostScreen> {
                     var areThereClickedPosts = prefs.getString('clicked');
                     if (areThereClickedPosts.toString() == "true") {
                       getAllClickedPosts();
+                      setState(() {
+                        HEADER = "RECENT POSTS";
+                      });
                     }
-                    setState(() {
-                      HEADER = "RECENT POSTS";
-                    });
                   }
                 },
                 onSubmitted: (inputValue) async {
@@ -373,6 +373,7 @@ class _RepostScreenState extends State<RepostScreen> {
     final prefs = await SharedPreferences.getInstance();
     if (allClickPosts.isNotEmpty) {
       prefs.setString('clicked', "true");
+      prefs.setBool('history', true);
       setState(() {
         CLICKED_POSTS = allClickPosts;
         HEADER = "RECENT POSTS";
@@ -380,6 +381,7 @@ class _RepostScreenState extends State<RepostScreen> {
     } else {
       setState(() {
         prefs.setString('clicked', "false");
+        prefs.setBool('history', false);
       });
     }
   }

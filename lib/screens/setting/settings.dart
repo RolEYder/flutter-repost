@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:repost/screens/pro/proscreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -9,7 +11,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool notification = false;
-
+  bool history = true;
   TextStyle HeaderStyle = TextStyle(
       color: Color.fromARGB(255, 114, 113, 113),
       fontSize: 18,
@@ -39,9 +41,33 @@ class _SettingsState extends State<Settings> {
         height: 10,
       );
 
-    var edgeGap =  const EdgeInsets.only(left: 12, bottom: 2);
+  var edgeGap = const EdgeInsets.only(left: 12, bottom: 2);
 
   @override
+  void initState() {
+    settingApp();
+    super.initState();
+  }
+
+  void settingApp() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      history = prefs.getBool("history") as bool;
+      notification = prefs.getBool("notification") as bool;
+    });
+  }
+
+  void setNotification(value) async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setBool("notification", value);
+  }
+
+  void setClearHistory(value) async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setBool("history", value);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -65,26 +91,32 @@ class _SettingsState extends State<Settings> {
             _space(),
             Padding(
               padding: const EdgeInsets.all(5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Subscribe to Pro Account",
-                    style: insideStyle,
-                  ),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.grey,
-                    size: 16,
-                  )
-                ],
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProScreen()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Subscribe to Pro Account",
+                      style: insideStyle,
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 16,
+                    )
+                  ],
+                ),
               ),
             ),
             _space(),
             height(),
             _space(),
             Padding(
-              padding: const EdgeInsets.only(left: 5,top: 2,bottom: 2),
+              padding: const EdgeInsets.only(left: 5, top: 2, bottom: 2),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -101,6 +133,7 @@ class _SettingsState extends State<Settings> {
                         onChanged: (_) {
                           setState(() {
                             notification = !notification;
+                            setNotification(notification);
                           });
                         }),
                   )
@@ -119,16 +152,44 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             _space(),
-            for (int i = 0; i < account.length; i++) ...[
-              Padding(
-                             padding: const EdgeInsets.all(5),
-
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "My Accounts",
+                    style: insideStyle,
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+            _space(),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (history) {
+                      history = !history;
+                      setClearHistory(false);
+                    }
+                  });
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      account[i],
-                      style: insideStyle,
+                    Opacity(
+                      opacity: history ? 1.0 : 0.5,
+                      child: Text(
+                        "Clear History",
+                        style: insideStyle,
+                      ),
                     ),
                     const Icon(
                       Icons.arrow_forward_ios,
@@ -138,8 +199,26 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              _space()
-            ],
+            ),
+            _space(),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Restore Purchases",
+                    style: insideStyle,
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+            _space(),
             const SizedBox(
               height: 28,
             ),
