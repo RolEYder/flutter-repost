@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:repost/helper/herpers.dart';
-import 'package:repost/models/post_model.dart';
-import 'package:repost/screens/repost/Widget/post.dart';
 
 class PostService {
   /// Function to get all a post giving its shortcode
@@ -30,6 +28,25 @@ class PostService {
       "accessibility_caption": data["accessibility_caption"]
     };
     return dataParsed;
+  }
+
+  /// Function to check if the username is private
+  /// @_username [String] username
+  Future<bool> isPrivateUsername(String _username) async {
+    try {
+      var url =
+          "https://instagram-scraper-2022.p.rapidapi.com/ig/info_username/?user=" +
+              _username;
+      final http.Response response = await http.get(Uri.parse(url), headers: {
+        "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+        "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+      });
+      final isPrivate = json.decode(response.body)["user"]["is_private"];
+      return isPrivate ? true : false;
+    } catch (e) {
+      print(e);
+    }
+    return false;
   }
 
   /// Function to get all a post giving username
@@ -71,7 +88,6 @@ class PostService {
         'X-RapidAPI-Host': 'instagram-best-experience.p.rapidapi.com'
       });
       final profile_pic = await json.decode(profile_pic_res.body);
-      print(profile_pic.toString());
       if (json.decode(data_res.body)["data"] == null) {
         List<dynamic> err = [
           {"type": "error", "message": "Error to fetch Posts"}

@@ -183,7 +183,59 @@ class _RepostScreenState extends State<RepostScreen> {
                         /// then, is a username
                         String username =
                             getShortCodeFromUrl(inputValue.toString());
-                        getPostsByUsername(context, username);
+                        // checking if username is private
+                        var _isPrivate = await PostService()
+                            .isPrivateUsername(inputValue.toString());
+                        if (_isPrivate == false) {
+                          getPostsByUsername(context, username);
+                          pr.show();
+                          Future.delayed(Duration(seconds: 10))
+                              .then((value) => {
+                                    pr.hide().whenComplete(() => {
+                                          setState(() {
+                                            _isLoading = false;
+                                          })
+                                        })
+                                  });
+                          setState(() {
+                            _isLoading = true;
+                          });
+                        } else {
+                          _dialogBuilder(
+                              context,
+                              "Unable to get user information",
+                              "Seems that the instagram profile is private. Try to enter another username.");
+                        }
+                      }
+                    }
+                    // if is a username
+                    else if ('${inputValue[0].toString()}' == "@") {
+                      var isPrivate = await PostService().isPrivateUsername(
+                          inputValue.toString().substring(1));
+                      if (!isPrivate) {
+                        getPostsByUsername(
+                            context, inputValue.toString().substring(1));
+                        Future.delayed(Duration(seconds: 10)).then((value) => {
+                              pr.hide().whenComplete(() => {
+                                    setState(() {
+                                      _isLoading = false;
+                                    })
+                                  })
+                            });
+                        setState(() {
+                          _isLoading = true;
+                        });
+                      } else {
+                        _dialogBuilder(
+                            context,
+                            "Unable to get user information",
+                            "Seems that the instagram profile is private. Try to enter another username.");
+                      }
+                    } else {
+                      final isPrivate = await PostService()
+                          .isPrivateUsername(inputValue.toString());
+                      if (!isPrivate) {
+                        getPostsByUsername(context, inputValue.toString());
                         pr.show();
                         Future.delayed(Duration(seconds: 10)).then((value) => {
                               pr.hide().whenComplete(() => {
@@ -195,34 +247,10 @@ class _RepostScreenState extends State<RepostScreen> {
                         setState(() {
                           _isLoading = true;
                         });
+                      } else {
+                        _dialogBuilder(context, "Unable to get userinformation",
+                            "Seems instagram username is private. Try to enter another username");
                       }
-                    }
-                    // if is a username
-                    else if ('${inputValue[0].toString()}' == "@") {
-                      getPostsByUsername(context, toString().substring(1));
-                      Future.delayed(Duration(seconds: 10)).then((value) => {
-                            pr.hide().whenComplete(() => {
-                                  setState(() {
-                                    _isLoading = false;
-                                  })
-                                })
-                          });
-                      setState(() {
-                        _isLoading = true;
-                      });
-                    } else {
-                      getPostsByUsername(context, inputValue.toString());
-                      pr.show();
-                      Future.delayed(Duration(seconds: 10)).then((value) => {
-                            pr.hide().whenComplete(() => {
-                                  setState(() {
-                                    _isLoading = false;
-                                  })
-                                })
-                          });
-                      setState(() {
-                        _isLoading = true;
-                      });
                     }
                   } else {
                     setState(() {
@@ -303,6 +331,7 @@ class _RepostScreenState extends State<RepostScreen> {
                                       ? showInstagramPosts()
                                       : Text(
                                           "There aren't current clicked posts",
+                                          textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 20,
