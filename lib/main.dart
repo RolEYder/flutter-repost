@@ -1,4 +1,5 @@
 // @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/object_wrappers.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -7,7 +8,7 @@ import 'package:repost/screens/onboarding/onboarding_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final _configuration =
-    PurchasesConfiguration('appl_EfjAGDlblTeCDGccRDhqThHQsiTN');
+    PurchasesConfiguration('appl_EfjAGDblTeCDGccRDhqThHQsiTN');
 int initScreen;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

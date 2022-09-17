@@ -175,8 +175,11 @@ class _RepostScheduleState extends State<RepostSchedule> {
                       onTap: () {
                         _gettingCaptionAfterSelected(context);
                       },
-                      child: waterMarks("Caption",
-                          _captionSelected[0]['content'].toString())),
+                      child: waterMarks(
+                          "Caption",
+                          (_captionSelected.isNotEmpty)
+                              ? _captionSelected[0]['content'].toString()
+                              : "")),
                   const Divider(
                     color: Colors.grey,
                   ),
@@ -350,9 +353,9 @@ class _RepostScheduleState extends State<RepostSchedule> {
     if (!mounted) return;
     setState(() {
       _captionSelected.add({
-        "id": result["id"],
-        "title": result["title"],
-        "content": result["content"]
+        "id": result["id"].toString().isEmpty ? result["id"] : "",
+        "title": result["title"].toString().isEmpty ? result["title"] : "",
+        "content": result["content"].toString().isEmpty ? result["content"] : ""
       });
     });
   }

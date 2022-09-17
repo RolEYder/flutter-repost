@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:repost/dashboard.dart';
 import 'package:repost/helper/theme.dart';
+import 'package:repost/screens/pro/paywall.dart';
+
+import 'styles.dart';
 
 class ProScreen extends StatefulWidget {
   const ProScreen({Key? key}) : super(key: key);
@@ -212,10 +216,10 @@ class _ProScreenState extends State<ProScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  customCard("Free", "3", "Days", "Free Trial", "trial.png", 0),
-                  customCard("\$99.99", "6", "Months", "Best Offer",
+                  customCard("Free", "1", "Week", "Free Trial", "trial.png", 0),
+                  customCard("\$22.99", "6", "Months", "Best Offer",
                       "best_offer.png", 1),
-                  customCard("\$19.99", "1", "Month", "Good Discount",
+                  customCard("\$4.99", "1", "Month", "Good Discount",
                       "good_discount.png", 2),
                 ],
               ),
@@ -228,7 +232,106 @@ class _ProScreenState extends State<ProScreen> {
                     style:
                         ElevatedButton.styleFrom(backgroundColor: primaryColor),
                     onPressed: () async {
-                      await Purchases.purchaseProduct('respot_20_1m');
+                      if (selectedTrial == -1) {
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Unable to continue'),
+                              content:
+                                  const Text('You must select a offer before'),
+                              actions: <Widget>[
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    textStyle:
+                                        Theme.of(context).textTheme.labelLarge,
+                                  ),
+                                  child: const Text('Ok'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                      Offerings offerings = await Purchases.getOfferings();
+                      var myProductList = offerings.current!.availablePackages;
+                      print(myProductList.length);
+                      switch (selectedTrial) {
+                        case 0:
+                          try {
+                            var purchaserInfo = await Purchases.purchasePackage(
+                                myProductList[2]);
+                            if (purchaserInfo
+                                .entitlements.all["free_trial"]!.isActive) {
+                              // Unlock that great "pro" content
+                            }
+                          } on PlatformException catch (e) {
+                            var errorCode =
+                                PurchasesErrorHelper.getErrorCode(e);
+                            if (errorCode !=
+                                PurchasesErrorCode.purchaseCancelledError) {
+                              print(e);
+                            }
+                          }
+                          break;
+                        case 1:
+                          try {
+                            var purchaserInfo = await Purchases.purchasePackage(
+                                myProductList[0]);
+                            if (purchaserInfo
+                                .entitlements.all["good_discount"]!.isActive) {
+                              // Unlock that great "pro" content
+                            }
+                          } on PlatformException catch (e) {
+                            var errorCode =
+                                PurchasesErrorHelper.getErrorCode(e);
+                            if (errorCode !=
+                                PurchasesErrorCode.purchaseCancelledError) {
+                              print(e);
+                            }
+                          }
+                          break;
+                        case 2:
+                          try {
+                            var purchaserInfo = await Purchases.purchasePackage(
+                                myProductList[1]);
+                            if (purchaserInfo
+                                .entitlements.all["best_offer"]!.isActive) {
+                              // Unlock that great "pro" content
+                            }
+                          } on PlatformException catch (e) {
+                            var errorCode =
+                                PurchasesErrorHelper.getErrorCode(e);
+                            if (errorCode !=
+                                PurchasesErrorCode.purchaseCancelledError) {
+                              print(e);
+                            }
+                          }
+                          break;
+                        default:
+                      }
+                      // showModalBottomSheet(
+                      //   useRootNavigator: true,
+                      //   isDismissible: true,
+                      //   isScrollControlled: true,
+                      //   backgroundColor: kColorBackground,
+                      //   shape: const RoundedRectangleBorder(
+                      //     borderRadius:
+                      //         BorderRadius.vertical(top: Radius.circular(25.0)),
+                      //   ),
+                      //   context: context,
+                      //   builder: (BuildContext context) {
+                      //     return StatefulBuilder(builder: (BuildContext context,
+                      //         StateSetter setModalState) {
+                      //       return Paywall(
+                      //         offering: offerings.current,
+                      //       );
+                      //     });
+                      //   },
+                      // );
                     },
                     child: const Text(
                       "Subscribe",

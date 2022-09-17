@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:repost/helper/herpers.dart';
+import 'package:repost/models/post_model.dart';
+import 'package:repost/screens/repost/Widget/post.dart';
 
 class PostService {
   /// Function to get all a post giving its shortcode

@@ -87,129 +87,149 @@ class _CaptionState extends State<Caption> {
       body: RefreshIndicator(
         onRefresh: refresh,
         child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: ListView.builder(
-            itemCount: _savedCaptions.length == 0 ? 1 : _savedCaptions.length,
-            itemBuilder: ((context, index) {
-              Map<String, dynamic> item = (_savedCaptions[index].isEmpty)
-                  ? {"title": "Custom", "content": "Choose to Edit"}
-                  : _savedCaptions[index];
-              return Dismissible(
-                key: UniqueKey(),
-                child: GestureDetector(
-                  onTap: () {
-                    saveNewCaption(context, index);
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            padding: EdgeInsets.all(8.0),
+            child: _savedCaptions.isNotEmpty
+                ? ListView.builder(
+                    itemCount:
+                        _savedCaptions.length == 0 ? 1 : _savedCaptions.length,
+                    itemBuilder: ((context, index) {
+                      Map<String, dynamic> item = (_savedCaptions.isEmpty)
+                          ? {"title": "Custom", "content": "Choose to Edit"}
+                          : _savedCaptions[index];
+                      return Dismissible(
+                        key: UniqueKey(),
+                        child: GestureDetector(
+                          onTap: () {
+                            saveNewCaption(context, index);
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _savedCaptions.isEmpty
+                                    ? " "
+                                    : _savedCaptions[index]["title"],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                    _savedCaptions.isEmpty
+                                        ? " "
+                                        : _savedCaptions[index]["content"],
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  )),
+                                  SizedBox(width: 8),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        if (isCheckedbox.contains(index)) {
+                                          isCheckedbox.remove(index);
+                                        } else {
+                                          isCheckedbox.clear();
+                                          isCheckedbox.add(index);
+                                        }
+                                      });
+                                    },
+                                    child: isCheckedbox.contains(index)
+                                        ? Icon(
+                                            Icons.check_circle,
+                                            color:
+                                                Color.fromARGB(255, 0, 8, 239),
+                                            size: 22,
+                                          )
+                                        : Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Colors.white)),
+                                            width: 22,
+                                            height: 22,
+                                          ),
+                                  )
+                                ],
+                              ),
+                              Divider(
+                                color: Colors.grey,
+                              ),
+                            ],
+                          ),
+                        ),
+                        direction: DismissDirection.startToEnd,
+                        onDismissed: (DismissDirection dir) {
+                          List<Map<String, dynamic>> map =
+                              List<Map<String, dynamic>>.from(
+                                  this._savedCaptions);
+                          map.removeAt(index);
+                          // removing from database
+                          DatabaseHelper.instance
+                              .delete(this._savedCaptions[index]["id"]);
+                          setState(() => {this._savedCaptions = map});
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                duration: const Duration(seconds: 3),
+                                content: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.error_outline, size: 32),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Text(
+                                          dir == DismissDirection.startToEnd
+                                              ? 'removed'
+                                              : '$index update'),
+                                    ),
+                                  ],
+                                ),
+                                action: SnackBarAction(
+                                  label: 'UNDO',
+                                  onPressed: () {
+                                    List<Map<String, dynamic>> map =
+                                        List<Map<String, dynamic>>.from(
+                                            this._savedCaptions);
+                                    map.insert(index, item);
+                                    Captions caption = Captions.fromMap(item);
+                                    DatabaseHelper.instance.insert(caption);
+                                    setState(() {
+                                      this._savedCaptions = map;
+                                    });
+                                  },
+                                )),
+                          );
+                        },
+                        background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerLeft,
+                            child: const Icon(Icons.delete)),
+                        secondaryBackground: Container(
+                          color: Colors.green,
+                          alignment: Alignment.centerRight,
+                          child: const Icon(Icons.save),
+                        ),
+                      );
+                    }),
+                  )
+                : Center(
+                    child: Column(
+                    mainAxisAlignment: MainAxisAlignment
+                        .center, //main axis the vertical axis in a column so this positions the children at the center of the vertical axis
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, //the horizontal axis of a column, again we position the children's at the center of the horizontal axis
                     children: [
                       Text(
-                        _savedCaptions.isEmpty
-                            ? " "
-                            : _savedCaptions[index]["title"],
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                              child: Text(
-                            _savedCaptions.isEmpty
-                                ? " "
-                                : _savedCaptions[index]["content"],
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          )),
-                          SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (isCheckedbox.contains(index)) {
-                                  isCheckedbox.remove(index);
-                                } else {
-                                  isCheckedbox.clear();
-                                  isCheckedbox.add(index);
-                                }
-                              });
-                            },
-                            child: isCheckedbox.contains(index)
-                                ? Icon(
-                                    Icons.check_circle,
-                                    color: Color.fromARGB(255, 0, 8, 239),
-                                    size: 22,
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border:
-                                            Border.all(color: Colors.white)),
-                                    width: 22,
-                                    height: 22,
-                                  ),
-                          )
-                        ],
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                      ),
+                        textAlign: TextAlign.center,
+                        "Captions not found. Tap ... to add one",
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      )
                     ],
-                  ),
-                ),
-                direction: DismissDirection.startToEnd,
-                onDismissed: (DismissDirection dir) {
-                  List<Map<String, dynamic>> map =
-                      List<Map<String, dynamic>>.from(this._savedCaptions);
-                  map.removeAt(index);
-                  // removing from database
-                  DatabaseHelper.instance
-                      .delete(this._savedCaptions[index]["id"]);
-                  setState(() => {this._savedCaptions = map});
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        duration: const Duration(seconds: 3),
-                        content: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(Icons.error_outline, size: 32),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(dir == DismissDirection.startToEnd
-                                  ? 'removed'
-                                  : '$index update'),
-                            ),
-                          ],
-                        ),
-                        action: SnackBarAction(
-                          label: 'UNDO',
-                          onPressed: () {
-                            List<Map<String, dynamic>> map =
-                                List<Map<String, dynamic>>.from(
-                                    this._savedCaptions);
-                            map.insert(index, item);
-                            Captions caption = Captions.fromMap(item);
-                            DatabaseHelper.instance.insert(caption);
-                            setState(() {
-                              this._savedCaptions = map;
-                            });
-                          },
-                        )),
-                  );
-                },
-                background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerLeft,
-                    child: const Icon(Icons.delete)),
-                secondaryBackground: Container(
-                  color: Colors.green,
-                  alignment: Alignment.centerRight,
-                  child: const Icon(Icons.save),
-                ),
-              );
-            }),
-          ),
-        ),
+                  ))),
       ),
     );
   }

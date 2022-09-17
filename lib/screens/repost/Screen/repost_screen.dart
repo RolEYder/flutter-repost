@@ -96,7 +96,6 @@ class _RepostScreenState extends State<RepostScreen> {
     }
   }
 
-  // Widget function to show instagram posts
   Widget showInstagramPosts() {
     return new GestureDetector(
         child: Column(children: <Widget>[

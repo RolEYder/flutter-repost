@@ -102,10 +102,9 @@ class DatabaseHelper {
 
     await db.execute('''
         CREATE TABLE $tableScheduleStories (
-        $columnIdScheduleStories INT PRIMARY KEY AUTOINCREMENT, 
+        $columnIdScheduleStories INTEGER PRIMARY KEY AUTOINCREMENT, 
         $columnCreateAtScheduleStories TEXT NOT NULL, 
         $columnDateEndScheduleStories TEXT NOT NULL, 
-        $columnUrlScheduleStories TEXT NOT NULL, 
         $columnUrlScheduleStories TEXT NOT NULL, 
         $columnMediaTypelScheduleStories INT NOT NULL
         )
