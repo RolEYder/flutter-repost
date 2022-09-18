@@ -3,9 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:repost/dashboard.dart';
 import 'package:repost/helper/theme.dart';
-import 'package:repost/screens/pro/paywall.dart';
-
-import 'styles.dart';
 
 class ProScreen extends StatefulWidget {
   const ProScreen({Key? key}) : super(key: key);

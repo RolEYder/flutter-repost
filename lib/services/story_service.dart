@@ -21,10 +21,6 @@ class StoryService {
         "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a";
     dio.options.headers['X-RapidAPI-Host'] =
         "instagram-scraper-2022.p.rapidapi.com";
-    dio.options.headers["Cookie"] = "PHPSESSID=bcmf0d1qph5houlg8k8qo3fm1l";
-    dio.options.headers["Cache-Control"] = "no-cache";
-    dio.options.headers["Accept"] = "*/*";
-    dio.options.headers["Accept-Encoding"] = "gzip, deflate, br, json";
     var responseId = await dio.get(url);
     if (responseId.statusCode == 200) {
       var urlStory = "https://instagram188.p.rapidapi.com/userstories/" +
@@ -35,14 +31,16 @@ class StoryService {
         "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
         "X-RapidAPI-Host": "instagram188.p.rapidapi.com"
       });
-      List<dynamic> stories =
-          List<dynamic>.from(json.decode(responseStory.body)["data"]);
-      if (stories.isEmpty) {
-        return ({
-          "Error":
-              "Error to fetch username stories. Seems ${_username} does not have recent stories"
-        }) as List<dynamic>;
+      if (json.decode(responseStory.body)["success"] == false) {
+        return List<dynamic>.from({
+          {
+            "Error":
+                "Error to fetch username stories. Seems ${_username} does not have recent stories"
+          }
+        });
       } else {
+        List<dynamic> stories =
+            List<dynamic>.from(json.decode(responseStory.body)["data"]);
         //parsing data
         var data = {};
 

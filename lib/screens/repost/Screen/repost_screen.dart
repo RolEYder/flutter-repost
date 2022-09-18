@@ -6,6 +6,7 @@ import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:repost/screens/story/data.dart';
 import 'package:repost/services/story_service.dart';
 import 'package:repost/services/posts_service.dart';
 
@@ -27,7 +28,9 @@ class RepostScreen extends StatefulWidget {
 class _RepostScreenState extends State<RepostScreen> {
   final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
+  bool _isErrorStories = false;
   String HEADER = "";
+  String storiesHeader = "Select the story to repost";
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
   List<dynamic> CLICKED_POSTS = [];
@@ -59,6 +62,19 @@ class _RepostScreenState extends State<RepostScreen> {
   void getStoriesByUsername(BuildContext context, _username) async {
     _STORIES = [];
     var _stories = await StoryService().getStoriesByUserUsername(_username);
+    if (_stories[0]["Error"].toString() != "null" || _stories.isEmpty) {
+      setState(() {
+        print(_stories[0]["Error"] + "ss");
+        _isErrorStories = true;
+        storiesHeader = _stories[0]["Error"].toString();
+      });
+    } else if (_stories[0]["Error"].toString() == "null") {
+      setState(() {
+        _isErrorStories = false;
+        storiesHeader = "Select the story to repost";
+      });
+    }
+
     if (_stories.isEmpty) {
       _dialogBuilder(context, "Something unexpected occur",
           "Error to fetch stories username, please try again!");
@@ -144,6 +160,7 @@ class _RepostScreenState extends State<RepostScreen> {
                 onChanged: (value) async {
                   if (value.length == 0) {
                     POSTS.clear();
+                    storiesHeader = "Select the story to repost";
                     final prefs = await SharedPreferences.getInstance();
                     var areThereClickedPosts = prefs.getString('clicked');
                     if (areThereClickedPosts.toString() == "true") {
@@ -260,7 +277,7 @@ class _RepostScreenState extends State<RepostScreen> {
                     _dialogBuilder(context, "Oops!🤔",
                         "You must enter a proper Instagram username, url post or url username");
                   }
-                  // testing stories
+                  // getting username stories
                   getStoriesByUsername(context, inputValue.toString());
                 },
                 controller: _post,
@@ -301,18 +318,20 @@ class _RepostScreenState extends State<RepostScreen> {
                           const SizedBox(
                             height: 5,
                           ),
-                          const Text(
-                            "Select the user to repost",
+                          Text(
+                            storiesHeader.toString(),
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
-                          Stories(
-                            titleArr: titleArr,
-                            showPostDetail: true,
-                            stories: _STORIES,
-                          ),
+                          _isErrorStories == false
+                              ? Stories(
+                                  titleArr: titleArr,
+                                  showPostDetail: true,
+                                  stories: _STORIES,
+                                )
+                              : SizedBox.shrink(),
                           Text(
                             HEADER.toString(),
                             style: TextStyle(
@@ -330,7 +349,7 @@ class _RepostScreenState extends State<RepostScreen> {
                                   child: (POSTS.isNotEmpty)
                                       ? showInstagramPosts()
                                       : Text(
-                                          "There aren't current clicked posts",
+                                          "",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Colors.white,

@@ -23,9 +23,7 @@ class _DashBoardState extends State<DashBoard> {
     super.initState();
     initPlatformState();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
-      setState(() {
-        DatabaseHelper.instance.deleteDatabase();
-      });
+      setState(() {});
     });
   }
 
