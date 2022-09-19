@@ -235,7 +235,7 @@ class _RepostScheduleState extends State<RepostSchedule> {
                                     "You must to select a hashtag, a caption, and a remainder date before repost");
                               } else if (_captionSelected.isEmpty) {
                                 _dialogBuilder(context, "Oops!",
-                                    "You must select a caption befor");
+                                    "You must select a caption before");
                               } else if (_hashtagSelected.isEmpty) {
                                 _dialogBuilder(context, "Oops!",
                                     "You must select at least one hashtag before");
@@ -251,7 +251,9 @@ class _RepostScheduleState extends State<RepostSchedule> {
                                     widget.picprofile.toString(),
                                     _scheduleSelected.toString(),
                                     DateTime.now().toString(),
-                                    _hashtagSelected.toString());
+                                    _hashtagSelected.toString(),
+                                    widget.username,
+                                    widget.picprofile);
                                 Navigator.pop(context, "save");
                               }
                             },
@@ -280,18 +282,21 @@ class _RepostScheduleState extends State<RepostSchedule> {
     );
   }
 
-  void _insert(title, content, photo, date_end, created_at, hashtags) async {
+  void _insert(title, content, photo, date_end, created_at, hashtags, username,
+      profile_pic) async {
     Map<String, dynamic> row = {
       DatabaseHelper.columnTitleSchedulePosts: title,
       DatabaseHelper.columnContentSchedulePosts: content,
       DatabaseHelper.columnPhotoSchedulePosts: photo,
       DatabaseHelper.columnDateEndSchedulePosts: date_end,
       DatabaseHelper.columnCreateAtSchedulePosts: created_at,
-      DatabaseHelper.columnHashtagsSchedulePosts: hashtags
+      DatabaseHelper.columnHashtagsSchedulePosts: hashtags,
+      DatabaseHelper.columnUsernameSchedulePost: username,
+      DatabaseHelper.columnProfilePicSchedulePost: profile_pic
     };
     SchedulePosts schedulePosts = SchedulePosts.fromMap(row);
     DatabaseHelper.instance.insert_schedule_post(schedulePosts);
-    _showMessageInScaffold("Posts was Scheduled 👍 ");
+    _showMessageInScaffold("Post was scheduled 👍 ");
   }
 
   void _showMessageInScaffold(String message) {
@@ -353,9 +358,9 @@ class _RepostScheduleState extends State<RepostSchedule> {
     if (!mounted) return;
     setState(() {
       _captionSelected.add({
-        "id": result["id"].toString().isEmpty ? result["id"] : "",
-        "title": result["title"].toString().isEmpty ? result["title"] : "",
-        "content": result["content"].toString().isEmpty ? result["content"] : ""
+        "id": result["id"].toString(),
+        "title": result["title"].toString(),
+        "content": result["content"].toString()
       });
     });
   }

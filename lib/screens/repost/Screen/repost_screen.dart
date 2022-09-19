@@ -6,7 +6,6 @@ import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
 import 'package:repost/screens/repost/Widget/stories.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:repost/screens/story/data.dart';
 import 'package:repost/services/story_service.dart';
 import 'package:repost/services/posts_service.dart';
 
@@ -176,6 +175,7 @@ class _RepostScreenState extends State<RepostScreen> {
                   titleArr.clear();
                   titleArr.add(inputValue);
                   setState(() {
+                    _isErrorStories = true;
                     HEADER = "POSTS";
                   });
                   if (inputValue.isNotEmpty) {

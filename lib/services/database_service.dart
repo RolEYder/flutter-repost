@@ -20,6 +20,8 @@ class DatabaseHelper {
   ///table posts schedules
   static final tableSchedulePosts = "schedule_post";
   static final columnIdSchedulePosts = "id";
+  static final columnUsernameSchedulePost = "username";
+  static final columnProfilePicSchedulePost = "profile_pic";
   static final columnTitleSchedulePosts = "title";
   static final columnContentSchedulePosts = "content";
   static final columnPhotoSchedulePosts = "photo";
@@ -79,6 +81,8 @@ class DatabaseHelper {
       CREATE TABLE $tableSchedulePosts (
         $columnIdSchedulePosts  INTEGER PRIMARY KEY AUTOINCREMENT,
         $columnTitleSchedulePosts TEXT NOT NULL,
+        $columnUsernamePostsSearches TEXT NOT NULL,
+        $columnProfilePicSchedulePost TEXT NOT NULL,
         $columnContentSchedulePosts TEXT NOT NULL,
         $columnPhotoSchedulePosts TEXT NOT NULL,
         $columnDateEndSchedulePosts TEXT NOT NULL,
@@ -148,6 +152,8 @@ class DatabaseHelper {
   Future<int> insert_schedule_post(SchedulePosts schedulePosts) async {
     Database? db = await instance.database;
     return await db!.insert(tableSchedulePosts, {
+      "profile_pic": schedulePosts.profile_pic,
+      "username": schedulePosts.username,
       "title": schedulePosts.title,
       "content": schedulePosts.content,
       "photo": schedulePosts.photo,
@@ -163,12 +169,6 @@ class DatabaseHelper {
         .insert(table, {"content": caption.content, "title": caption.title});
   }
 
-  // get all rows
-  Future<List<Map<String, dynamic>>> getAllSchedulePostsRows() async {
-    Database? db = await instance.database;
-    return db!.query(tableSchedulePosts);
-  }
-
   Future<List<Map<String, dynamic>>> getAllRows() async {
     Database? db = await instance.database;
     return await db!.query(table);
@@ -177,6 +177,12 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getAllSearchersRowsPosts() async {
     Database? db = await instance.database;
     return await db!.query(tablePostsSearches);
+  }
+
+  // get all schedule post
+  Future<List<Map<String, dynamic>>> getAllSchedulePosts() async {
+    Database? db = await instance.database;
+    return await db!.query(tableSchedulePosts);
   }
 
   // query row
@@ -197,6 +203,12 @@ class DatabaseHelper {
     Database? db = await instance.database;
     return Sqflite.firstIntValue(
         await db!.rawQuery('SELECT COUNT (*) FROM $table'));
+  }
+
+  // clean history recent post
+  Future<int?> cleanHistory() async {
+    Database? db = await instance.database;
+    return await db!.delete(tablePostsSearches);
   }
 
   // update

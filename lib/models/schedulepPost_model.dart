@@ -1,4 +1,4 @@
-import '../services/database_service.dart';
+import 'package:repost/services/database_service.dart';
 
 class SchedulePosts {
   late int? id;
@@ -8,9 +8,11 @@ class SchedulePosts {
   late String? date_end;
   late String? hashtags;
   late String? created_at;
+  late String? username;
+  late String? profile_pic;
 
   SchedulePosts(this.id, this.title, this.content, this.photo, this.date_end,
-      this.created_at, this.hashtags);
+      this.created_at, this.hashtags, this.username, this.profile_pic);
 
   SchedulePosts.fromMap(Map<String, dynamic> map) {
     id = map["id"];
@@ -20,6 +22,8 @@ class SchedulePosts {
     created_at = map["created_at"];
     date_end = map["date_end"];
     hashtags = map["hashtags"];
+    username = map["username"];
+    profile_pic = map["profile_pic"];
   }
 
   Map<String, dynamic> toMap() {
@@ -30,7 +34,9 @@ class SchedulePosts {
       DatabaseHelper.columnPhotoSchedulePosts: photo,
       DatabaseHelper.columnDateEndSchedulePosts: date_end,
       DatabaseHelper.columnCreateAtSchedulePosts: created_at,
-      DatabaseHelper.columnHashtagsSchedulePosts: hashtags
+      DatabaseHelper.columnHashtagsSchedulePosts: hashtags,
+      DatabaseHelper.columnUsernamePostsSearches: username,
+      DatabaseHelper.columnProfilePicSchedulePost: profile_pic
     };
   }
 }

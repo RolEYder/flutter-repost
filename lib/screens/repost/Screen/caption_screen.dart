@@ -225,7 +225,7 @@ class _CaptionState extends State<Caption> {
                     children: [
                       Text(
                         textAlign: TextAlign.center,
-                        "Captions not found. Tap ... to add one",
+                        "Captions not found. Tap ••• to add one",
                         style: TextStyle(color: Colors.white, fontSize: 15),
                       )
                     ],

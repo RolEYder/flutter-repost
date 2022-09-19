@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:repost/helper/herpers.dart';
+import 'package:repost/services/database_service.dart';
 
 class PostService {
   /// Function to get all a post giving its shortcode
@@ -129,5 +130,11 @@ class PostService {
       print("Unable to load posts");
     }
     return dataParsed;
+  }
+
+  // Function to clean history of recent post
+  Future<int?> cleanRecentHistoryPosts() async {
+    final res = DatabaseHelper.instance.cleanHistory();
+    return res;
   }
 }
