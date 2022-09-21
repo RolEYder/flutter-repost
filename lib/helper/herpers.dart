@@ -21,11 +21,33 @@ bool hasValidUrlString(String url) {
 }
 
 bool isPostUrl(String _urlPosts) {
-  String pattern = r'/p.*/([^/]+)/?$';
+  String pattern = r'(?:https?:\/\/www\.)?instagram\.com\S*?\/p\/';
   RegExp regExp = new RegExp(pattern);
   if (_urlPosts.length == 0) {
     return false;
   } else if (!regExp.hasMatch(_urlPosts)) {
+    return false;
+  }
+  return true;
+}
+
+bool isStoryUrl(String _urlStory) {
+  String pattern = r'(?:https?:\/\/www\.)?instagram\.com\S*?\/stories\/';
+  RegExp regExp = new RegExp(pattern);
+  if (_urlStory.length == 0) {
+    return false;
+  } else if (!regExp.hasMatch(_urlStory)) {
+    return false;
+  }
+  return true;
+}
+
+bool isReelUrl(String _urlReel) {
+  String pattern = r'(?:https?:\/\/www\.)?instagram\.com\S*?\/reel\/';
+  RegExp regExp = new RegExp(pattern);
+  if (_urlReel.length == 0) {
+    return false;
+  } else if (!regExp.hasMatch(_urlReel)) {
     return false;
   }
   return true;

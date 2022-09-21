@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/StringExtension.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'screens/hastag/hastag.dart';
 import 'screens/more/morescreen.dart';
 import 'screens/pro/proscreen.dart';
@@ -87,7 +88,7 @@ class _DashBoardState extends State<DashBoard> {
           actions: [
             IconButton(
                 onPressed: () {
-                  _launchInstagramApp(Uri.parse("https://www.instagram.com"));
+                  _launchInstagramApp(context);
                 },
                 icon: Image.asset("assets/post.png"))
           ],
@@ -132,9 +133,39 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  Future<void> _launchInstagramApp(_url) async {
-    if (!await launchUrl(_url)) {
-      throw 'Could not launch $_url';
+  Future<void> _dialogBuilder(
+      BuildContext context, String title, String content) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title.toString()),
+          content: Text(content.toString()),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _launchInstagramApp(BuildContext context) async {
+    const nativeUrl = "instagram://";
+    const webUrl = "https://www.instagram.com/";
+    if (await canLaunchUrlString(nativeUrl)) {
+      await launch(nativeUrl);
+    } else if (await canLaunchUrlString(webUrl)) {
+      await launch(webUrl);
+    } else {
+      _dialogBuilder(context, "Error", "Unable to open Instagram");
     }
   }
 }

@@ -1,9 +1,11 @@
 // @dart=2.9
 
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:repost/dashboard.dart';
 import 'package:repost/screens/onboarding/onboarding_page.dart';
+import 'package:repost/services/purchase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final _configuration =
@@ -11,6 +13,7 @@ final _configuration =
 int initScreen;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
   await Purchases.configure(_configuration);
   SharedPreferences preferences = await SharedPreferences.getInstance();
   initScreen = await preferences.getInt('initScreen');
@@ -28,10 +31,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   void initializationSettingsApp() async {
+    gettingUserPurchaseInformation();
     if (initScreen == 0 || initScreen == null) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setBool("notification", false);
       await preferences.setBool('history', true);
+      await preferences.setString("subscription", "free");
+      await preferences.setString("language", "us");
+      await preferences.setBool("isLoggedInstagram", false);
     }
   }
 

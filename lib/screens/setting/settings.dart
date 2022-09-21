@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:repost/screens/pro/proscreen.dart';
 import 'package:repost/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:repost/services/posts_service.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);

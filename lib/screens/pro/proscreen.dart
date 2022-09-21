@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:repost/dashboard.dart';
 import 'package:repost/helper/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProScreen extends StatefulWidget {
   const ProScreen({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class ProScreen extends StatefulWidget {
 
 class _ProScreenState extends State<ProScreen> {
   int selectedTrial = -1;
+  String _subscriptionType = "";
 
   Widget customCard(String header, String number, String weeks,
       String topHeading, String image, int indexNo) {
@@ -84,6 +86,31 @@ class _ProScreenState extends State<ProScreen> {
     );
   }
 
+  Widget showMessageMembership(String subscription) {
+    try {
+      switch (subscription) {
+        case "best_offer":
+          return Text(
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+            "You already are subscribed to BEST OFFER subscription. You should change you subscription plan if you wish. ",
+            textAlign: TextAlign.center,
+          );
+
+        case "good_discount":
+          return Text(
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+            "You already are subscribed to GOOD DISCOUNT subscription. You should change you subscription plan if you wish.  ",
+            textAlign: TextAlign.center,
+          );
+      }
+    } catch (e) {
+      throw e;
+    }
+    return SizedBox.shrink();
+  }
+
   Widget customcontainer(String leading, String image) {
     return Container(
       decoration: BoxDecoration(
@@ -108,6 +135,22 @@ class _ProScreenState extends State<ProScreen> {
       TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white);
 
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      setState(() {
+        getSubscriptionPurchaseUser();
+      });
+    }
+  }
+
+  void getSubscriptionPurchaseUser() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    _subscriptionType = (await sharedPreferences.getString("subscription")!);
+    //  _subscriptionType = "good_discount";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
@@ -129,10 +172,7 @@ class _ProScreenState extends State<ProScreen> {
                         const Spacer(),
                         IconButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DashBoard()));
+                              Navigator.pop(context);
                             },
                             icon: Icon(
                               Icons.cancel,
@@ -210,10 +250,10 @@ class _ProScreenState extends State<ProScreen> {
               const SizedBox(
                 height: 20,
               ),
+              showMessageMembership(_subscriptionType),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  customCard("Free", "1", "Week", "Free Trial", "trial.png", 0),
                   customCard("\$22.99", "6", "Months", "Best Offer",
                       "best_offer.png", 1),
                   customCard("\$4.99", "1", "Month", "Good Discount",
@@ -255,7 +295,6 @@ class _ProScreenState extends State<ProScreen> {
                       }
                       Offerings offerings = await Purchases.getOfferings();
                       var myProductList = offerings.current!.availablePackages;
-                      print(myProductList.length);
                       switch (selectedTrial) {
                         case 0:
                           try {
@@ -310,25 +349,6 @@ class _ProScreenState extends State<ProScreen> {
                           break;
                         default:
                       }
-                      // showModalBottomSheet(
-                      //   useRootNavigator: true,
-                      //   isDismissible: true,
-                      //   isScrollControlled: true,
-                      //   backgroundColor: kColorBackground,
-                      //   shape: const RoundedRectangleBorder(
-                      //     borderRadius:
-                      //         BorderRadius.vertical(top: Radius.circular(25.0)),
-                      //   ),
-                      //   context: context,
-                      //   builder: (BuildContext context) {
-                      //     return StatefulBuilder(builder: (BuildContext context,
-                      //         StateSetter setModalState) {
-                      //       return Paywall(
-                      //         offering: offerings.current,
-                      //       );
-                      //     });
-                      //   },
-                      // );
                     },
                     child: const Text(
                       "Subscribe",

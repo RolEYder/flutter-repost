@@ -48,7 +48,6 @@ dependencies:
   sqflite: ^2.0.3+1
   progress_dialog: ^1.2.4
   url_launcher: ^6.1.5
-  firebase_core: ^1.21.1
   overlay_support: ^2.0.1
   onesignal_flutter: ^3.4.1
   video_player: ^2.4.7
@@ -59,6 +58,10 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   flutter_cupertino_datetime_picker: ^3.0.0
   purchases_flutter: ^4.2.1
+  provider: ^6.0.3
+  fluttertoast: ^8.0.9
+ 
+
   
 
 dev_dependencies:

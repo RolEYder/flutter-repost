@@ -1,6 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:repost/helper/herpers.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/screens/repost/Widget/post.dart';
@@ -17,6 +18,7 @@ import 'package:repost/models/story_model.dart';
 
 import 'package:repost/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key key}) : super(key: key);
@@ -36,6 +38,8 @@ class _RepostScreenState extends State<RepostScreen> {
   List<dynamic> errors = [];
   List<Story> _STORIES = [];
   List<String> titleArr = [];
+  String _valueSearch = "";
+  String _typeSearch = "";
 
   void getPostByShortCode(String _shortcode) async {
     final _posts = await PostService().getPostByShortCode(_shortcode);
@@ -137,10 +141,84 @@ class _RepostScreenState extends State<RepostScreen> {
     ]));
   }
 
+  FToast ftoast;
   @override
   void initState() {
     super.initState();
+    ftoast = FToast();
+    ftoast.init(context);
     getAllClickedPosts();
+    _getClipboard();
+  }
+
+  _showToast() {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.black,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.copy,
+            color: Colors.white,
+          ),
+          SizedBox(
+            width: 12.0,
+          ),
+          Text(
+            "Repost posted from Instagram",
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+
+    ftoast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 2),
+    );
+  }
+
+  void _getClipboard() async {
+    ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (hasValidUrlString(data.text)) {
+      print(data.text);
+      var url = data.text;
+      // post
+      if (isPostUrl(url)) {
+        _showToast();
+        var pattern =
+            r'(?:https?:\/\/www\.)?instagram\.com\S*?\/p\/(\w{11})\/?';
+        RegExp regExp = RegExp(pattern);
+        if (regExp.hasMatch(url)) {
+          print(url);
+          var value = regExp.firstMatch(url)?.group(1);
+          print(value);
+          setState(() {
+            _valueSearch = value;
+            _typeSearch = "post";
+          });
+        }
+      }
+      // story
+      else if (isStoryUrl(data.text)) {
+        var storyPattern =
+            r'(?:https?:\/\/)?(?:www.)?instagram.com\/?([stories]+)?\/([a-zA-Z0-9\-\_\.]+)\/?([0-9]+)?';
+        RegExp regExp = RegExp(storyPattern);
+        if (regExp.hasMatch(url)) {
+          var value = regExp.firstMatch(url)?.group(3);
+          print(value);
+          setState(() {
+            _valueSearch = value;
+            _typeSearch = "story";
+          });
+        }
+      }
+    }
   }
 
   Widget build(BuildContext context) {
