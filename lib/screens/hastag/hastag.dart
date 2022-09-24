@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
-import '../repost/Screen/repost_schedule_screen.dart';
 import 'selected_hastag.dart';
 import 'package:repost/services/hashtag_servicer.dart';
 
@@ -266,18 +265,6 @@ class _HastagState extends State<Hastag> {
                                           this.selectedStory!(
                                               this.categoryTitleArr![i]);
                                         });
-                                      }
-                                      if (showPostDetail) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: ((context) =>
-                                                    RepostSchedule(
-                                                        picprofile:
-                                                            "/assets/category4.png",
-                                                        CustomCaption: "Custom",
-                                                        username: "username",
-                                                        uid: "uid"))));
                                       }
                                     },
                                     child: Column(

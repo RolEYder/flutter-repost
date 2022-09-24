@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
+import 'package:repost/screens/repost/Screen/repost_schedule_screen_paste.dart';
 import 'package:repost/services/database_service.dart';
 import 'package:repost/models/searcherPost_model.dart';
 
-class Posts extends StatefulWidget {
+class PostPasted extends StatefulWidget {
   final String uid;
   final String username;
-  final String text;
-  final String thumbnail;
-  late final String profilePic;
-  Posts(
+  final bool is_video;
+  final String caption;
+  final String display_url;
+  final List<Map<String, dynamic>> content;
+  late final String profile_pic_url;
+  PostPasted(
       {Key? key,
       required this.uid,
       required this.username,
-      required this.text,
-      required this.thumbnail,
-      required this.profilePic})
+      required this.caption,
+      required this.display_url,
+      required this.content,
+      required this.is_video,
+      required this.profile_pic_url})
       : super(key: key);
   @override
-  State<Posts> createState() => _PostState();
+  State<PostPasted> createState() => _PostState();
 }
 
-class _PostState extends State<Posts> {
+class _PostState extends State<PostPasted> {
   @override
   void initState() {
     super.initState();
@@ -36,14 +40,18 @@ class _PostState extends State<Posts> {
           return GestureDetector(
               onTap: () {
                 //saving clicked posts
-                _saveClickedPosts(widget.text, widget.uid, widget.profilePic,
-                    widget.thumbnail, widget.username);
+                // _saveClickedPosts(widget.caption, widget.uid, widget.profile_pic_url,
+                //     widget.thumbnail, widget.username);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => RepostSchedule(
-                              picprofile: widget.thumbnail.toString(),
-                              CustomCaption: widget.text.toString(),
+                        builder: (context) => RepostSchedulePasted(
+                              content: widget.content,
+                              display_url: widget.display_url,
+                              is_video: widget.is_video,
+                              profile_pic_url:
+                                  widget.profile_pic_url.toString(),
+                              caption: widget.caption.toString(),
                               username: widget.username,
                               uid: widget.uid,
                             )));
@@ -59,12 +67,46 @@ class _PostState extends State<Posts> {
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(8),
                             bottomLeft: Radius.circular(8)),
-                        child: SizedBox(
-                          height: 125,
-                          child: Image.network(
-                            widget.thumbnail.toString(),
-                            fit: BoxFit.cover,
-                          ),
+                        child: Stack(
+                          children: <Widget>[
+                            SizedBox(
+                              height: 125,
+                              width: 130,
+                              child: Image.network(
+                                widget.display_url.toString(),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            (widget.is_video)
+                                ? new Positioned(
+                                    bottom: 10,
+                                    right:
+                                        10, //give the values according to your requirement
+                                    child: Icon(
+                                      Icons.videocam,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : (!widget.is_video & !widget.content.isEmpty)
+                                    ? new Positioned(
+                                        bottom: 10,
+                                        right:
+                                            10, //give the values according to your requirement
+                                        child: Icon(
+                                          Icons.content_copy,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : new Positioned(
+                                        bottom: 10,
+                                        right:
+                                            10, //give the values according to your requirement
+                                        child: Icon(
+                                          Icons.image,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                          ],
                         ),
                       ),
                     ),
@@ -99,7 +141,7 @@ class _PostState extends State<Posts> {
                                       CircleAvatar(
                                         radius: 18,
                                         backgroundImage: NetworkImage(
-                                            widget.profilePic.toString()),
+                                            widget.profile_pic_url.toString()),
                                       ),
                                       SizedBox(
                                         width: 10,
@@ -130,7 +172,7 @@ class _PostState extends State<Posts> {
                             Padding(
                               padding: EdgeInsets.only(left: 12),
                               child: Text(
-                                widget.text.toString(),
+                                widget.caption.toString(),
                                 maxLines: 2,
                                 style: TextStyle(
                                     color: Colors.white,

@@ -5,8 +5,129 @@ import 'package:repost/helper/herpers.dart';
 import 'package:repost/services/database_service.dart';
 
 class PostService {
+  Future<Map<String, dynamic>> getReelPasted(String _shortcode) async {
+    Map<String, dynamic> reel = {};
+    List<dynamic> nodes = [];
+    List<Map<String, dynamic>> images = [];
+    var url =
+        "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" +
+            _shortcode;
+    final http.Response response = await http.get(Uri.parse(url), headers: {
+      "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+      "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+    });
+    final data = json.decode(response.body);
+    reel = {
+      "uid": data["id"],
+      "shortcode": data["shortcode"],
+      "is_video": data["is_video"],
+      "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
+      "profile_pic_url": data["owner"]["profile_pic_url"],
+      "username": data["owner"]["username"],
+      "display_url": data["display_url"],
+      "is_verified": data["owner"]["is_verified"],
+      "accessibility_caption": data["accessibility_caption"]
+    };
+    if (!reel["is_video"]) {
+      nodes = data["edge_sidecar_to_children"] == null
+          ? List.empty()
+          : data["edge_sidecar_to_children"]["edges"];
+      if (nodes.length != 0) {
+        for (var element in nodes) {
+          if (element["node"]["is_video"]) {
+            images.add({
+              "id": element["node"]["id"],
+              "video_url": element["video_url"].toString(),
+              "has_audio": element["node"]["has_audio"]
+            });
+          } else {
+            images.add({
+              "typeimage": element["node"]["__typename"].toString(),
+              "id": element["node"]["id"].toString(),
+              "display_url_image": element["node"]["display_url"].toString(),
+              "accessibility_caption":
+                  element["node"]["accessibility_caption"].toString()
+            });
+          }
+        }
+      }
+      reel["content"] = images;
+    } else {
+      final video = [
+        {
+          "has_audio": data["has_audio"],
+          "video_url": data["video_url"].toString(),
+        }
+      ];
+      reel["content"] = video;
+    }
+    return reel;
+  }
+
+  Future<Map<String, dynamic>> getPostPasted(String _shortcode) async {
+    Map<String, dynamic> post = {};
+    List<dynamic> nodes = [];
+    List<Map<String, dynamic>> images = [];
+
+    var url =
+        "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" +
+            _shortcode;
+    final http.Response response = await http.get(Uri.parse(url), headers: {
+      "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+      "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+    });
+    final data = json.decode(response.body);
+    post = {
+      "uid": data["id"],
+      "shortcode": data["shortcode"],
+      "is_video": data["is_video"],
+      "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
+      "profile_pic_url": data["owner"]["profile_pic_url"],
+      "username": data["owner"]["username"],
+      "display_url": data["display_url"],
+      "is_verified": data["owner"]["is_verified"],
+      "accessibility_caption": data["accessibility_caption"]
+    };
+
+    if (!post["is_video"]) {
+      nodes = data["edge_sidecar_to_children"] == null
+          ? List.empty()
+          : data["edge_sidecar_to_children"]["edges"];
+      if (nodes.length != 0) {
+        for (var element in nodes) {
+          if (element["node"]["is_video"]) {
+            images.add({
+              "id": element["node"]["id"],
+              "video_url": element["node"]["video_url"].toString(),
+              "has_audio": element["node"]["has_audio"]
+            });
+          } else {
+            images.add({
+              "typeimage": element["node"]["__typename"].toString(),
+              "id": "'" + element["node"]["id"].toString() + "'",
+              "display_url_image": element["node"]["display_url"].toString(),
+              "accessibility_caption":
+                  element["node"]["accessibility_caption"].toString()
+            });
+          }
+        }
+      }
+      post["content"] = images;
+    } else {
+      final video = [
+        {
+          "has_audio": data["has_audio"],
+          "video_url": data["video_url"].toString()
+        }
+      ];
+      post["content"] = video;
+    }
+    return post;
+  }
+
   /// Function to get all a post giving its shortcode
   /// @shortcode [String] post shortcode
+  ///
   Future<Map<String, dynamic>?> getPostByShortCode(String shortcode) async {
     Map<String, dynamic> dataParsed = {};
     var url =

@@ -1,23 +1,17 @@
 // @dart=2.9
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:repost/helper/herpers.dart';
-import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
-import 'package:repost/screens/repost/Widget/post.dart';
-import 'package:repost/screens/repost/Widget/stories.dart';
+import 'package:repost/models/content_model.dart';
+import 'package:repost/screens/repost/Widget/post_paste.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:repost/services/story_service.dart';
 import 'package:repost/services/posts_service.dart';
 
 import 'package:repost/services/database_service.dart';
-import 'package:repost/models/searcherPost_model.dart';
 import 'package:repost/services/database_service.dart' as dbHelper;
-
-import 'package:repost/models/story_model.dart';
-
-import 'package:repost/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class RepostScreen extends StatefulWidget {
@@ -27,117 +21,73 @@ class RepostScreen extends StatefulWidget {
 }
 
 class _RepostScreenState extends State<RepostScreen> {
-  final TextEditingController _post = TextEditingController();
   bool _isLoading = false;
-  bool _isErrorStories = false;
-  String HEADER = "";
-  String storiesHeader = "Select the story to repost";
   List<String> STORIES = [];
   List<dynamic> POSTS = [];
-  List<dynamic> CLICKED_POSTS = [];
-  List<dynamic> errors = [];
-  List<Story> _STORIES = [];
-  List<String> titleArr = [];
+  Map<String, dynamic> PASTED = {};
+  List<dynamic> SAVE_DATA = [];
   String _valueSearch = "";
   String _typeSearch = "";
 
-  void getPostByShortCode(String _shortcode) async {
-    final _posts = await PostService().getPostByShortCode(_shortcode);
-    String image = _posts["image"].toString();
-    String caption = _posts["caption"].toString();
-    String uid = _posts["id"].toString();
-    String username = _posts["username"] as String;
-    String thumbnailpic = _posts["thumbnailpic"] as String;
-    //save posts
-    saveClickedPosts(caption, uid, image, thumbnailpic, username);
-    // open up Reposts schedule
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: ((context) => RepostSchedule(
-                  picprofile: image,
-                  CustomCaption: caption,
-                  uid: uid,
-                  username: username,
-                ))));
+  Widget showInstagramPostsPasted() {
+    return Column(children: <Widget>[
+      PostPasted(
+          uid: PASTED["id"].toString(),
+          username: PASTED["username"],
+          caption: PASTED["caption"],
+          display_url: PASTED["display_url"],
+          content: PASTED["content"],
+          is_video: PASTED["is_video"],
+          profile_pic_url: PASTED["profile_pic_url"]),
+    ]);
   }
 
-  void getStoriesByUsername(BuildContext context, _username) async {
-    _STORIES = [];
-    var _stories = await StoryService().getStoriesByUserUsername(_username);
-    if (_stories[0]["Error"].toString() != "null" || _stories.isEmpty) {
-      setState(() {
-        print(_stories[0]["Error"] + "ss");
-        _isErrorStories = true;
-        storiesHeader = _stories[0]["Error"].toString();
-      });
-    } else if (_stories[0]["Error"].toString() == "null") {
-      setState(() {
-        _isErrorStories = false;
-        storiesHeader = "Select the story to repost";
-      });
-    }
+  /// show saved data
+  ///
+  List<Map<String, dynamic>> getVideoContet(int index) {
+    //print(SAVE_DATA[index]["content"][4]);
+    print(jsonDecode(SAVE_DATA[index]["content"])[0]["video_url"]);
+    List<Map<String, dynamic>> content = [];
+    content.add({
+      "has_audio": jsonDecode(SAVE_DATA[index]["content"])[0]["has_audio"],
+      "video_url": jsonDecode(SAVE_DATA[index]["content"])[0]["video_url"]
+    });
+    return content;
+  }
 
-    if (_stories.isEmpty) {
-      _dialogBuilder(context, "Something unexpected occur",
-          "Error to fetch stories username, please try again!");
-    } else {
-      final User user = User(
-          name: _stories[0]["username"].toString(),
-          profileImageUrl: _stories[0]["profile_url"].toString());
-      for (var element = 1; element < _stories.length; element++) {
-        _STORIES.add(Story(
-            url: _stories[element]["url"],
-            media: (_stories[element]["media_type"] == 1
-                ? MediaType.image
-                : MediaType.video),
-            duration: (_stories[element]["media_type"] == 2)
-                ? Duration(seconds: 0)
-                : Duration(
-                    seconds: _stories[element]["video_duration"] == null
-                        ? 5
-                        : _stories[element]["video_duration"]),
-            user: user));
+  List<Map<String, dynamic>> getContent(int index) {
+    List<Map<String, dynamic>> content = [];
+
+    if (jsonDecode(SAVE_DATA[index]["content"]).isNotEmpty) {
+      for (var i = 0; i < jsonDecode(SAVE_DATA[index]["content"]).length; i++) {
+        content.add({
+          "typeimage": jsonDecode(SAVE_DATA[index]["content"])[i]["typeimage"],
+          "id": jsonDecode(SAVE_DATA[index]["content"])[i]["id"],
+          "display_url_image": jsonDecode(SAVE_DATA[index]["content"])[i]
+              ["display_url_image"]
+        });
       }
-    }
-  }
-
-  void getPostsByUsername(BuildContext context, _username) async {
-    var _posts = await PostService().getPostsByUsername(_username);
-    if (_posts[0]["type"] == "error") {
-      getAllClickedPosts();
-      _dialogBuilder(context, "Something unexpected occur",
-          _posts[0]["message"] + " of user " + _username.toString());
     } else {
-      setState(() {
-        POSTS = _posts;
-      });
+      content = new List<Map<String, dynamic>>.empty();
     }
+
+    return content;
   }
 
-  Widget showInstagramPosts() {
+  Widget showArchiveContent() {
+    var counter = 0;
     return new GestureDetector(
         child: Column(children: <Widget>[
-      ...POSTS.map((e) => Posts(
-            uid: e["id"].toString(),
-            username: e["username"],
-            text: (e["text"].toString()),
-            thumbnail: e["display_url"].toString(),
-            profilePic: e["profile_pic"].toString(),
-          ))
-    ]));
-  }
-
-  Widget showInstagramClickedPosts() {
-    return new GestureDetector(
-        child: Column(children: <Widget>[
-      ...CLICKED_POSTS.map((e) => Posts(
-            uid: e["uid"],
-            username: e["username"],
-            text: (e["content"].toString()),
-            thumbnail: e["thumbnailpic"].toString(),
-            profilePic: e["profilepic"].toString(),
-          ))
+      ...SAVE_DATA.map((e) => PostPasted(
+          uid: e["uid"].toString(),
+          username: e["username"].toString(),
+          caption: e["caption"].toString(),
+          display_url: e["display_url"].toString(),
+          content: e["is_video"] == 1
+              ? getVideoContet(counter++)
+              : getContent(counter++),
+          is_video: e["is_video"] == 1 ? true : false,
+          profile_pic_url: e["profile_pic_url"]))
     ]));
   }
 
@@ -147,11 +97,11 @@ class _RepostScreenState extends State<RepostScreen> {
     super.initState();
     ftoast = FToast();
     ftoast.init(context);
-    getAllClickedPosts();
-    _getClipboard();
+    getAllArchiveContent();
+    getClipboardPastedLinks();
   }
 
-  _showToast() {
+  showToast(String desc) {
     Widget toast = Container(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
@@ -169,7 +119,7 @@ class _RepostScreenState extends State<RepostScreen> {
             width: 12.0,
           ),
           Text(
-            "Repost posted from Instagram",
+            desc,
             style: TextStyle(color: Colors.white),
           ),
         ],
@@ -183,25 +133,59 @@ class _RepostScreenState extends State<RepostScreen> {
     );
   }
 
-  void _getClipboard() async {
+  void getClipboardPastedLinks() async {
     ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
     if (hasValidUrlString(data.text)) {
-      print(data.text);
       var url = data.text;
       // post
       if (isPostUrl(url)) {
-        _showToast();
-        var pattern =
-            r'(?:https?:\/\/www\.)?instagram\.com\S*?\/p\/(\w{11})\/?';
+        showToast("Repost posted from Instagram");
+        var pattern = "\/p\/(.*?)\/";
         RegExp regExp = RegExp(pattern);
         if (regExp.hasMatch(url)) {
-          print(url);
           var value = regExp.firstMatch(url)?.group(1);
-          print(value);
+          var _post = await PostService().getPostPasted(value);
+          String shortcode = _post["shortcode"].toString();
+          String uid = _post["uid"].toString();
+          int is_video = _post["is_video"] ? 1 : 0;
+          String caption = _post["caption"].toString();
+          String profile_pic_url = _post["profile_pic_url"].toString();
+          String username = _post["username"].toString();
+          String display_url = _post["display_url"].toString();
+          int is_verified = _post["is_verified"] ? 1 : 0;
+          String accessibility_caption =
+              _post["accessibility_caption"].toString();
+          List<Map<String, dynamic>> content = [];
+
+          print(_post["content"].isNotEmpty);
+          if (_post["content"].isNotEmpty) {
+            content = _post["content"];
+          } else {
+            content = new List<Map<String, dynamic>>.empty();
+          }
+          saveArchived(
+              shortcode,
+              uid,
+              is_video,
+              caption,
+              profile_pic_url,
+              username,
+              display_url,
+              is_verified,
+              accessibility_caption,
+              content);
           setState(() {
+            PASTED.addAll(_post);
             _valueSearch = value;
             _typeSearch = "post";
+            _isLoading = true;
           });
+
+          Future.delayed(Duration(seconds: 5)).then((value) => {
+                setState(() {
+                  _isLoading = false;
+                })
+              });
         }
       }
       // story
@@ -218,7 +202,57 @@ class _RepostScreenState extends State<RepostScreen> {
           });
         }
       }
+      // rell
+      else if (isReelUrl(data.text)) {
+        showToast("Reel posted from Instagram");
+        var pattern = "\/reel\/(.*?)\/";
+        RegExp regExp = RegExp(pattern);
+        if (regExp.hasMatch(url)) {
+          var value = regExp.firstMatch(url)?.group(1);
+          var _reel = await PostService().getReelPasted(value);
+          String shortcode = _reel["shortcode"].toString();
+          String uid = _reel["uid"].toString();
+          int is_video = _reel["is_video"] ? 1 : 0;
+          String caption = _reel["caption"].toString();
+          String profile_pic_url = _reel["profile_pic_url"].toString();
+          String username = _reel["username"].toString();
+          String display_url = _reel["display_url"].toString();
+          int is_verified = _reel["is_verified"] ? 1 : 0;
+          String accessibility_caption =
+              _reel["accessibility_caption"].toString();
+          List<Map<String, dynamic>> content = [];
+          if (_reel["content"].isNotEmpty) {
+            content = _reel["content"];
+          } else {
+            content = new List<Map<String, dynamic>>.empty();
+          }
+          saveArchived(
+              shortcode,
+              uid,
+              is_video,
+              caption,
+              profile_pic_url,
+              username,
+              display_url,
+              is_verified,
+              accessibility_caption,
+              content);
+          setState(() {
+            PASTED.addAll(_reel);
+            _valueSearch = value;
+            _typeSearch = "reel";
+            _isLoading = true;
+          });
+          Future.delayed(Duration(seconds: 5)).then((value) => {
+                setState(() {
+                  _isLoading = false;
+                })
+              });
+        }
+      }
     }
+    Future.delayed(Duration(seconds: 3))
+        .then((value) => {showArchiveContent()});
   }
 
   Widget build(BuildContext context) {
@@ -230,283 +264,105 @@ class _RepostScreenState extends State<RepostScreen> {
         padding: const EdgeInsets.only(left: 12, top: 12),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: TextField(
-                style: const TextStyle(fontSize: 16),
-                onChanged: (value) async {
-                  if (value.length == 0) {
-                    POSTS.clear();
-                    storiesHeader = "Select the story to repost";
-                    final prefs = await SharedPreferences.getInstance();
-                    var areThereClickedPosts = prefs.getString('clicked');
-                    if (areThereClickedPosts.toString() == "true") {
-                      getAllClickedPosts();
-                      setState(() {
-                        HEADER = "RECENT POSTS";
-                      });
-                    }
-                  }
-                },
-                onSubmitted: (inputValue) async {
-                  CLICKED_POSTS = [];
-                  titleArr.clear();
-                  titleArr.add(inputValue);
-                  setState(() {
-                    _isErrorStories = true;
-                    HEADER = "POSTS";
-                  });
-                  if (inputValue.isNotEmpty) {
-                    /// checking if is an username url or username
-                    if (hasValidUrlString(inputValue.toString())) {
-                      inputValue =
-                          inputValue.substring(0, inputValue.length - 1);
-
-                      /// if is a post
-                      if (isPostUrl(inputValue.toString())) {
-                        String shortcode =
-                            getShortCodeFromUrl(inputValue.toString());
-                        pr.show();
-                        Future.delayed(Duration(seconds: 5)).then((value) => {
-                              pr.hide().whenComplete(() => {
-                                    setState(() {
-                                      getPostByShortCode(shortcode.toString());
-                                    })
-                                  })
-                            });
-                      } else {
-                        /// then, is a username
-                        String username =
-                            getShortCodeFromUrl(inputValue.toString());
-                        // checking if username is private
-                        var _isPrivate = await PostService()
-                            .isPrivateUsername(inputValue.toString());
-                        if (_isPrivate == false) {
-                          getPostsByUsername(context, username);
-                          pr.show();
-                          Future.delayed(Duration(seconds: 10))
-                              .then((value) => {
-                                    pr.hide().whenComplete(() => {
-                                          setState(() {
-                                            _isLoading = false;
-                                          })
-                                        })
-                                  });
-                          setState(() {
-                            _isLoading = true;
-                          });
-                        } else {
-                          _dialogBuilder(
-                              context,
-                              "Unable to get user information",
-                              "Seems that the instagram profile is private. Try to enter another username.");
-                        }
-                      }
-                    }
-                    // if is a username
-                    else if ('${inputValue[0].toString()}' == "@") {
-                      var isPrivate = await PostService().isPrivateUsername(
-                          inputValue.toString().substring(1));
-                      if (!isPrivate) {
-                        getPostsByUsername(
-                            context, inputValue.toString().substring(1));
-                        Future.delayed(Duration(seconds: 10)).then((value) => {
-                              pr.hide().whenComplete(() => {
-                                    setState(() {
-                                      _isLoading = false;
-                                    })
-                                  })
-                            });
-                        setState(() {
-                          _isLoading = true;
-                        });
-                      } else {
-                        _dialogBuilder(
-                            context,
-                            "Unable to get user information",
-                            "Seems that the instagram profile is private. Try to enter another username.");
-                      }
-                    } else {
-                      final isPrivate = await PostService()
-                          .isPrivateUsername(inputValue.toString());
-                      if (!isPrivate) {
-                        getPostsByUsername(context, inputValue.toString());
-                        pr.show();
-                        Future.delayed(Duration(seconds: 10)).then((value) => {
-                              pr.hide().whenComplete(() => {
-                                    setState(() {
-                                      _isLoading = false;
-                                    })
-                                  })
-                            });
-                        setState(() {
-                          _isLoading = true;
-                        });
-                      } else {
-                        _dialogBuilder(context, "Unable to get userinformation",
-                            "Seems instagram username is private. Try to enter another username");
-                      }
-                    }
-                  } else {
-                    setState(() {
-                      getAllClickedPosts();
-                      HEADER = "RECENT POSTS";
-                    });
-                    _dialogBuilder(context, "Oops!🤔",
-                        "You must enter a proper Instagram username, url post or url username");
-                  }
-                  // getting username stories
-                  getStoriesByUsername(context, inputValue.toString());
-                },
-                controller: _post,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    hintText: "Enter Instagram username or post url",
-                    suffixIcon: IconButton(
-                      onPressed: _post.clear,
-                      icon: Icon(Icons.clear),
-                      iconSize: 16,
-                      color: Colors.white,
+            Expanded(
+              child: Center(
+                child: ListView(
+                  children: [
+                    const SizedBox(
+                      height: 40,
                     ),
-                    prefixIcon: const Icon(
-                      Icons.search,
+                    PASTED.isNotEmpty
+                        ? GestureDetector(
+                            child: Column(
+                              children: <Widget>[
+                                const Text(
+                                  "Current Pasted",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 30,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(right: 12),
+                                    child: showInstagramPostsPasted())
+                              ],
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    const SizedBox(
+                      height: 25,
                     ),
-                    filled: true,
-                    fillColor: const Color.fromARGB(255, 58, 57, 57),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8))),
+                    const Text(
+                      "Active",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                          color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    SAVE_DATA.isNotEmpty
+                        ? showArchiveContent()
+                        : Text("There are not archive content yet."),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    const Text(
+                      "Reposted",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            !_isLoading
-                ? Expanded(
-                    child: Center(
-                      child: ListView(
-                        children: [
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          const Text(
-                            "REPOST STORIES",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                                color: Colors.white),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            storiesHeader.toString(),
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          _isErrorStories == false
-                              ? Stories(
-                                  titleArr: titleArr,
-                                  showPostDetail: true,
-                                  stories: _STORIES,
-                                )
-                              : SizedBox.shrink(),
-                          Text(
-                            HEADER.toString(),
-                            style: TextStyle(
-                                fontSize: 52,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          (CLICKED_POSTS.isEmpty)
-                              ? GestureDetector(
-                                  child: Padding(
-                                  padding: EdgeInsets.only(right: 12),
-                                  child: (POSTS.isNotEmpty)
-                                      ? showInstagramPosts()
-                                      : Text(
-                                          "",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                ))
-                              : GestureDetector(
-                                  child: Padding(
-                                  padding: EdgeInsets.only(right: 12),
-                                  child: (CLICKED_POSTS.isNotEmpty)
-                                      ? showInstagramClickedPosts()
-                                      : showInstagramPosts(),
-                                ))
-                        ],
-                      ),
-                    ),
-                  )
-                : const CircularProgressIndicator(),
+            )
           ],
         ),
       ),
     );
   }
 
-  Future<void> _dialogBuilder(
-      BuildContext context, String title, String content) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title.toString()),
-          content: Text(content.toString()),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  //save clicked posts
-  Future<void> saveClickedPosts(
-      content, uid, profilepic, thumbnailpic, username) async {
+  /// save archived
+  Future<void> saveArchived(
+      shortcode,
+      uid,
+      is_video,
+      caption,
+      profile_pic_url,
+      username,
+      display_url,
+      is_verified,
+      accessibility_caption,
+      content) async {
     Map<String, dynamic> row = {
-      DatabaseHelper.columnContentPostsSearches: content,
-      DatabaseHelper.columnCodePostSearches: uid,
-      DatabaseHelper.columnProfilePicPostsSearches: profilepic,
-      DatabaseHelper.columnThumbnailPicPostsSearches: thumbnailpic,
-      DatabaseHelper.columnUsernamePostsSearches: username,
-      DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()
+      DatabaseHelper.columnArchivedShortcode: shortcode,
+      DatabaseHelper.columnArchivedUid: uid,
+      DatabaseHelper.columnArchivedIsVideo: is_video,
+      DatabaseHelper.columnArchivedCaption: caption,
+      DatabaseHelper.columnArchivedProfilePicUrl: profile_pic_url,
+      DatabaseHelper.columnArchivedUsername: username,
+      DatabaseHelper.columnArchivedDisplayUrl: display_url,
+      DatabaseHelper.columnArchivedIsVerified: is_verified,
+      DatabaseHelper.columnArchivedAccessibilityCaption: accessibility_caption,
+      DatabaseHelper.columnArchivedContent: content
     };
-    SearchersPosts searchersPosts = SearchersPosts.fromMap(row);
-    DatabaseHelper.instance.insert_searcher_post(searchersPosts);
+    Archived archived = Archived.fromMap(row);
+    DatabaseHelper.instance.insert_archived(archived);
   }
 
-  void getAllClickedPosts() async {
-    final allClickPosts =
-        await dbHelper.DatabaseHelper.instance.getAllSearchersRowsPosts();
-    final prefs = await SharedPreferences.getInstance();
-    if (allClickPosts.isNotEmpty) {
-      prefs.setString('clicked', "true");
-      prefs.setBool('history', true);
+  /// getting archived
+  void getAllArchiveContent() async {
+    final response =
+        await dbHelper.DatabaseHelper.instance.get_all_archived_rows();
+    if (response.isNotEmpty) {
       setState(() {
-        CLICKED_POSTS = allClickPosts;
-        HEADER = "RECENT POSTS";
-      });
-    } else {
-      setState(() {
-        prefs.setString('clicked', "false");
-        prefs.setBool('history', false);
+        SAVE_DATA = response;
       });
     }
   }

@@ -1,11 +1,16 @@
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
+import 'package:repost/models/content_model.dart';
 import 'package:repost/models/searcherPost_model.dart';
 import 'package:repost/models/caption_model.dart';
 import 'package:repost/models/schedulepPost_model.dart';
 import 'package:path/path.dart';
+import 'dart:convert' show JsonEncoder, jsonDecode, jsonEncode, utf8;
 import 'package:repost/models/stories_repost_model.dart';
 import 'package:sqflite/sqflite.dart'
     show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;
+
+import 'package:mysql1/mysql1.dart';
 
 class DatabaseHelper {
   static final _databaseName = "database.db";
@@ -16,6 +21,20 @@ class DatabaseHelper {
   static final columnId = "id";
   static final columnContent = "content";
   static final columnTitle = "title";
+
+  /// table archived
+  static final tableArchived = "archived";
+  static final columnArchivedId = "id";
+  static final columnArchivedUid = "uid";
+  static final columnArchivedShortcode = "shortcode";
+  static final columnArchivedIsVideo = "is_video";
+  static final columnArchivedCaption = "caption";
+  static final columnArchivedProfilePicUrl = "profile_pic_url";
+  static final columnArchivedUsername = "username";
+  static final columnArchivedDisplayUrl = "display_url";
+  static final columnArchivedIsVerified = "is_verified";
+  static final columnArchivedAccessibilityCaption = "accessibility_caption";
+  static final columnArchivedContent = "content";
 
   ///table posts schedules
   static final tableSchedulePosts = "schedule_post";
@@ -103,7 +122,21 @@ class DatabaseHelper {
       )
 
     ''');
-
+    await db.execute(''' 
+    CREATE TABLE $tableArchived (
+      $columnArchivedId  INTEGER PRIMARY KEY AUTOINCREMENT,
+      $columnArchivedUid TEXT NOT NULL,
+      $columnArchivedShortcode TEXT NOT NULL,
+      $columnArchivedIsVideo INTERGER NOT NULL,
+      $columnArchivedCaption TEXT NOT NULL,
+      $columnArchivedProfilePicUrl TEXT NOT NULL,
+      $columnArchivedUsername TEXT NOT NULL,
+      $columnArchivedDisplayUrl TEXT NOT NULL,
+      $columnArchivedIsVerified INTEGER NOT NULL, 
+      $columnArchivedAccessibilityCaption TEXT NOT NULL,
+      $columnArchivedContent TEXT NOT NULL
+    )
+    ''');
     await db.execute('''
         CREATE TABLE $tableScheduleStories (
         $columnIdScheduleStories INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -113,6 +146,32 @@ class DatabaseHelper {
         $columnMediaTypelScheduleStories INT NOT NULL
         )
       ''');
+  }
+
+  Future<int> insert_archived(Archived archived) async {
+    try {
+      // check if the archvied already exists
+      final res = await getArchivedByUid(archived.uid.toString());
+      if (res == 0) {
+        Database? db = await instance.database;
+        return await db!.insert(tableArchived, {
+          "uid": archived.uid.toString(),
+          "shortcode": archived.shortcode.toString(),
+          "is_video": archived.is_video,
+          "caption": archived.caption.toString(),
+          "profile_pic_url": archived.profile_pic_url.toString(),
+          "username": archived.username.toString(),
+          "display_url": archived.display_url.toString(),
+          "is_verified": archived.is_verified,
+          "accessibility_caption": archived.accessibility_caption.toString(),
+          "content": jsonEncode(archived.content)
+        });
+      }
+    } catch (Exception) {
+      print(Exception);
+      rethrow;
+    }
+    return 1;
   }
 
   // Helper methods
@@ -169,6 +228,12 @@ class DatabaseHelper {
         .insert(table, {"content": caption.content, "title": caption.title});
   }
 
+  /// get all archived
+  Future<List<Map<String, dynamic>>> get_all_archived_rows() async {
+    Database? db = await instance.database;
+    return await db!.query(tableArchived);
+  }
+
   Future<List<Map<String, dynamic>>> getAllRows() async {
     Database? db = await instance.database;
     return await db!.query(table);
@@ -189,6 +254,13 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> queryRows(name) async {
     Database? db = await instance.database;
     return await db!.query(table, where: "$columnContent LIKE '%name%'");
+  }
+
+  // get a archived by Shortcode
+  Future<int?> getArchivedByUid(String _uid) async {
+    Database? db = await instance.database;
+    return Sqflite.firstIntValue(await db!.rawQuery(
+        'SELECT COUNT (*) FROM $tableArchived WHERE $columnArchivedUid = $_uid'));
   }
 
   // get a post by uid

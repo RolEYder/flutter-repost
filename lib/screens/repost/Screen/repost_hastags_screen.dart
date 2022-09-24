@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:repost/screens/repost/Screen/repost_schedule_screen.dart';
 import 'package:repost/services/hashtag_servicer.dart';
 import 'package:repost/helper/theme.dart';
 
@@ -128,18 +127,6 @@ class _RepostHastags extends State<RepostHastags> {
                                   this.selectedStory!(
                                       this.categoryTitleArr![i]);
                                 });
-                              }
-                              if (showPostDetail) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) => RepostSchedule(
-                                              picprofile:
-                                                  "/assets/category4.png",
-                                              CustomCaption: "Custom",
-                                              username: "",
-                                              uid: "",
-                                            ))));
                               }
                             },
                             child: Column(
