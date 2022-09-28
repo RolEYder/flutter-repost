@@ -159,7 +159,7 @@ class PostService {
               "id": "'" + element["node"]["id"].toString() + "'",
               "display_url_image": await Utility.ImageString(
                   element["node"]["display_url"].toString(),
-                  element["node"]["id"]),
+                  element["node"]["id"].toString()),
               "accessibility_caption":
                   element["node"]["accessibility_caption"].toString()
             });

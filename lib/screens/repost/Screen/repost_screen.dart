@@ -12,6 +12,7 @@ import 'package:repost/services/posts_service.dart';
 import 'package:repost/services/database_service.dart';
 import 'package:repost/services/database_service.dart' as dbHelper;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RepostScreen extends StatefulWidget {
   const RepostScreen({Key key}) : super(key: key);
@@ -136,7 +137,7 @@ class _RepostScreenState extends State<RepostScreen> {
       var url = data.text;
       // post
       if (isPostUrl(url)) {
-        showToast("Repost posted from Instagram");
+        showToast(AppLocalizations.of(context).repost_posted_from_instagram);
         var pattern = "\/p\/(.*?)\/";
         RegExp regExp = RegExp(pattern);
         if (regExp.hasMatch(url)) {
@@ -186,7 +187,7 @@ class _RepostScreenState extends State<RepostScreen> {
       }
       // story
       else if (isStoryUrl(data.text)) {
-        showToast("Story posted from Instagram");
+        showToast(AppLocalizations.of(context).story_posted_from_instagram);
         var storyPattern =
             r'(?:https?:\/\/)?(?:www.)?instagram.com\/?([stories]+)?\/([a-zA-Z0-9\-\_\.]+)\/?([0-9]+)?';
         RegExp regExp = RegExp(storyPattern);
@@ -236,7 +237,7 @@ class _RepostScreenState extends State<RepostScreen> {
       }
       // reel
       else if (isReelUrl(data.text)) {
-        showToast("Reel posted from Instagram");
+        showToast(AppLocalizations.of(context).reel_posted_from_instagram);
         var pattern = "\/reel\/(.*?)\/";
         RegExp regExp = RegExp(pattern);
         if (regExp.hasMatch(url)) {
@@ -305,8 +306,8 @@ class _RepostScreenState extends State<RepostScreen> {
                         ? GestureDetector(
                             child: Column(
                               children: <Widget>[
-                                const Text(
-                                  "Current Pasted",
+                                Text(
+                                  AppLocalizations.of(context).current_pasted,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 30,
@@ -327,8 +328,8 @@ class _RepostScreenState extends State<RepostScreen> {
                     const SizedBox(
                       height: 25,
                     ),
-                    const Text(
-                      "Active",
+                    Text(
+                      AppLocalizations.of(context).archive,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
@@ -339,14 +340,15 @@ class _RepostScreenState extends State<RepostScreen> {
                     ),
                     SAVE_DATA.isNotEmpty
                         ? showArchiveContent()
-                        : Text("There are not archive content yet.",
+                        : Text(
+                            AppLocalizations.of(context).there_are_not_archive,
                             style: TextStyle(color: Colors.white, fontSize: 20),
                             textAlign: TextAlign.center),
                     const SizedBox(
                       height: 25,
                     ),
-                    const Text(
-                      "Reposted",
+                    Text(
+                      AppLocalizations.of(context).reposted,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,

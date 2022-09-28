@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:repost/l10n/l10n.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:repost/provider/locale_provider.dart';
 import 'package:repost/screens/pro/proscreen.dart';
 import 'package:repost/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -22,14 +27,6 @@ class _SettingsState extends State<Settings> {
     color: Colors.white,
     fontSize: 16,
   );
-
-  var account = ["My Acounts", "Clear History", "Restore Purchases"];
-  var termspolicies = [
-    "Terms of Service",
-    "Privacy Policy",
-    "Give Feedback",
-    "Review Us"
-  ];
 
   Widget _space() {
     return Divider(
@@ -81,7 +78,7 @@ class _SettingsState extends State<Settings> {
         backgroundColor: Colors.black,
         centerTitle: true,
         title: Text(
-          "Settings",
+          AppLocalizations.of(context)!.settings,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -101,7 +98,7 @@ class _SettingsState extends State<Settings> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Subscribe to Pro Account",
+                      AppLocalizations.of(context)!.subscribe_pro_account,
                       style: insideStyle,
                     ),
                     const Icon(
@@ -121,44 +118,23 @@ class _SettingsState extends State<Settings> {
               child: GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
+                    isScrollControlled: true,
                     context: context,
                     builder: (context) => Wrap(
                       children: [
-                        ListTile(
-                          onTap: () {
-                            setState(() {});
-                            Navigator.pop(context);
-                          },
-                          title: Text('English'),
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {});
-                            Navigator.pop(context);
-                          },
-                          title: Text('Spanish'),
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {});
-                            Navigator.pop(context);
-                          },
-                          title: Text('Hindi'),
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {});
-                            Navigator.pop(context);
-                          },
-                          title: Text('Dutch'),
-                        ),
-                        ListTile(
-                          onTap: () {
-                            Navigator.pop(context);
-                            setState(() {});
-                          },
-                          title: Text('Korean'),
-                        ),
+                        ...L10n.all.map((locale) {
+                          final flag = L10n.getFlag(locale.languageCode);
+                          return ListTile(
+                            onTap: () {
+                              final provider = Provider.of<LocaleProvider>(
+                                  context,
+                                  listen: false);
+                              provider.setLocale(locale);
+                              Navigator.pop(context);
+                            },
+                            title: Text('$flag'),
+                          );
+                        }),
                       ],
                     ),
                   );
@@ -167,7 +143,7 @@ class _SettingsState extends State<Settings> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Change language",
+                      AppLocalizations.of(context)!.change_langauge,
                       style: insideStyle,
                     ),
                     const Icon(
@@ -188,7 +164,7 @@ class _SettingsState extends State<Settings> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Allow Notifications",
+                    AppLocalizations.of(context)!.allow_notification,
                     style: insideStyle,
                   ),
                   SizedBox(
@@ -214,7 +190,7 @@ class _SettingsState extends State<Settings> {
             Padding(
               padding: const EdgeInsets.only(left: 5, bottom: 2),
               child: Text(
-                "ACCOUNT SETTINGS",
+                AppLocalizations.of(context)!.account_settings,
                 style: HeaderStyle,
               ),
             ),
@@ -225,7 +201,7 @@ class _SettingsState extends State<Settings> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "My Accounts",
+                    AppLocalizations.of(context)!.my_account,
                     style: insideStyle,
                   ),
                   const Icon(
@@ -256,7 +232,7 @@ class _SettingsState extends State<Settings> {
                     Opacity(
                       opacity: history ? 1.0 : 0.5,
                       child: Text(
-                        "Clear History",
+                        AppLocalizations.of(context)!.clear_history,
                         style: insideStyle,
                       ),
                     ),
@@ -276,7 +252,7 @@ class _SettingsState extends State<Settings> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Restore Purchases",
+                    AppLocalizations.of(context)!.restore_purchases,
                     style: insideStyle,
                   ),
                   const Icon(
@@ -294,56 +270,87 @@ class _SettingsState extends State<Settings> {
             Padding(
               padding: const EdgeInsets.only(left: 5, bottom: 2),
               child: Text(
-                "TERMS & POLICIES",
+                AppLocalizations.of(context)!.terms_and_policies,
                 style: HeaderStyle,
               ),
-            ),
-            _space(),
-            for (int i = 0; i < termspolicies.length; i++) ...[
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      termspolicies[i],
-                      style: insideStyle,
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 16,
-                    ),
-                  ],
-                ),
-              ),
-              _space(),
-            ],
-            const SizedBox(
-              height: 28,
             ),
             _space(),
             Padding(
               padding: const EdgeInsets.all(5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
-                    "LogOut",
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500),
+                    AppLocalizations.of(context)!.terms_of_service,
+                    style: insideStyle,
                   ),
-                  Icon(
+                  const Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.grey,
                     size: 16,
-                  )
+                  ),
                 ],
               ),
             ),
-            _space()
+            _space(),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.privacy_policy,
+                    style: insideStyle,
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+            _space(),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.give_feedback,
+                    style: insideStyle,
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+            _space(),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.review_us,
+                    style: insideStyle,
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+            _space(),
+            const SizedBox(
+              height: 28,
+            ),
+            _space(),
           ],
         ),
       ),

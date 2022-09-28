@@ -11,6 +11,7 @@ import 'screens/setting/settings.dart';
 import 'services/database_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);

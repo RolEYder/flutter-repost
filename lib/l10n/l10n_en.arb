@@ -1,0 +1,106 @@
+{
+    "language" : "English",
+    "@language": {
+        "description": "The current language"
+    },
+    "archive": "Archive",
+    "@archive": {
+        "description": "Archive"
+    },
+    "settings": "Settings",
+    "@settings": {
+        "description": "Settings"
+    },
+    "subscribe_pro_account": "Subscribe to Pro Account",
+    "@subscribe_pro_account": {
+        "description": "Subscribe to Pro Account"
+    },
+    "change_langauge": "Change langauge",
+    "@change_langauge": {
+        "description": "Change langauge"
+    },
+    "allow_notification": "Allow Notifications",  
+    "@allow_notification": {
+        "description": "Allow Notifications"
+    },
+    "account_settings": "ACCOUNT SETTINGS", 
+    "@account_settings": {
+        "description": "ACCOUNT SETTINGS"
+    },
+    "my_account": "My account",
+    "@my_account": {
+        "description": "My account"
+    },
+    "clear_history": "Clear History", 
+    "@clear_history": {
+        "desscription": "Clear History"
+    }, 
+    "restore_purchases": "Restore Purchases",
+    "@restore_purchases": {
+        "description": "Restore Purchases"
+    },
+    "terms_and_policies": "TERMS & POLICIES",
+    "@terms_and_policies": {
+        "description": "TERMS & POLCIES"
+    }, 
+    "terms_of_service": "Terms of Service",
+    "@terms_of_service": {
+        "description": "Terms of Service"
+    }, 
+    "privacy_policy": "Privacy Policy",
+    "@privacy_policy": {
+        "description": "Privacy Policy"
+    }, 
+    "give_feedback": "Give Feedback", 
+    "@give_feedback": {
+        "description": "Give Feedback"
+    },
+    "review_us": "Review Us",
+    "@review_us": {
+        "description": "Review Us"
+    }, 
+    "current_pasted": "Current Pasted",
+    "@current_pastd": {
+        "description": "Current Pasted"
+    },
+    "reposted": "Reposted",
+    "@reposted": {
+        "description": "Reposted"
+    },
+    "there_are_not_archive": "There are not archive content yet",
+    "@there_are_not_archive": {
+        "description": "There are not archive content yet"
+    },
+    "repost": "Repost",
+    "@repost": {
+        "description": "Repost"
+    },
+    "schedule": "Schedule",
+    "@schedule": {
+        "description": "Schedule"
+    },
+    "hashtags": "Hashtags",
+    "@hashtags": {
+        "description": "Hashtags"
+    },
+    "pro": "Pro",
+    "@pro": {
+        "description": "pro"
+    },
+    "more": "More",
+    "@more": {
+        "description":"More"
+    },
+    "story_posted_from_instagram": "Story posted from Instagram",
+    "@story_posted_from_instagram": {
+        "description": "Story posted from Instagram"
+    },
+    "reel_posted_from_instagram": "Reel posted from Instagram",
+    "@reel_posted_from_instagram": {
+        "description": "Reel posted from Instagral"
+    },
+    "repost_posted_from_instagram": "Repost posted from Instagram",
+    "@repost_posted_from_instagram": {
+        "description": "Repost posted from Instagram"
+    }
+}
