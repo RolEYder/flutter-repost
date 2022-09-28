@@ -69,7 +69,7 @@ class _PostState extends State<PostPasted> {
                             SizedBox(
                               height: 125,
                               width: 130,
-                              child: Image.network(
+                              child: Image.asset(
                                 widget.display_url.toString(),
                                 fit: BoxFit.cover,
                               ),

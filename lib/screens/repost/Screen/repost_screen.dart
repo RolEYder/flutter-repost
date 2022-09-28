@@ -227,6 +227,11 @@ class _RepostScreenState extends State<RepostScreen> {
             _typeSearch = "story";
             _isLoading = true;
           });
+          Future.delayed(Duration(seconds: 5)).then((value) => {
+                setState(() {
+                  _isLoading = false;
+                })
+              });
         }
       }
       // reel
@@ -312,7 +317,9 @@ class _RepostScreenState extends State<RepostScreen> {
                                 ),
                                 Padding(
                                     padding: EdgeInsets.only(right: 12),
-                                    child: showInstagramPostsPasted())
+                                    child: !_isLoading
+                                        ? showInstagramPostsPasted()
+                                        : CircularProgressIndicator())
                               ],
                             ),
                           )

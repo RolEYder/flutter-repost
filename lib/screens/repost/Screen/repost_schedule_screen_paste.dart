@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_video_player/cached_video_player.dart' as cachedVideo;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:repost/helper/utility.dart';
 import 'package:repost/models/schedulepPost_model.dart';
 import 'package:repost/screens/repost/Screen/repost_hastags_screen.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
@@ -173,24 +177,18 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                       : const CircularProgressIndicator()
                                   : SizedBox.shrink(),
                               (!widget.is_video & widget.content.isEmpty)
-                                  ? CachedNetworkImage(
-                                      imageUrl: widget.display_url,
-                                      progressIndicatorBuilder: (context, url,
-                                              downloadProgress) =>
-                                          CircularProgressIndicator(
-                                              value: downloadProgress.progress),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
+                                  ? Container(
+                                      decoration: new BoxDecoration(
+                                          image: new DecorationImage(
+                                              image: AssetImage(
+                                                  widget.display_url))),
                                     )
-                                  : CachedNetworkImage(
-                                      imageUrl: widget.content[index]
-                                          ["display_url_image"],
-                                      progressIndicatorBuilder: (context, url,
-                                              downloadProgress) =>
-                                          CircularProgressIndicator(
-                                              value: downloadProgress.progress),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
+                                  : Container(
+                                      decoration: new BoxDecoration(
+                                          image: new DecorationImage(
+                                              image: AssetImage(
+                                                  widget.content[index]
+                                                      ["display_url_image"]))),
                                     ),
                               if (selectedAlignment >= 0) ...[
                                 Align(

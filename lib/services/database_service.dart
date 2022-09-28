@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:flutter/foundation.dart';
 import 'package:repost/models/content_model.dart';
 import 'package:repost/models/searcherPost_model.dart';
 import 'package:repost/models/caption_model.dart';
@@ -10,7 +9,6 @@ import 'package:repost/models/stories_repost_model.dart';
 import 'package:sqflite/sqflite.dart'
     show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;
 
-import 'package:mysql1/mysql1.dart';
 
 class DatabaseHelper {
   static final _databaseName = "database.db";

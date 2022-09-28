@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:repost/helper/herpers.dart';
+import 'package:repost/helper/utility.dart';
 import 'package:repost/services/database_service.dart';
 
 class PostService {
@@ -21,7 +22,9 @@ class PostService {
       "caption": response["caption"] == null ? "" : response["caption"],
       "profile_pic_url": response["user"]["profile_pic_url"],
       "username": response["user"]["username"],
-      "display_url": response["image_versions2"]["candidates"][0]["url"],
+      "display_url": await Utility.ImageString(
+          response["image_versions2"]["candidates"][0]["url"],
+          response["pk"].toString()),
       "is_verified": response["user"]["is_verified"],
       "accessibility_caption": ""
     };
@@ -38,8 +41,9 @@ class PostService {
         {
           "typeimage": "jpg",
           "id": response["id"],
-          "display_url_image": response["image_versions2"]["candidates"][0]
-              ["url"],
+          "display_url_image": await Utility.ImageString(
+              response["image_versions2"]["candidates"][0]["url"],
+              response["id"]),
           "accessibility_caption": ""
         }
       ];
@@ -127,7 +131,7 @@ class PostService {
       "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
       "profile_pic_url": data["owner"]["profile_pic_url"],
       "username": data["owner"]["username"],
-      "display_url": data["display_url"],
+      "display_url": await Utility.ImageString(data["display_url"], data["id"]),
       "is_verified": data["owner"]["is_verified"],
       "accessibility_caption": data["accessibility_caption"]
     };
@@ -148,7 +152,9 @@ class PostService {
             images.add({
               "typeimage": element["node"]["__typename"].toString(),
               "id": "'" + element["node"]["id"].toString() + "'",
-              "display_url_image": element["node"]["display_url"].toString(),
+              "display_url_image": await Utility.ImageString(
+                  element["node"]["display_url"].toString(),
+                  element["node"]["id"]),
               "accessibility_caption":
                   element["node"]["accessibility_caption"].toString()
             });
