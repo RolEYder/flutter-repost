@@ -32,6 +32,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   void initializationSettingsApp() async {
     gettingUserPurchaseInformation();
+    checkIfUserHasActivePurchase(); 
     if (initScreen == 0 || initScreen == null) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setBool("notification", false);

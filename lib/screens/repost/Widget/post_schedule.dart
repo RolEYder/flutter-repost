@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:repost/services/database_service.dart';
-import 'package:repost/models/searcherPost_model.dart';
+
 
 class PostSchedule extends StatefulWidget {
   final String uid;

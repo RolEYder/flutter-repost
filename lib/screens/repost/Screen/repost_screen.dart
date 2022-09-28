@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:repost/helper/herpers.dart';
 import 'package:repost/models/content_model.dart';
 import 'package:repost/screens/repost/Widget/post_paste.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:repost/services/posts_service.dart';
 
 import 'package:repost/services/database_service.dart';
@@ -45,8 +44,6 @@ class _RepostScreenState extends State<RepostScreen> {
   /// show saved data
   ///
   List<Map<String, dynamic>> getVideoContet(int index) {
-    //print(SAVE_DATA[index]["content"][4]);
-    print(jsonDecode(SAVE_DATA[index]["content"])[0]["video_url"]);
     List<Map<String, dynamic>> content = [];
     content.add({
       "has_audio": jsonDecode(SAVE_DATA[index]["content"])[0]["has_audio"],
@@ -157,7 +154,6 @@ class _RepostScreenState extends State<RepostScreen> {
               _post["accessibility_caption"].toString();
           List<Map<String, dynamic>> content = [];
 
-          print(_post["content"].isNotEmpty);
           if (_post["content"].isNotEmpty) {
             content = _post["content"];
           } else {
@@ -190,19 +186,50 @@ class _RepostScreenState extends State<RepostScreen> {
       }
       // story
       else if (isStoryUrl(data.text)) {
+        showToast("Story posted from Instagram");
         var storyPattern =
             r'(?:https?:\/\/)?(?:www.)?instagram.com\/?([stories]+)?\/([a-zA-Z0-9\-\_\.]+)\/?([0-9]+)?';
         RegExp regExp = RegExp(storyPattern);
         if (regExp.hasMatch(url)) {
           var value = regExp.firstMatch(url)?.group(3);
           print(value);
+          var _story = await PostService().getStoriesPasted(value);
+          String shortcode = _story["shortcode"].toString();
+          String uid = _story["uid"].toString();
+          int is_video = _story["is_video"] ? 1 : 0;
+          String caption = _story["caption"].toString();
+          String profile_pic_url = _story["profile_pic_url"].toString();
+          String username = _story["username"].toString();
+          String display_url = _story["display_url"].toString();
+          int is_verified = _story["is_verified"] ? 1 : 0;
+          String accessibility_caption =
+              _story["accessibility_caption"].toString();
+          List<Map<String, dynamic>> content = [];
+          if (_story["content"].isNotEmpty) {
+            content = _story["content"];
+          } else {
+            content = new List<Map<String, dynamic>>.empty();
+          }
+          saveArchived(
+              shortcode,
+              uid,
+              is_video,
+              caption,
+              profile_pic_url,
+              username,
+              display_url,
+              is_verified,
+              accessibility_caption,
+              content);
           setState(() {
+            PASTED.addAll(_story);
             _valueSearch = value;
             _typeSearch = "story";
+            _isLoading = true;
           });
         }
       }
-      // rell
+      // reel
       else if (isReelUrl(data.text)) {
         showToast("Reel posted from Instagram");
         var pattern = "\/reel\/(.*?)\/";
@@ -256,8 +283,6 @@ class _RepostScreenState extends State<RepostScreen> {
   }
 
   Widget build(BuildContext context) {
-    ProgressDialog pr = new ProgressDialog(context);
-    pr.style(message: 'Please wait...');
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 28, 28, 28),
       body: Padding(
@@ -307,7 +332,9 @@ class _RepostScreenState extends State<RepostScreen> {
                     ),
                     SAVE_DATA.isNotEmpty
                         ? showArchiveContent()
-                        : Text("There are not archive content yet."),
+                        : Text("There are not archive content yet.",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            textAlign: TextAlign.center),
                     const SizedBox(
                       height: 25,
                     ),

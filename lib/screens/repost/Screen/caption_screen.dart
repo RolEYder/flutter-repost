@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:repost/models/caption_model.dart';
 import 'editing_custom_caption_screen.dart';
 import 'package:repost/services/database_service.dart';
-import 'dart:developer';
 
 class Caption extends StatefulWidget {
-  final String CustomCaption;
-  const Caption({Key? key, required this.CustomCaption}) : super(key: key);
+  final String? CustomCaption;
+  final String username;
+  final String OriginalCaption;
+  const Caption(
+      {Key? key,
+      required this.username,
+      required this.OriginalCaption,
+      required this.CustomCaption})
+      : super(key: key);
   @override
   State<Caption> createState() => _CaptionState();
 }
 
-class _CaptionState extends State<Caption> {
+class _CaptionState extends State<Caption> with WidgetsBindingObserver {
   bool rememberMe = false;
   final dbHelper = DatabaseHelper.instance;
   List<Captions> captions = [];
@@ -19,19 +25,28 @@ class _CaptionState extends State<Caption> {
   bool _isLoading = false;
   late List<Map<String, dynamic>> _savedCaptions = [];
   List isCheckedbox = [];
-  late List<dynamic> data = [
-    {"title": "Custom", "description": "Choose to Edit"},
-    {"title": "Original", "description": widget.CustomCaption.toString()}
-  ];
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
     setState(() {
       _isLoading = true;
       getAllUserSavedCaptions();
     });
-    setState(() {});
+  }
+
+//// override this function
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) refresh();
   }
 
   Widget build(BuildContext context) {
@@ -66,8 +81,11 @@ class _CaptionState extends State<Caption> {
             onSelected: (res) {
               if (res == 0) {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        EditingCustomCaption(title: "", content: "")));
+                    builder: (context) => EditingCustomCaption(
+                        Username: widget.username,
+                        OriginalCaption: widget.OriginalCaption,
+                        title: "",
+                        content: "")));
               }
               ;
             },
@@ -246,12 +264,15 @@ class _CaptionState extends State<Caption> {
 
   Future<void> saveNewCaption(BuildContext context, int index) async {
     final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => EditingCustomCaption(
-                title: _savedCaptions[index]["title"].toString(),
-                content: _savedCaptions[index]["content"].toString(),
-                id: _savedCaptions[index]["id"])));
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditingCustomCaption(
+                    Username: widget.username,
+                    OriginalCaption: widget.OriginalCaption,
+                    title: _savedCaptions[index]["title"].toString(),
+                    content: _savedCaptions[index]["content"].toString(),
+                    id: _savedCaptions[index]["id"])))
+        .whenComplete(() => refresh());
     if (!mounted) return;
     // After the Selection Screen returns a result, hide any previous nackbars
     // and show the new result.
@@ -261,21 +282,20 @@ class _CaptionState extends State<Caption> {
         ..removeCurrentSnackBar()
         ..showSnackBar(
             SnackBar(content: Text('New caption added successfully 👍')));
+      refresh();
     } else if (result == "update") {
       getAllUserSavedCaptions();
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(
             SnackBar(content: Text('New caption updated successfully 👍')));
+      refresh();
     }
   }
 
   void getAllUserSavedCaptions() async {
     final allRows = await dbHelper.getAllRows();
-    log(allRows.toString());
     if (allRows.isNotEmpty) {
-      log(allRows.toString());
-      captions.clear();
       allRows.forEach((row) => captions.add(Captions.fromMap(row)));
       showMessageInScaffold("Captions done!");
       setState(() {

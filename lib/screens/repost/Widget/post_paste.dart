@@ -39,9 +39,6 @@ class _PostState extends State<PostPasted> {
         itemBuilder: (context, index) {
           return GestureDetector(
               onTap: () {
-                //saving clicked posts
-                // _saveClickedPosts(widget.caption, widget.uid, widget.profile_pic_url,
-                //     widget.thumbnail, widget.username);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -87,7 +84,9 @@ class _PostState extends State<PostPasted> {
                                       color: Colors.white,
                                     ),
                                   )
-                                : (!widget.is_video & !widget.content.isEmpty)
+                                : (!widget.is_video &
+                                        !widget.content.isEmpty &
+                                        (widget.content.length > 1))
                                     ? new Positioned(
                                         bottom: 10,
                                         right:

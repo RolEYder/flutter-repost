@@ -6,7 +6,15 @@ class EditingCustomCaption extends StatefulWidget {
   final String? title;
   final String? content;
   final int? id;
-  const EditingCustomCaption({Key? key, this.title, this.content, this.id})
+  final String? Username;
+  final String? OriginalCaption;
+  const EditingCustomCaption(
+      {Key? key,
+      this.Username,
+      this.OriginalCaption,
+      this.title,
+      this.content,
+      this.id})
       : super(key: key);
 
   @override
@@ -75,6 +83,8 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
           ),
           TextField(
             controller: contentController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
             onChanged: (value) {
               setState(() {
                 _content = value.toString();
@@ -99,7 +109,12 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   Color.fromARGB(255, 125, 64, 121)),
-                          onPressed: () {},
+                          onPressed: () {
+                            contentController.text = contentController.text +
+                                " " +
+                                "@" +
+                                widget.Username.toString();
+                          },
                           child: const Text(
                             "Insert Original\nUsername",
                             textAlign: TextAlign.center,
@@ -114,7 +129,12 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   Color.fromARGB(255, 125, 64, 121)),
-                          onPressed: () {},
+                          onPressed: () {
+                            contentController.text = contentController.text +
+                                " " +
+                                widget.OriginalCaption.toString();
+                            setState(() {});
+                          },
                           child: const Text(
                             "Insert Original\nCaption",
                             textAlign: TextAlign.center,
@@ -138,12 +158,12 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                               title.toString().isNotEmpty) {
                             if (widget.title == "" && widget.content == "") {
                               _insert(title, content); // inserting caption
-                              Navigator.pop(context, "save"); // unmound widget
+
                             } else if (widget.title!.isNotEmpty &&
                                 widget.content!.isNotEmpty) {
                               // update
                               _update(title, content, widget.id);
-                              Navigator.pop(context, "update");
+                              Navigator.pop(context, "update"); //unmount widget
                             }
                           }
                         },
@@ -179,6 +199,6 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
     };
     Captions caption = Captions.fromMap(row);
     DatabaseHelper.instance.insert(caption);
-    _showMessageInScaffold("Caption was inserted 👍 ");
+    Navigator.pop(context, "save"); // unmount widget
   }
 }

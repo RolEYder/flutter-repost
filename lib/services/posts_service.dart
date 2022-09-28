@@ -5,6 +5,49 @@ import 'package:repost/helper/herpers.dart';
 import 'package:repost/services/database_service.dart';
 
 class PostService {
+  Future<Map<String, dynamic>> getStoriesPasted(String _id) async {
+    Map<String, dynamic> stories = {};
+    var url =
+        "https://instagram-best-experience.p.rapidapi.com/media?id=" + _id;
+    final fetch = await http.get(Uri.parse(url), headers: {
+      "X-RapidAPI-Key": "1dd2847dccmsh4e6f3a50d4eb9a9p146807jsnbcfe144d7761",
+      'X-RapidAPI-Host': 'instagram-best-experience.p.rapidapi.com'
+    });
+    final response = json.decode(fetch.body);
+    stories = {
+      "uid": response["pk"],
+      "shortcode": response["code"],
+      "is_video": response["media_type"] == 1 ? false : true,
+      "caption": response["caption"] == null ? "" : response["caption"],
+      "profile_pic_url": response["user"]["profile_pic_url"],
+      "username": response["user"]["username"],
+      "display_url": response["image_versions2"]["candidates"][0]["url"],
+      "is_verified": response["user"]["is_verified"],
+      "accessibility_caption": ""
+    };
+    if (response["media_type"] == 2) {
+      final video = [
+        {
+          "has_audio": response["has_audio"],
+          "video_url": response["video_versions"][0]["url"]
+        }
+      ];
+      stories["content"] = video;
+    } else if (response["media_type"] == 1) {
+      final image = [
+        {
+          "typeimage": "jpg",
+          "id": response["id"],
+          "display_url_image": response["image_versions2"]["candidates"][0]
+              ["url"],
+          "accessibility_caption": ""
+        }
+      ];
+      stories["content"] = image;
+    }
+    return stories;
+  }
+
   Future<Map<String, dynamic>> getReelPasted(String _shortcode) async {
     Map<String, dynamic> reel = {};
     List<dynamic> nodes = [];

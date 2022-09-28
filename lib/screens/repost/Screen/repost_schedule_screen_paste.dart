@@ -14,7 +14,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:share_extend/share_extend.dart';
 import 'dart:io' as File;
-import 'dart:developer';
 
 // REPOSTS SCHEDULE
 class RepostSchedulePasted extends StatefulWidget {
@@ -149,7 +148,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   Expanded(
                     child: PageView.builder(
                         onPageChanged: (index) {
-                          print(widget.display_url);
                           setState(() {
                             index = pageIndex.toInt();
                             currentIndexImage = pageIndex.toInt();
@@ -257,7 +255,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                leading: Icon(Icons.share),
                                 title: Text('Top Left'),
                               ),
                               ListTile(
@@ -267,7 +264,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                leading: Icon(Icons.copy),
                                 title: Text('Top Right'),
                               ),
                               ListTile(
@@ -277,7 +273,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                leading: Icon(Icons.edit),
                                 title: Text('Buttom Left'),
                               ),
                               ListTile(
@@ -287,7 +282,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                leading: Icon(Icons.edit),
                                 title: Text('Buttom Right'),
                               ),
                               ListTile(
@@ -301,30 +295,11 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   //     MaterialPageRoute(
                                   //         builder: ((context) => ProScreen())));
                                 },
-                                leading: Icon(Icons.remove_circle),
                                 title: Text('None'),
                               ),
                             ],
                           ),
                         );
-                        // var resp = await Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => Watermark(
-                        //             postImage: widget.profile_pic_url)));
-
-                        // if (resp != null) {
-                        //   setState(() {
-                        //     selectedWatermark =
-                        //         resp == 0 ? "Off" : watermarks[resp];
-                        //   });
-                        //   if (resp == 0) {
-                        //     Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //             builder: ((context) => ProScreen())));
-                        //   }
-                        // }
                       },
                       child: waterMarks(
                           "Watermark",
@@ -387,6 +362,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                 backgroundColor:
                                     const Color.fromARGB(255, 73, 65, 125)),
                             onPressed: () {
+                              if (_captionSelected.isEmpty) {
+                                _dialogBuilder(context, "Oops!",
+                                    "You must select a caption");
+                              }
                               if (!widget.is_video & !widget.content.isEmpty) {
                                 showModalBottomSheet(
                                   context: context,
@@ -487,34 +466,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   ),
                                 );
                               }
-                              // if (_captionSelected.isEmpty &&
-                              //     _hashtagSelected.isEmpty &&
-                              //     _scheduleSelected.length == 0) {
-                              //   _dialogBuilder(context, "Oops!",
-                              //       "You must to select a hashtag, a caption, and a remainder date before repost");
-                              // } else if (_captionSelected.isEmpty) {
-                              //   _dialogBuilder(context, "Oops!",
-                              //       "You must select a caption before");
-                              // } else if (_hashtagSelected.isEmpty) {
-                              //   _dialogBuilder(context, "Oops!",
-                              //       "You must select at least one hashtag before");
-                              // } else if (_scheduleSelected.length == 0) {
-                              //   _dialogBuilder(context, "Oops!",
-                              //       "You must select a date before");
-                              // } else if (_captionSelected.isNotEmpty &&
-                              //     _hashtagSelected.isNotEmpty &&
-                              //     _scheduleSelected.length != 0) {
-                              //   _insert(
-                              //       _captionSelected[0]["title"],
-                              //       _captionSelected[0]["content"],
-                              //       widget.profile_pic_url.toString(),
-                              //       _scheduleSelected.toString(),
-                              //       DateTime.now().toString(),
-                              //       _hashtagSelected.toString(),
-                              //       widget.username,
-                              //       widget.profile_pic_url);
-                              //   Navigator.pop(context, "save");
-                              // }
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -595,7 +546,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     setState(() {
       _scheduleSelected = result.toString();
     });
-    log(result.toString());
+    print(result.toString());
   }
 
   Future<void> _gettingHashtagsAfterSelected(BuildContext context) async {
@@ -611,8 +562,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                Caption(CustomCaption: widget.caption.toString())));
+            builder: (context) => Caption(
+                CustomCaption: widget.caption.toString(),
+                username: widget.username.toString(),
+                OriginalCaption: widget.caption.toString())));
 
     if (!mounted) return;
     setState(() {
