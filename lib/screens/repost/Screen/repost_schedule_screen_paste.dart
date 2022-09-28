@@ -101,10 +101,11 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
 
   @override
   void initState() {
+    print(widget.content.isEmpty);
     if (widget.is_video) {
+      final File.File file = File.File(widget.content[0]["video_url"]);
       setState(() {
-        videoController = cachedVideo.CachedVideoPlayerController.network(
-            widget.content[0]["video_url"]);
+        videoController = cachedVideo.CachedVideoPlayerController.file(file);
       });
       videoController.initialize().then((value) {
         videoController.play();
@@ -176,20 +177,41 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                       videoController)))
                                       : const CircularProgressIndicator()
                                   : SizedBox.shrink(),
-                              (!widget.is_video & widget.content.isEmpty)
+                              (!widget.is_video &
+                                      widget.content.isEmpty &
+                                      !(widget.content.contains("video_url"))
                                   ? Container(
                                       decoration: new BoxDecoration(
                                           image: new DecorationImage(
                                               image: AssetImage(
                                                   widget.display_url))),
                                     )
-                                  : Container(
-                                      decoration: new BoxDecoration(
-                                          image: new DecorationImage(
-                                              image: AssetImage(
-                                                  widget.content[index]
-                                                      ["display_url_image"]))),
-                                    ),
+                                  : (widget.is_video)
+                                      ? (widget.is_video)
+                                          ? videoController.value.isInitialized
+                                              ? AspectRatio(
+                                                  aspectRatio: videoController
+                                                      .value.aspectRatio,
+                                                  child: Container(
+                                                      width: 100,
+                                                      height: 100,
+                                                      child: cachedVideo
+                                                          .CachedVideoPlayer(
+                                                              videoController)))
+                                              : const CircularProgressIndicator()
+                                          : SizedBox.shrink()
+                                      : Container(
+                                          decoration: new BoxDecoration(
+                                              image: new DecorationImage(
+                                                  image: widget.content[index][
+                                                              "display_url_image"] !=
+                                                          null
+                                                      ? AssetImage(widget
+                                                              .content[index]
+                                                          ["display_url_image"])
+                                                      : AssetImage(
+                                                          widget.display_url))),
+                                        )),
                               if (selectedAlignment >= 0) ...[
                                 Align(
                                   alignment: alignmentArr[selectedAlignment],

@@ -182,14 +182,14 @@ class _PostState extends State<PostPasted> {
                             const Divider(
                               color: Colors.grey,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 13.0),
-                              child: Text(
-                                "Reminder:January 25 2022 3:45PM",
-                                style:
-                                    TextStyle(color: Colors.white, fontSize: 8),
-                              ),
-                            )
+                            // Padding(
+                            //   padding: const EdgeInsets.only(left: 13.0),
+                            //   child: Text(
+                            //     "Reminder:January 25 2022 3:45PM",
+                            //     style:
+                            //         TextStyle(color: Colors.white, fontSize: 8),
+                            //   ),
+                            // )
                           ],
                         ),
                       ),

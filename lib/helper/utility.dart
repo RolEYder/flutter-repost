@@ -9,6 +9,21 @@ import 'package:path/path.dart' as path;
 import 'package:image/image.dart' as img;
 
 class Utility {
+    static Future<String> VideoString(String videoUrl, String videoId) async {
+    final url = Uri.parse(videoUrl);
+    final response = await http.get(url);
+    final bytes = response.bodyBytes;
+    var documentDirectory = await getApplicationDocumentsDirectory();
+    var firstPath = documentDirectory.path + "/videos";
+    var filePathAndName = documentDirectory.path + '/videos/$videoId.mp4';
+    //comment out the next three lines to prevent the image from being saved
+    //to the device to show that it's coming from the internet
+    await Directory(firstPath).create(recursive: true); // <-- 1
+    File.File file = new File.File(filePathAndName); // <-- 2
+    file.writeAsBytesSync(bytes);
+    print(file);
+    return file.path;
+  }
   static Future<String> ImageString(String imgUrl, String imageId) async {
     final url = Uri.parse(imgUrl);
     final response = await http.get(url);

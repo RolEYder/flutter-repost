@@ -117,6 +117,72 @@ class _SettingsState extends State<Settings> {
             height(),
             _space(),
             Padding(
+              padding: const EdgeInsets.all(5),
+              child: GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) => Wrap(
+                      children: [
+                        ListTile(
+                          onTap: () {
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          title: Text('English'),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          title: Text('Spanish'),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          title: Text('Hindi'),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          title: Text('Dutch'),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            Navigator.pop(context);
+                            setState(() {});
+                          },
+                          title: Text('Korean'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Change language",
+                      style: insideStyle,
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 16,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            _space(),
+            height(),
+            _space(),
+            Padding(
               padding: const EdgeInsets.only(left: 5, top: 2, bottom: 2),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

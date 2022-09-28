@@ -71,7 +71,7 @@ class PostService {
       "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
       "profile_pic_url": data["owner"]["profile_pic_url"],
       "username": data["owner"]["username"],
-      "display_url": data["display_url"],
+      "display_url": await Utility.ImageString(data["display_url"], data["id"]),
       "is_verified": data["owner"]["is_verified"],
       "accessibility_caption": data["accessibility_caption"]
     };
@@ -84,14 +84,17 @@ class PostService {
           if (element["node"]["is_video"]) {
             images.add({
               "id": element["node"]["id"],
-              "video_url": element["video_url"].toString(),
+              "video_url": await Utility.VideoString(
+                  element["video_url"], element["node"]["id"].toString()),
               "has_audio": element["node"]["has_audio"]
             });
           } else {
             images.add({
               "typeimage": element["node"]["__typename"].toString(),
               "id": element["node"]["id"].toString(),
-              "display_url_image": element["node"]["display_url"].toString(),
+              "display_url_image": await Utility.ImageString(
+                  element["node"]["display_url"],
+                  element["node"]["id"].toString()),
               "accessibility_caption":
                   element["node"]["accessibility_caption"].toString()
             });
@@ -103,7 +106,8 @@ class PostService {
       final video = [
         {
           "has_audio": data["has_audio"],
-          "video_url": data["video_url"].toString(),
+          "video_url": await Utility.VideoString(
+              data["video_url"], data["id"].toString()),
         }
       ];
       reel["content"] = video;
@@ -131,7 +135,8 @@ class PostService {
       "caption": data["edge_media_to_caption"]["edges"][0]["node"]["text"],
       "profile_pic_url": data["owner"]["profile_pic_url"],
       "username": data["owner"]["username"],
-      "display_url": await Utility.ImageString(data["display_url"], data["id"]),
+      "display_url":
+          await Utility.ImageString(data["display_url"], data["id"].toString()),
       "is_verified": data["owner"]["is_verified"],
       "accessibility_caption": data["accessibility_caption"]
     };
@@ -166,7 +171,8 @@ class PostService {
       final video = [
         {
           "has_audio": data["has_audio"],
-          "video_url": data["video_url"].toString()
+          "video_url": await Utility.VideoString(
+              data["video_url"], data["id"].toString())
         }
       ];
       post["content"] = video;
