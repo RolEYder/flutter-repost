@@ -102,5 +102,22 @@
     "repost_posted_from_instagram": "Repost posted from Instagram",
     "@repost_posted_from_instagram": {
         "description": "Repost posted from Instagram"
+    },
+    "i_dont_want_at_this_moment": "I do not want at this moment",
+    "@i_dont_want_at_this_moment": {
+        "description": "I do not want at this moment"
+    },
+    "rate_us": "Rate us",
+    "@rate_us": {
+        "description": "Rate us"
+    },
+    "rate_our_application": "Please, rate our application",
+    "@rate_our_application": {
+        "description": "Please, rate our application"
+    },
+    "rate": "Rate",
+    "@rate": {
+        "description": "Rate"
     }
+
 }

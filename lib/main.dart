@@ -1,6 +1,5 @@
 // @dart=2.9
 
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -46,6 +45,7 @@ class _MyAppState extends State<MyApp> {
       await preferences.setString("subscription", "free");
       await preferences.setString("language", "us");
       await preferences.setBool("isLoggedInstagram", false);
+      await preferences.setBool("isRated", false);
     }
   }
 
@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
     return ChangeNotifierProvider(
         create: (context) => LocaleProvider(),
         builder: (context, child) {
-          final provider = Provider.of<LocaleProvider>(context); 
+          final provider = Provider.of<LocaleProvider>(context);
           return MaterialApp(
             theme: ThemeData(
                 textTheme: const TextTheme(

@@ -26,7 +26,9 @@ class _RepostScreenState extends State<RepostScreen> {
   List<dynamic> POSTS = [];
   Map<String, dynamic> PASTED = {};
   List<dynamic> SAVE_DATA = [];
+  // ignore: unused_field
   String _valueSearch = "";
+  // ignore: unused_field
   String _typeSearch = "";
 
   Widget showInstagramPostsPasted() {

@@ -1,7 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen_paste.dart';
-import 'package:repost/services/database_service.dart';
-import 'package:repost/models/searcherPost_model.dart';
+import 'package:repost/screens/repost/Widget/rate_us.dart';
 
 class PostPasted extends StatefulWidget {
   final String uid;
@@ -39,6 +39,8 @@ class _PostState extends State<PostPasted> {
         itemBuilder: (context, index) {
           return GestureDetector(
               onTap: () {
+                reteApplication(
+                    context);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -198,21 +200,5 @@ class _PostState extends State<PostPasted> {
                 ),
               ));
         });
-  }
-
-  //save clicked posts
-
-  Future<void> _saveClickedPosts(
-      content, uid, profilepic, thumbnailpic, username) async {
-    Map<String, dynamic> row = {
-      DatabaseHelper.columnContentPostsSearches: content,
-      DatabaseHelper.columnCodePostSearches: uid,
-      DatabaseHelper.columnProfilePicPostsSearches: profilepic,
-      DatabaseHelper.columnThumbnailPicPostsSearches: thumbnailpic,
-      DatabaseHelper.columnUsernamePostsSearches: username,
-      DatabaseHelper.columnCreatedAtPostsSearches: DateTime.now().toString()
-    };
-    SearchersPosts searchersPosts = SearchersPosts.fromMap(row);
-    DatabaseHelper.instance.insert_searcher_post(searchersPosts);
   }
 }

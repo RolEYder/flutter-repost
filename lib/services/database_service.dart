@@ -4,7 +4,7 @@ import 'package:repost/models/searcherPost_model.dart';
 import 'package:repost/models/caption_model.dart';
 import 'package:repost/models/schedulepPost_model.dart';
 import 'package:path/path.dart';
-import 'dart:convert' show JsonEncoder, jsonDecode, jsonEncode, utf8;
+import 'dart:convert' show jsonEncode;
 import 'package:repost/models/stories_repost_model.dart';
 import 'package:sqflite/sqflite.dart'
     show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;

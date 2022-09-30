@@ -146,7 +146,9 @@ class _ProScreenState extends State<ProScreen> {
 
   void getSubscriptionPurchaseUser() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    _subscriptionType = (await sharedPreferences.getString("subscription")!);
+    setState(() {
+      _subscriptionType = (sharedPreferences.getString("subscription")!);
+    });
     //  _subscriptionType = "good_discount";
   }
 
@@ -295,11 +297,13 @@ class _ProScreenState extends State<ProScreen> {
                       }
                       Offerings offerings = await Purchases.getOfferings();
                       var myProductList = offerings.current!.availablePackages;
+
                       switch (selectedTrial) {
                         case 0:
                           try {
                             var purchaserInfo = await Purchases.purchasePackage(
                                 myProductList[2]);
+
                             if (purchaserInfo
                                 .entitlements.all["free_trial"]!.isActive) {
                               // Unlock that great "pro" content
@@ -317,9 +321,20 @@ class _ProScreenState extends State<ProScreen> {
                           try {
                             var purchaserInfo = await Purchases.purchasePackage(
                                 myProductList[0]);
+                            SharedPreferences sharedPreferences =
+                                await SharedPreferences.getInstance();
+                            sharedPreferences.setString(
+                                "subscription", "best_offer");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DashBoard()));
                             if (purchaserInfo
-                                .entitlements.all["good_discount"]!.isActive) {
-                              // Unlock that great "pro" content
+                                .entitlements.all["best_offer"]!.isActive) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashBoard()));
                             }
                           } on PlatformException catch (e) {
                             var errorCode =
@@ -334,9 +349,20 @@ class _ProScreenState extends State<ProScreen> {
                           try {
                             var purchaserInfo = await Purchases.purchasePackage(
                                 myProductList[1]);
+                            SharedPreferences sharedPreferences =
+                                await SharedPreferences.getInstance();
+                            sharedPreferences.setString(
+                                "subscription", "best_offer");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DashBoard()));
                             if (purchaserInfo
-                                .entitlements.all["best_offer"]!.isActive) {
-                              // Unlock that great "pro" content
+                                .entitlements.all["good_discount"]!.isActive) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashBoard()));
                             }
                           } on PlatformException catch (e) {
                             var errorCode =

@@ -1,4 +1,8 @@
 {
+  "es": [
+    "rate_our_application"
+  ],
+
   "pt": [
     "repost_posted_from_instagram"
   ]

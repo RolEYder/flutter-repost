@@ -5,8 +5,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' as File;
-import 'package:path/path.dart' as path;
-import 'package:image/image.dart' as img;
 
 class Utility {
     static Future<String> VideoString(String videoUrl, String videoId) async {

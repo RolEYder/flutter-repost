@@ -1,22 +1,18 @@
-import 'dart:convert';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_video_player/cached_video_player.dart' as cachedVideo;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:repost/helper/utility.dart';
-import 'package:repost/models/schedulepPost_model.dart';
+import 'package:instagram_video_story_share/instagram_video_story_share.dart';
+import 'package:repost/helper/herpers.dart';
+import 'package:repost/screens/pro/proscreen.dart';
 import 'package:repost/screens/repost/Screen/repost_hastags_screen.dart';
+import 'package:repost/screens/repost/Widget/rate_us.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
-import 'package:repost/services/database_service.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:http/http.dart' as http;
 import 'caption_screen.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:share_extend/share_extend.dart';
+
 import 'dart:io' as File;
 
 // REPOSTS SCHEDULE
@@ -50,8 +46,11 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
   String selectedWatermark = "Top left";
   int pageIndex = 0;
   List<dynamic> _captionSelected = [];
+  // ignore: unused_field
   List<dynamic> _hashtagSelected = List.empty();
+  // ignore: unused_field
   String _scheduleSelected = "";
+  // ignore: unused_field
   String _hashtagsSelected = "";
   int selectedAlignment = 0;
   int currentIndexImage = 0;
@@ -101,7 +100,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
 
   @override
   void initState() {
-    print(widget.content.isEmpty);
     if (widget.is_video) {
       final File.File file = File.File(widget.content[0]["video_url"]);
       setState(() {
@@ -123,6 +121,73 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     DefaultCacheManager manager = new DefaultCacheManager();
     manager.emptyCache();
     super.dispose();
+  }
+
+  void ShareToStoryOrPost(
+      BuildContext context, String pathContent, String Caption) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Wrap(
+        children: [
+          const SizedBox(
+            height: 25,
+            width: 20,
+          ),
+          Center(
+            child: Text("Select option",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(
+            height: 25,
+            width: 20,
+          ),
+          Center(
+            child: Text(
+              "How do you want to post it on instagram?",
+              style: TextStyle(fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    List<String> images = [];
+                    for (var i = 0; i < widget.content.length; i++) {
+                      var uriImage = widget.content[i]["display_url_image"];
+
+                      images.add(uriImage);
+                    }
+                    await ShareExtend.shareMultiple(images, "image",
+                        subject: widget.caption);
+                    // await Share.shareFiles([path],
+                    //     text: widget.caption);
+                    Navigator.pop(context);
+                  },
+                  child: Text('Story'),
+                  style: TextButton.styleFrom(
+                      alignment: Alignment.center, elevation: 0),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    var urlImage =
+                        widget.content[currentIndexImage]["display_url_image"];
+
+                    await Share.shareFiles([urlImage], text: widget.caption);
+                    Navigator.pop(context);
+                  },
+                  child: Text('Post'),
+                  style: TextButton.styleFrom(
+                      alignment: Alignment.center, elevation: 0),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -305,15 +370,19 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                 title: Text('Buttom Right'),
                               ),
                               ListTile(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    selectedAlignment = -1;
-                                  });
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: ((context) => ProScreen())));
+                                onTap: () async {
+                                  final active = await hasActiveSubscription();
+                                  if (!active) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProScreen()));
+                                  } else {
+                                    setState(() {
+                                      selectedAlignment = -1;
+                                    });
+                                    Navigator.pop(context);
+                                  }
                                 },
                                 title: Text('None'),
                               ),
@@ -331,6 +400,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   ),
                   GestureDetector(
                       onTap: () {
+                        reteApplication(context);
                         _gettingCaptionAfterSelected(context);
                       },
                       child: waterMarks("Caption",
@@ -340,6 +410,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   ),
                   GestureDetector(
                       onTap: () async {
+                        reteApplication(context);
                         _gettingHashtagsAfterSelected(context);
                       },
                       child: waterMarks("Hashtags", "")),
@@ -355,8 +426,17 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     const Color.fromARGB(255, 125, 64, 121)),
-                            onPressed: () {
-                              _gettingScheduleAfterSelected(context);
+                            onPressed: () async {
+                              reteApplication(context);
+                              final active = await hasActiveSubscription();
+                              if (!active) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProScreen()));
+                              } else {
+                                _gettingScheduleAfterSelected(context);
+                              }
                             },
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -385,8 +465,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                               if (_captionSelected.isEmpty) {
                                 _dialogBuilder(context, "Oops!",
                                     "You must select a caption");
-                              }
-                              if (!widget.is_video & !widget.content.isEmpty) {
+                              } else if (!widget.is_video &
+                                  !widget.content.isEmpty) {
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (context) => Wrap(
@@ -426,19 +506,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                   var uriImage =
                                                       widget.content[i]
                                                           ["display_url_image"];
-                                                  final url =
-                                                      Uri.parse(uriImage);
-                                                  final reponse =
-                                                      await http.get(url);
-                                                  final bytes =
-                                                      reponse.bodyBytes;
-                                                  final temp =
-                                                      await getTemporaryDirectory();
-                                                  final path =
-                                                      '${temp.path}/image${i}.jpg';
-                                                  File.File(path)
-                                                      .writeAsBytesSync(bytes);
-                                                  images.add(path);
+
+                                                  images.add(uriImage);
                                                 }
                                                 await ShareExtend.shareMultiple(
                                                     images, "image",
@@ -457,20 +526,9 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                 var urlImage = widget.content[
                                                         currentIndexImage]
                                                     ["display_url_image"];
-                                                final url = Uri.parse(urlImage);
-                                                final response =
-                                                    await http.get(url);
-                                                final bytes =
-                                                    response.bodyBytes;
-                                                final temp =
-                                                    await getTemporaryDirectory();
-                                                final path =
-                                                    '${temp.path}/image.jpg';
 
-                                                File.File(path)
-                                                    .writeAsBytesSync(bytes);
-
-                                                await Share.shareFiles([path],
+                                                await Share.shareFiles(
+                                                    [urlImage],
                                                     text: widget.caption);
                                                 Navigator.pop(context);
                                               },
@@ -485,6 +543,9 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                     ],
                                   ),
                                 );
+                              } else {
+                                String path = widget.content[0]["video_url"];
+                                share_video(path);
                               }
                             },
                             child: Row(
@@ -512,27 +573,9 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     );
   }
 
-  void _insert(title, content, photo, date_end, created_at, hashtags, username,
-      profile_pic) async {
-    Map<String, dynamic> row = {
-      DatabaseHelper.columnTitleSchedulePosts: title,
-      DatabaseHelper.columnContentSchedulePosts: content,
-      DatabaseHelper.columnPhotoSchedulePosts: photo,
-      DatabaseHelper.columnDateEndSchedulePosts: date_end,
-      DatabaseHelper.columnCreateAtSchedulePosts: created_at,
-      DatabaseHelper.columnHashtagsSchedulePosts: hashtags,
-      DatabaseHelper.columnUsernameSchedulePost: username,
-      DatabaseHelper.columnProfilePicSchedulePost: profile_pic
-    };
-    SchedulePosts schedulePosts = SchedulePosts.fromMap(row);
-    DatabaseHelper.instance.insert_schedule_post(schedulePosts);
-    _showMessageInScaffold("Post was scheduled 👍 ");
-  }
-
-  void _showMessageInScaffold(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+  Future<bool> share_video(String path) async {
+    bool result = await InstagramVideoStoryShare.share(videoPath: path);
+    return result;
   }
 
   Future<void> _dialogBuilder(

@@ -259,6 +259,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.0"
+  instagram_video_story_share:
+    dependency: "direct main"
+    description:
+      name: instagram_video_story_share
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   intl:
     dependency: "direct main"
     description:

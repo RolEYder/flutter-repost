@@ -10,6 +10,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - instagram_video_story_share (0.0.1):
+    - Flutter
   - KTVCocoaHTTPServer (1.0.0):
     - CocoaAsyncSocket
   - KTVHTTPCache (2.0.1):
@@ -56,6 +58,7 @@ DEPENDENCIES:
   - cached_video_player (from `.symlinks/plugins/cached_video_player/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - instagram_video_story_share (from `.symlinks/plugins/instagram_video_story_share/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
@@ -85,6 +88,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  instagram_video_story_share:
+    :path: ".symlinks/plugins/instagram_video_story_share/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   path_provider_ios:
@@ -112,6 +117,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  instagram_video_story_share: 80672d745dcf4e8019845e003ae032665a2be7f2
   KTVCocoaHTTPServer: df8d7b861e603ff8037e9b2138aca2563a6b768d
   KTVHTTPCache: 588c3eb16f6bd1e6fde1e230dabfb7bd4e490a4d
   onesignal_flutter: 02a850e079073e8bd03948f50a2fb9a7918b5db6

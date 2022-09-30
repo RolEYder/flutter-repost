@@ -69,6 +69,7 @@ dependencies:
   share_extend: ^2.0.0
   cached_video_player: ^2.0.3
   mysql1: ^0.20.0
+  instagram_video_story_share: ^0.0.2
  
 
   

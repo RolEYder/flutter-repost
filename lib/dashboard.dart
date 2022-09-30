@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/StringExtension.dart';
+import 'package:repost/screens/repost/Widget/rate_us.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'screens/hastag/hastag.dart';
 import 'screens/more/morescreen.dart';
@@ -9,9 +10,7 @@ import 'screens/repost/Screen/repost_screen.dart';
 import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
 import 'services/database_service.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -80,6 +79,7 @@ class _DashBoardState extends State<DashBoard> {
           ),
           leading: IconButton(
               onPressed: () {
+                reteApplication(context);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Settings()));
               },
@@ -163,9 +163,9 @@ class _DashBoardState extends State<DashBoard> {
     const nativeUrl = "instagram://";
     const webUrl = "https://www.instagram.com/";
     if (await canLaunchUrlString(nativeUrl)) {
-      await launch(nativeUrl);
+      await launchUrlString(nativeUrl);
     } else if (await canLaunchUrlString(webUrl)) {
-      await launch(webUrl);
+      await launchUrlString(webUrl);
     } else {
       _dialogBuilder(context, "Error", "Unable to open Instagram");
     }

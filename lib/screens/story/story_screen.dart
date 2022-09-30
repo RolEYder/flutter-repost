@@ -1,5 +1,4 @@
 //@dart=2.1
-import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

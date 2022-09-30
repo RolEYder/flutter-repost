@@ -1,4 +1,6 @@
 // ignore: unused_element
+import 'package:shared_preferences/shared_preferences.dart';
+
 List<String> getHashtagsFromString(String _text) {
   List<String> _listHashastags = [];
   RegExp exp = new RegExp(r"\B#\w\w+");
@@ -70,4 +72,14 @@ String getHashtagsFromList(List<String> hashtags, int n) {
     str.add(hashtags[i]);
   }
   return str.join();
+}
+
+Future<bool> hasActiveSubscription() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  final subs = sharedPreferences.getString("subscription");
+  print(subs);
+  if (subs == "free") {
+    return false;
+  }
+  return true;
 }

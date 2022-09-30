@@ -32,6 +32,7 @@ class OnboardingModel {
 }
 
 List<OnboardingModel> getSlides() {
+  // ignore: deprecated_member_use
   List<OnboardingModel> slides = new List<OnboardingModel>();
   OnboardingModel sliderModel = new OnboardingModel();
 

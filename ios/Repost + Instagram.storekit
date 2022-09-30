@@ -1,0 +1,79 @@
+{
+  "identifier" : "B1AF1C91",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1645395073",
+    "_developerTeamID" : "5S85Q2GK24",
+    "_lastSynchronizedDate" : 686105884.04151797
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21018991",
+      "localizations" : [
+
+      ],
+      "name" : "Repost Subscription",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "1645395721",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Access to the repost features for one month",
+              "displayName" : "Access Repost - Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "repost_4.66_1m",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Access Repost - Monthly",
+          "subscriptionGroupID" : "21018991",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "22.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "1645396267",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Access to the repost features for six months",
+              "displayName" : "Access Repost - Six months",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "repost_22_6m",
+          "recurringSubscriptionPeriod" : "P6M",
+          "referenceName" : "Access Repost - Six months",
+          "subscriptionGroupID" : "21018991",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
