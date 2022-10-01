@@ -43,10 +43,10 @@ class _DashBoardState extends State<DashBoard> {
       index = selectedTitle;
     });
 
-    if (index == 3) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => ProScreen()));
-    }
+    // if (index == 3) {
+    //   Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (context) => ProScreen()));
+    // }
 
     print(selectedTitle);
   }
@@ -55,11 +55,10 @@ class _DashBoardState extends State<DashBoard> {
     {"title": "Repost +"},
     {"title": "Schedule"},
     {"title": "Hashtag"},
-    {"title": "Pro"},
     {"title": "More"}
   ];
 
-  List titleArr = ["report", "schedule", "hashtags", "pro", "more"];
+  List titleArr = ["report", "schedule", "hashtags", "more"];
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +127,6 @@ class _DashBoardState extends State<DashBoard> {
           RepostScreen(),
           ScheduleScreen(),
           Hastag(),
-          Icon(Icons.star),
           MoreScreen()
         ]),
       ),

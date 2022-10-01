@@ -50,7 +50,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         child: ListView(
           children: [
             const Text(
-              "PENDING\nPOSTS\nAND\nSTORIES",
+              "PENDING POSTS AND STORIES",
               style: TextStyle(
                   fontSize: 50,
                   height: 0.95,

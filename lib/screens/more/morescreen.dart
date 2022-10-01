@@ -17,10 +17,10 @@ class _MoreScreenState extends State<MoreScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 12, top: 12, bottom: 10),
             child: Text(
-              "MORE\nUSEFUL\nAPPS",
+              "MORE USEFUL APPS",
               style: TextStyle(
-                height: 0.95,
-                letterSpacing: 0,
+                  height: 0.95,
+                  letterSpacing: 0,
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),

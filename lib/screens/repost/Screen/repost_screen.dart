@@ -145,6 +145,9 @@ class _RepostScreenState extends State<RepostScreen> {
         if (regExp.hasMatch(url)) {
           var value = regExp.firstMatch(url)?.group(1);
           var _post = await PostService().getPostPasted(value);
+          setState(() {
+            _isLoading = true;
+          });
           String shortcode = _post["shortcode"].toString();
           String uid = _post["uid"].toString();
           int is_video = _post["is_video"] ? 1 : 0;
@@ -196,6 +199,9 @@ class _RepostScreenState extends State<RepostScreen> {
         if (regExp.hasMatch(url)) {
           var value = regExp.firstMatch(url)?.group(3);
           print(value);
+          setState(() {
+            _isLoading = true;
+          });
           var _story = await PostService().getStoriesPasted(value);
           String shortcode = _story["shortcode"].toString();
           String uid = _story["uid"].toString();
@@ -245,6 +251,9 @@ class _RepostScreenState extends State<RepostScreen> {
         if (regExp.hasMatch(url)) {
           var value = regExp.firstMatch(url)?.group(1);
           var _reel = await PostService().getReelPasted(value);
+          setState(() {
+            _isLoading = true;
+          });
           String shortcode = _reel["shortcode"].toString();
           String uid = _reel["uid"].toString();
           int is_video = _reel["is_video"] ? 1 : 0;
@@ -308,12 +317,15 @@ class _RepostScreenState extends State<RepostScreen> {
                         ? GestureDetector(
                             child: Column(
                               children: <Widget>[
-                                Text(
-                                  AppLocalizations.of(context).current_pasted,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 30,
-                                      color: Colors.white),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    AppLocalizations.of(context).current_pasted,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30,
+                                        color: Colors.white),
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 25,
@@ -345,7 +357,7 @@ class _RepostScreenState extends State<RepostScreen> {
                         : Text(
                             AppLocalizations.of(context).there_are_not_archive,
                             style: TextStyle(color: Colors.white, fontSize: 20),
-                            textAlign: TextAlign.center),
+                          ),
                     const SizedBox(
                       height: 25,
                     ),
