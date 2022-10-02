@@ -118,6 +118,167 @@
     "rate": "Rate",
     "@rate": {
         "description": "Rate"
+    },
+    "pending_posts_and_stories": "PENDING POSTS AND STORIES",
+    "@pending_posts_and_stories": {
+        "description": "Peding Posts and Stories"
+    },
+    "check_to_edit_your_desired_schedule_post_or_story": "Check to edit your desired schedule post or story",
+    "@check_to_edit_your_desired_schedule_post_or_story": {
+        "description": "Check to edit your desired schedule post or story"
+    }, 
+    "search": "Search",
+    "@search": {
+        "description": "Search"
+    },
+    "categories": "CATEGORIES",
+    "@categories": {
+        "description": "Categories"
+    },
+    "select_category": "Select your desired category", 
+    "@select_category": {
+        "description": "Select your desired category"
+    },
+    "copy_selected_hashtags": "Copy selected hashtags",
+    "@copy_selected_hashtags": {
+        "description": "Copy selected hashtags"
+    },
+    "upgrade_to_a_membership": "UPGRADE TO A PREMIUM MEMBERSHIP",
+    "@upgrade_to_a_membership": {
+        "description": "Upgrade to a premium membership"
+    },
+    "open_up_to_incredible_features": "Open up to incredible features in a quick and easy manner",
+    "@open_up_to_incredible_features": {
+        "description": "Open up to incredible features in a quick and easy manner"
+    },
+    "unlimited_repost": "Unlimited repost",
+    "@unlimited_repost": {
+        "description": "Unlimited repost"
+    },
+    "premium_hashtags": "Premium hashtags", 
+    "@premium_hashtags": {
+        "description": "Premium hashtags"
+    },
+    "and_many_more_features": "And many more features...",
+    "@and_many_more_features": {
+        "description": "And many more features"
+    },
+    "basic": "Basic", 
+    "@basic": {
+        "description": "basic"
+    },
+    "best_offer": "Best offer",
+    "@best_offer": {
+        "description": "Best offer"
+    },
+    "good_discount": "Good discount",
+    "@good_discount": {
+        "description": "Good discount"
+    },
+    "months": "Months", 
+    "@months": {
+        "description": "Months"
+    },
+    "year": "Year",
+    "@year": {
+        "description": "Year"
+    },
+    "more_useful_apps": "MORE USEFUL APPS",
+    "@more_useful_apps": {
+        "description": "MORE USEFUL APPS"
+    },
+    "get_more_apps": "Get more apps to increase your audience and public, all from partner developers",
+    "@get_more_apps": {
+        "description": "Get more apps"
+    },
+    "get_unlimited_hashtags": "Get unlimited hashtags to boost your instagram",
+    "@get_unlimited_hashtags": {
+        "description": "Get unlimited hashtags to boost your instagram"
+    },
+    "stat_ins": "Stat Inst +", 
+    "@stat_ins": {
+        "description": "Stat Inst +"
+    },
+    "get_your_lastest": "Get your latest count stats anytime",
+    "@get_your_lastest": {
+        "description": "Get your latest count stats anytime"
+    },
+    "watermark": "Watermark",
+    "@watermark": {
+        "description": "Watermark"
+    }, 
+    "top_left": "Top Left",
+    "@top_lest": {
+        "description": "Top Left"
+    },
+    "top_right": "Top Right",
+    "@top_right": {
+        "description": "Top Right"
+    },
+    "buttom_left": "Buttom Left",
+    "@buttom_left": {
+        "description": "Buttom Left"
+    },
+    "buttom_right": "Buttom Right",
+    "@buttom_right": {
+        "description": "Buttom Right"
+    },
+    "none": "None",
+    "@none": {
+        "description": "None"
+    }, 
+    "caption": "Caption",
+    "@caption": {
+        "description": "Caption"
+    },
+
+    "captions_not_found": "Captions not found. Tap ••• to add one", 
+    "@captions_not_found": {
+        "description": "Captions not found."
+    },
+    "save": "Save", 
+    "@save": {
+        "description": "Save"
+    }, 
+    "add_caption": "Add caption",
+    "@add_caption": {
+        "description" : "Add Caption"
+    },
+    "inserting_custom_caption": "Inserting custom caption",
+    "@inserting_custom_caption": {
+        "description": "Inserting custom caption"
+    },
+    "updating_custom_caption": "Updating custom caption",
+    "@updating_custom_caption": {
+        "description": "Updating custom caption"
+    },
+    "enter_custom_caption": "Enter custom caption",
+    "@enter_custom_caption": {
+        "description": "Enter custom caption"
+    },
+    "enter_custom_title": "Enter custom title",
+    "@enter_custom_title": {
+        "description": "Enter custom title"
+    }, 
+    "insert_original_username": "Insert original username",
+    "@insert_original_username": {
+        "description": "Insert original username"
+    },
+    "insert_original_caption": "Insert original caption",
+    "@insert_original_caption": {
+        "description": "Insert original caption"
+    },
+    "repost": "Repost",
+    "@repost": {
+        "description": "Repost"
+    },
+    "preview": "Preview",
+    "@preview": {
+        "description": "Preview"
+    },
+    "schedule": "Schedule",
+    "@schedule": {
+        "description": "Schedule"
     }
 
 }
