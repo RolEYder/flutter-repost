@@ -3,6 +3,10 @@
     "rate_our_application"
   ],
 
+  "ja": [
+    "buttom_left"
+  ],
+
   "pt": [
     "repost_posted_from_instagram"
   ]

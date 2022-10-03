@@ -54,7 +54,7 @@
     "top_left": "왼쪽 위로",
     "top_right": "오른쪽으로",
     "buttom_right": "오른쪽 하단",
-    "button_left": "왼쪽 아래",
+    "buttom_left": "왼쪽 아래",
     "none": "제거하다",
     "caption": "표제",
     "captions_not_found": "자막을 찾을 수 없습니다. •••를 터치하여 하나를 추가합니다.",
@@ -66,8 +66,9 @@
     "enter_custom_title": "사용자 정의 제목 입력",
     "insert_original_username": "원래 사용자 이름 삽입",
     "insert_original_caption": "원본 자막 삽입",
-    "repost": "다시 출판하다",
     "preview": "시사",
-    "schedule": "일정"
-    
+    "update": "업데이트",
+    "selected": "セル",
+    "ok": "わかった",
+    "subscribe": "구독하다"
 }

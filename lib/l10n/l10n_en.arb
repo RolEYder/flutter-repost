@@ -268,17 +268,25 @@
     "@insert_original_caption": {
         "description": "Insert original caption"
     },
-    "repost": "Repost",
-    "@repost": {
-        "description": "Repost"
-    },
     "preview": "Preview",
     "@preview": {
         "description": "Preview"
     },
-    "schedule": "Schedule",
-    "@schedule": {
-        "description": "Schedule"
+    "update": "Update",
+    "@update": {
+        "description": "Update"
+    },
+    "selected": "Selected",
+    "@selected": {
+        "description": "Selected"
+    },
+    "ok": "Ok",
+    "@ok": {
+        "description": "OK"
+    },
+    "subscribe": "Subscribe",
+    "@subscribe": {
+        "description": "Subscribe"
     }
 
 }

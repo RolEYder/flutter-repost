@@ -54,7 +54,7 @@
     "top_left": "Sola kadar",
     "top_right": "Sağa doğru",
     "buttom_right": "Sağ alt",
-    "button_left": "Sol aşağı",
+    "buttom_left": "Sol aşağı",
     "none": "Kaldırmak",
     "caption": "Altyazı",
     "captions_not_found": "Altyazı bulunamadı. Bir tane eklemek için ••• öğesine dokunun.",
@@ -66,7 +66,9 @@
     "enter_custom_title": "Özel bir başlık girin",
     "insert_original_username": "Orijinal kullanıcı adını girin",
     "insert_original_caption": "Orijinal altyazıyı ekle",
-    "repost": "Yeniden yayınlamak",
     "preview": "Ön izleme",
-    "schedule": "Takvim"
+    "update": "Güncelleme",
+    "selected": "Seçilmiş",
+    "ok": "Tamam",
+    "subscribe": "Abone olmak"
 }

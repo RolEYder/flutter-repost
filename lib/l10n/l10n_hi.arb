@@ -54,7 +54,7 @@
     "top_left": "बाईं ओर",
     "top_right": "दायीं ओर",
     "buttom_right": "नीचे दाएं",
-    "button_left": "नीचे बाएं",
+    "buttom_left": "नीचे बाएं",
     "none": "Remover",
     "caption": "Subtítulo",
     "captions_not_found": "उपशीर्षक नहीं मिला। एक जोड़ने के लिए ••• स्पर्श करें।",
@@ -66,9 +66,10 @@
     "enter_custom_title": "एक कस्टम शीर्षक दर्ज करें",
     "insert_original_username": "मूल उपयोगकर्ता नाम डालें",
     "insert_original_caption": "मूल उपशीर्षक डालें",
-    "repost": "पुनर्प्रकाशन",
     "preview": "पूर्वावलोकन",
-    "schedule": "अनुसूची"
-
+    "update": "अपडेट करें",
+    "selected": "चयनित",
+    "ok": "ठीक है",
+    "subscribe": "सदस्यता लेने के"
 
 }

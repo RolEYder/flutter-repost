@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:repost/services/hashtag_servicer.dart';
 import 'package:repost/helper/theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RepostHastags extends StatefulWidget {
   const RepostHastags({Key? key}) : super(key: key);
@@ -87,14 +88,14 @@ class _RepostHastags extends State<RepostHastags> {
           child: ListView(
             children: [
               Text(
-                "CATEGORIES",
+                AppLocalizations.of(context)!.categories,
                 style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
               Text(
-                "Stories you have already reposted",
+                AppLocalizations.of(context)!.select_category,
                 style: TextStyle(color: Colors.white),
               ),
               SizedBox(
@@ -233,7 +234,7 @@ class _RepostHastags extends State<RepostHastags> {
                 height: 15,
               ),
               Text(
-                "Preview",
+                AppLocalizations.of(context)!.preview,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -267,7 +268,7 @@ class _RepostHastags extends State<RepostHastags> {
                           onPressed: () {
                             Navigator.pop(context, _clickedHashtags);
                           },
-                          child: Text("Save"))))
+                          child: Text(AppLocalizations.of(context)!.save))))
             ],
           ),
         ));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:repost/models/caption_model.dart';
 import 'package:repost/services/database_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditingCustomCaption extends StatefulWidget {
   final String? title;
@@ -61,8 +62,8 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
             },
             child: Image.asset("assets/back.png")),
         title: widget.title == ""
-            ? Text("Inserting Custom Caption")
-            : Text("Editing Custom Caption"),
+            ? Text(AppLocalizations.of(context)!.inserting_custom_caption)
+            : Text(AppLocalizations.of(context)!.updating_custom_caption),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,7 +79,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
             decoration: InputDecoration(
                 focusColor: Colors.grey,
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
-                hintText: "Enter Custom Title",
+                hintText: AppLocalizations.of(context)!.enter_custom_title,
                 contentPadding: EdgeInsets.only(left: 10)),
           ),
           TextField(
@@ -94,7 +95,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
             decoration: InputDecoration(
                 focusColor: Colors.grey,
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
-                hintText: "Enter Custom Caption",
+                hintText: AppLocalizations.of(context)!.enter_custom_caption,
                 contentPadding: EdgeInsets.only(left: 10)),
           ),
           Column(
@@ -104,6 +105,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
+                      width: 200,
                       height: 45,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -115,15 +117,19 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                                 "@" +
                                 widget.Username.toString();
                           },
-                          child: const Text(
-                            "Insert Original\nUsername",
-                            textAlign: TextAlign.center,
-                          )),
+                          child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .insert_original_username,
+                                textAlign: TextAlign.center,
+                              ))),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     SizedBox(
+                      width: 200  ,
                       height: 45,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -135,10 +141,13 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                                 widget.OriginalCaption.toString();
                             setState(() {});
                           },
-                          child: const Text(
-                            "Insert Original\nCaption",
-                            textAlign: TextAlign.center,
-                          )),
+                          child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .insert_original_caption,
+                                textAlign: TextAlign.center,
+                              ))),
                     )
                   ],
                 )
@@ -168,8 +177,8 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                           }
                         },
                         child: (widget.title != "")
-                            ? Text("Update")
-                            : Text("Save"))),
+                            ? Text(AppLocalizations.of(context)!.update)
+                            : Text(AppLocalizations.of(context)!.save))),
               ),
               SizedBox(
                 height: 10,

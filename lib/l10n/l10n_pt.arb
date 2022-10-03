@@ -54,7 +54,7 @@
     "top_left": "Até a esquerda",
     "top_right": "Acima à direita",
     "buttom_right": "Canto inferior direito",
-    "button_left": "Para baixo à esquerda",
+    "buttom_left": "Para baixo à esquerda",
     "none": "Remover",
     "caption": "Rubrica",
     "captions_not_found": "Legendas não encontradas. Toque em ••• para adicionar um.",
@@ -66,7 +66,9 @@
     "enter_custom_title": "Insira um título personalizado",
     "insert_original_username": "Insira o nome de usuário original",
     "insert_original_caption": "Inserir legenda original",
-    "repost": "Republicar",
     "preview": "Visualizar",
-    "schedule": "Cronograma"
+    "update": "Atualizar",
+    "selected": "Selecionado",
+    "ok": "Ok",
+    "subscribe": "Se inscrever"
 }

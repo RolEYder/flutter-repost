@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:repost/models/caption_model.dart';
 import 'editing_custom_caption_screen.dart';
 import 'package:repost/services/database_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Caption extends StatefulWidget {
   final String? CustomCaption;
@@ -62,7 +63,7 @@ class _CaptionState extends State<Caption> with WidgetsBindingObserver {
               onPressed: () {
                 Navigator.pop(context, _savedCaptions[this.isCheckedbox[0]]);
               },
-              child: Text("Save")),
+              child: Text(AppLocalizations.of(context)!.save)),
         ),
       ),
       backgroundColor: Color.fromARGB(255, 28, 28, 28),
@@ -75,7 +76,7 @@ class _CaptionState extends State<Caption> with WidgetsBindingObserver {
           },
           child: Image.asset("assets/back.png"),
         ),
-        title: Text("Caption"),
+        title: Text(AppLocalizations.of(context)!.caption),
         actions: [
           PopupMenuButton(
             onSelected: (res) {
@@ -95,7 +96,7 @@ class _CaptionState extends State<Caption> with WidgetsBindingObserver {
                     value: 0,
                     child: Row(children: [
                       Icon(Icons.add, color: Colors.black),
-                      Text('Add caption')
+                      Text(AppLocalizations.of(context)!.add_caption)
                     ])),
               ];
             },
@@ -243,7 +244,7 @@ class _CaptionState extends State<Caption> with WidgetsBindingObserver {
                     children: [
                       Text(
                         textAlign: TextAlign.center,
-                        "Captions not found. Tap ••• to add one",
+                        AppLocalizations.of(context)!.captions_not_found,
                         style: TextStyle(color: Colors.white, fontSize: 15),
                       )
                     ],

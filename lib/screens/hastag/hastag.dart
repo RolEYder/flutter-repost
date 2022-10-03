@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
 import 'selected_hastag.dart';
 import 'package:repost/services/hashtag_servicer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Hastag extends StatefulWidget {
   const Hastag({Key? key}) : super(key: key);
@@ -20,58 +21,7 @@ class _HastagState extends State<Hastag> {
   Function(String)? selectedStory;
   var selectedhastag = [];
 
-  var hastag = [
-    "#DLORENZW",
-    "#ADLORENZW",
-    "#XORENZW",
-    "#QORENZW",
-    "#AXOUF",
-    "#HURTY",
-    "#DLORENZW",
-    "#DLORENZW",
-    "#GOTYU",
-    "#LOOKIU",
-    "#LEISURE",
-    "#XYZ",
-    "#DLORENZW",
-    "#DLORENZW",
-    "#ADLORENZW",
-    "#XORENZW",
-    "#QORENZW",
-    "#AXOUF",
-    "#HURTY",
-    "#DLORENZW",
-    "#GOTYU",
-    "#LOOKIU",
-    "#LEISURE",
-    "#XYZ",
-    "#DLORENZW",
-    "#DLORENZW",
-    "#ADLORENZW",
-    "#XORENZW",
-    "#QQORENZW",
-    "#AXOUF",
-    "#HURTY",
-    "#DLORENZW",
-    "#GOTYU",
-    "#LOOKIU",
-    "#LEISURE",
-    "#XYZ",
-    "#DLORENZW",
-    "#DLORENZW",
-    "#ADLORENZW",
-    "#XORENZW",
-    "#QORENZW",
-    "#AXOUF",
-    "#HURTY",
-    "#DLORENZW",
-    "#GOTYU",
-    "#LOOKIU",
-    "#LEISURE",
-    "#XYZ",
-    "#DLORENZW",
-    "#TEST"
-  ];
+  var hastag = [];
 
   List<String>? categoryTitleArr = [
     "TOP 8",
@@ -147,7 +97,7 @@ class _HastagState extends State<Hastag> {
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(vertical: 8),
                       hintStyle: const TextStyle(color: Colors.grey),
-                      hintText: "Search",
+                      hintText: AppLocalizations.of(context)!.search,
                       suffixIcon: IconButton(
                         onPressed: _post.clear,
                         icon: Icon(Icons.clear),
@@ -189,7 +139,8 @@ class _HastagState extends State<Hastag> {
                                       builder: (context) =>
                                           SelectedHastag(selectedHashTagArr)));
                             },
-                            child: Text("Copy Selected hashtags")),
+                            child: Text(AppLocalizations.of(context)!
+                                .copy_selected_hashtags)),
                       ),
                     ),
                   ),
@@ -224,14 +175,15 @@ class _HastagState extends State<Hastag> {
                   child: ListView(
                     children: [
                       Text(
-                        "CATEGORIES",
+                        AppLocalizations.of(context)!.categories,
                         style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
                       ),
                       Text(
-                        "Stories you have already reposted",
+                        AppLocalizations.of(context)!
+                            .story_posted_from_instagram,
                         style: TextStyle(color: Colors.white),
                       ),
                       SizedBox(

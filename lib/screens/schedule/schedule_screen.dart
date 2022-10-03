@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:repost/helper/theme.dart';
 import 'package:repost/screens/repost/Widget/post_schedule.dart';
 import 'package:repost/services/database_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({Key? key}) : super(key: key);
@@ -49,8 +50,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         padding: const EdgeInsets.all(12.0),
         child: ListView(
           children: [
-            const Text(
-              "PENDING POSTS AND STORIES",
+            Text(
+              AppLocalizations.of(context)!.pending_posts_and_stories,
               style: TextStyle(
                   fontSize: 50,
                   height: 0.95,
@@ -61,7 +62,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               height: 8,
             ),
             Text(
-              "Click to edit your desired scheduled post or story.",
+              AppLocalizations.of(context)!
+                  .check_to_edit_your_desired_schedule_post_or_story,
               style: TextStyle(color: secondaryTxtColor),
             ),
             SizedBox(

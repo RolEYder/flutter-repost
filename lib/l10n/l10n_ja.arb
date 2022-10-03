@@ -66,7 +66,9 @@
     "enter_custom_title": "カスタム タイトルを入力してください",
     "insert_original_username": "元のユーザー名を挿入",
     "insert_original_caption": "オリジナルのサブタイトルを挿入",
-    "repost": "再発行する",
     "preview": "プレビュー",
-    "schedule": "スケジュール"
+    "update": "アップデート",
+    "selected": "選択した",
+    "ok": "わかった",
+    "subscribe": "申し込む"
 }

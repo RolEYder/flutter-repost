@@ -70,6 +70,9 @@ dependencies:
   cached_video_player: ^2.0.3
   mysql1: ^0.20.0
   instagram_video_story_share: ^0.0.2
+  screenshot: ^1.2.3
+  permission_handler: ^10.0.2
+  image_gallery_saver: ^1.7.1
  
 
   

@@ -4,6 +4,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:repost/dashboard.dart';
 import 'package:repost/helper/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProScreen extends StatefulWidget {
   const ProScreen({Key? key}) : super(key: key);
@@ -233,22 +234,27 @@ class _ProScreenState extends State<ProScreen> {
                       style: headerStyle,
                     ),
                     Text(
-                      "Open up to incredible features in a  \n quick and easy manner.",
+                      AppLocalizations.of(context)!
+                          .open_up_to_incredible_features,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     )
                   ],
                 ),
               ),
-              customcontainer("Unlimited reposts", "upgrade1.png"),
+              customcontainer(AppLocalizations.of(context)!.unlimited_repost,
+                  "upgrade1.png"),
               const SizedBox(
                 height: 10,
               ),
-              customcontainer("Premium hastags", "upgrade2.png"),
+              customcontainer(AppLocalizations.of(context)!.premium_hashtags,
+                  "upgrade2.png"),
               const SizedBox(
                 height: 10,
               ),
-              customcontainer("And may more features...", "upgrade3.png"),
+              customcontainer(
+                  AppLocalizations.of(context)!.and_many_more_features,
+                  "upgrade3.png"),
               const SizedBox(
                 height: 20,
               ),
@@ -256,10 +262,20 @@ class _ProScreenState extends State<ProScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  customCard("\$22.99", "6", "Months", "Best Offer",
-                      "best_offer.png", 1),
-                  customCard("\$4.99", "1", "Month", "Good Discount",
-                      "good_discount.png", 2),
+                  customCard(
+                      "\$22.99",
+                      "6",
+                      AppLocalizations.of(context)!.months,
+                      AppLocalizations.of(context)!.best_offer,
+                      "best_offer.png",
+                      1),
+                  customCard(
+                      "\$4.99",
+                      "1",
+                      AppLocalizations.of(context)!.months,
+                      AppLocalizations.of(context)!.good_discount,
+                      "good_discount.png",
+                      2),
                 ],
               ),
               const SizedBox(
@@ -376,8 +392,8 @@ class _ProScreenState extends State<ProScreen> {
                         default:
                       }
                     },
-                    child: const Text(
-                      "Subscribe",
+                    child: Text(
+                      AppLocalizations.of(context)!.subscribe,
                       style: TextStyle(fontSize: 16),
                     )),
               )

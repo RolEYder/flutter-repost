@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _MoreScreenState extends State<MoreScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 12, top: 12, bottom: 10),
             child: Text(
-              "MORE USEFUL APPS",
+              AppLocalizations.of(context)!.more_useful_apps,
               style: TextStyle(
                   height: 0.95,
                   letterSpacing: 0,
@@ -29,8 +30,7 @@ class _MoreScreenState extends State<MoreScreen> {
           Padding(
             padding:
                 const EdgeInsets.only(left: 12, top: 12, bottom: 10, right: 12),
-            child: Text(
-                "Get more apps to increase your audience and public, all from partner developers.",
+            child: Text(AppLocalizations.of(context)!.get_more_apps,
                 style: TextStyle(
                   fontSize: 17,
                   color: Color.fromARGB(255, 79, 76, 76),

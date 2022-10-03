@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:cached_video_player/cached_video_player.dart' as cachedVideo;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -12,7 +14,10 @@ import 'package:share_plus/share_plus.dart';
 import 'caption_screen.dart';
 import 'dart:async';
 import 'package:share_extend/share_extend.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'dart:io' as File;
 
 // REPOSTS SCHEDULE
@@ -42,6 +47,7 @@ class RepostSchedulePasted extends StatefulWidget {
 
 class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
   TextStyle button = const TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+  ScreenshotController screenshotController = ScreenshotController();
   final _controller = PageController(initialPage: 0);
   String selectedWatermark = "Top left";
   int pageIndex = 0;
@@ -121,6 +127,28 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     DefaultCacheManager manager = new DefaultCacheManager();
     manager.emptyCache();
     super.dispose();
+  }
+
+  saveToGallery(BuildContext context) {
+    screenshotController.capture().then((Uint8List? image) {
+      print(image);
+      saveImage(image!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Image saved to gallery.'),
+        ),
+      );
+      // ignore: invalid_return_type_for_catch_error
+    }).catchError((err) => print(err));
+  }
+
+  saveImage(Uint8List bytes) async {
+    final time = DateTime.now()
+        .toIso8601String()
+        .replaceAll('.', '-')
+        .replaceAll(':', '-');
+    final name = "screenshot_$time";
+    await ImageGallerySaver.saveImage(bytes, name: name);
   }
 
   void ShareToStoryOrPost(
@@ -203,7 +231,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
         centerTitle: true,
         backgroundColor: Colors.black,
         title: Text(
-          "Repost",
+          AppLocalizations.of(context)!.repost,
           style: button,
         ),
       ),
@@ -279,29 +307,30 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                         )),
                               if (selectedAlignment >= 0) ...[
                                 Align(
-                                  alignment: alignmentArr[selectedAlignment],
-                                  child: Image.asset(
-                                    "assets/watermark_img.png",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        selectedAlignment = -1;
-                                      });
-                                    },
-                                    child: Text(
-                                      "Deactivate Watermark",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                )
+                                    alignment: alignmentArr[selectedAlignment],
+                                    child: Chip(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(0),
+                                              bottomRight: Radius.circular(0))),
+                                      labelPadding: EdgeInsets.all(0),
+                                      avatar: CircleAvatar(
+                                        backgroundColor: Colors.white70,
+                                        radius: 48,
+                                        backgroundImage: NetworkImage(
+                                            widget.profile_pic_url),
+                                      ),
+                                      label: Text(
+                                        textAlign: TextAlign.right,
+                                        "@" + widget.username,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      backgroundColor: Colors.white,
+                                      elevation: 6,
+                                      padding: EdgeInsets.all(8.0),
+                                    )),
                               ]
                             ],
                           );
@@ -340,7 +369,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                title: Text('Top Left'),
+                                title: Text(
+                                    AppLocalizations.of(context)!.top_left),
                               ),
                               ListTile(
                                 onTap: () {
@@ -349,7 +379,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                title: Text('Top Right'),
+                                title: Text(
+                                    AppLocalizations.of(context)!.top_right),
                               ),
                               ListTile(
                                 onTap: () {
@@ -358,7 +389,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                title: Text('Buttom Left'),
+                                title: Text(
+                                    AppLocalizations.of(context)!.buttom_left),
                               ),
                               ListTile(
                                 onTap: () {
@@ -367,7 +399,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   });
                                   Navigator.pop(context);
                                 },
-                                title: Text('Buttom Right'),
+                                title: Text(
+                                    AppLocalizations.of(context)!.buttom_right),
                               ),
                               ListTile(
                                 onTap: () async {
@@ -384,17 +417,17 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                     Navigator.pop(context);
                                   }
                                 },
-                                title: Text('None'),
+                                title: Text(AppLocalizations.of(context)!.none),
                               ),
                             ],
                           ),
                         );
                       },
                       child: waterMarks(
-                          "Watermark",
+                          AppLocalizations.of(context)!.top_left,
                           (selectedAlignment >= 0)
                               ? watermarks[selectedAlignment]
-                              : "None")),
+                              : AppLocalizations.of(context)!.none)),
                   Divider(
                     color: Colors.grey,
                   ),
@@ -403,8 +436,11 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                         reteApplication(context);
                         _gettingCaptionAfterSelected(context);
                       },
-                      child: waterMarks("Caption",
-                          (_captionSelected.isNotEmpty) ? "Selected" : "")),
+                      child: waterMarks(
+                          AppLocalizations.of(context)!.caption,
+                          (_captionSelected.isNotEmpty)
+                              ? AppLocalizations.of(context)!.selected
+                              : "")),
                   const Divider(
                     color: Colors.grey,
                   ),
@@ -413,7 +449,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                         reteApplication(context);
                         _gettingHashtagsAfterSelected(context);
                       },
-                      child: waterMarks("Hashtags", "")),
+                      child: waterMarks(
+                          AppLocalizations.of(context)!.hashtags, "")),
                   const SizedBox(
                     height: 20,
                   ),
@@ -442,7 +479,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Schedule",
+                                    AppLocalizations.of(context)!.schedule,
                                     style: button,
                                   ),
                                   SizedBox(
@@ -552,7 +589,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Repost ",
+                                  AppLocalizations.of(context)!.repost,
                                   style: button,
                                 ),
                                 const SizedBox(
@@ -591,7 +628,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
-              child: const Text('Ok'),
+              child: Text(AppLocalizations.of(context)!.ok),
               onPressed: () {
                 Navigator.of(context).pop();
               },

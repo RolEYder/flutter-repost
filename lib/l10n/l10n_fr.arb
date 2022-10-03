@@ -54,7 +54,7 @@
     "top_left": "Jusqu'à gauche",
     "top_right": "En haut à droite",
     "buttom_right": "En bas à droite",
-    "button_left": "En bas à gauche",
+    "buttom_left": "En bas à gauche",
     "none": "Retirer",
     "caption": "Légende",
     "captions_not_found": "Sous-titres introuvables. Appuyez sur ••• pour en ajouter un.",
@@ -66,7 +66,9 @@
     "enter_custom_title": "Entrez un titre personnalisé",
     "insert_original_username": "Insérer le nom d'utilisateur d'origine",
     "insert_original_caption": "Insérer le sous-titre original",
-    "repost": "Republier",
     "preview": "Aperçu",
-    "schedule": "Programme"
+    "update": "Mettre à jour",
+    "selected": "Choisi",
+    "ok": "d'accord",
+    "subscribe": "s'abonner"
 }

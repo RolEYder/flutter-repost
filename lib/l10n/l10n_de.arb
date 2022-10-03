@@ -54,7 +54,7 @@
     "top_left": "Nach links oben",
     "top_right": "Bis nach rechts",
     "buttom_right": "Unten rechts",
-    "button_left": "Links unten",
+    "buttom_left": "Links unten",
     "none": "Entfernen",
     "caption": "Bildbeschriftung",
     "captions_not_found": "Untertitel nicht gefunden. Berühren Sie •••, um eine hinzuzufügen.",
@@ -66,7 +66,9 @@
     "enter_custom_title": "Geben Sie einen benutzerdefinierten Titel ein",
     "insert_original_username": "Fügen Sie den ursprünglichen Benutzernamen ein",
     "insert_original_caption": "Insertar subtítulo original",
-    "repost": "neu veröffentlichen",
     "preview": "Vorschau",
-    "schedule": "Zeitlicher Ablauf"
+    "update": "Aktualisieren",
+    "selected": "Ausgewählt",
+    "ok": "Ok",
+    "subscribe": "Abonnieren"
 }
