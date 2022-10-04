@@ -10,6 +10,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - image_gallery_saver (1.5.0):
+    - Flutter
   - instagram_video_story_share (0.0.1):
     - Flutter
   - KTVCocoaHTTPServer (1.0.0):
@@ -30,6 +32,8 @@ PODS:
   - OneSignalXCFramework/OneSignalOutcomes (3.11.2):
     - OneSignalXCFramework/OneSignalCore
   - path_provider_ios (0.0.1):
+    - Flutter
+  - permission_handler_apple (9.0.4):
     - Flutter
   - purchases_flutter (4.2.1):
     - Flutter
@@ -58,9 +62,11 @@ DEPENDENCIES:
   - cached_video_player (from `.symlinks/plugins/cached_video_player/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - instagram_video_story_share (from `.symlinks/plugins/instagram_video_story_share/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - share_extend (from `.symlinks/plugins/share_extend/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -88,12 +94,16 @@ EXTERNAL SOURCES:
     :path: Flutter
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  image_gallery_saver:
+    :path: ".symlinks/plugins/image_gallery_saver/ios"
   instagram_video_story_share:
     :path: ".symlinks/plugins/instagram_video_story_share/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   purchases_flutter:
     :path: ".symlinks/plugins/purchases_flutter/ios"
   share_extend:
@@ -117,12 +127,14 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
   instagram_video_story_share: 80672d745dcf4e8019845e003ae032665a2be7f2
   KTVCocoaHTTPServer: df8d7b861e603ff8037e9b2138aca2563a6b768d
   KTVHTTPCache: 588c3eb16f6bd1e6fde1e230dabfb7bd4e490a4d
   onesignal_flutter: 02a850e079073e8bd03948f50a2fb9a7918b5db6
   OneSignalXCFramework: 81ceac017a290f23793443323090cfbe888f74ea
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
+  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   purchases_flutter: 13f561706580dccea79396d9cfb02c7d88185d6e
   PurchasesHybridCommon: 99e50f0429cd2a7f7495c867945b4f6ec3cd3f47
   RevenueCat: daea606706c9d1a3182e89768bd80e664c49bce6

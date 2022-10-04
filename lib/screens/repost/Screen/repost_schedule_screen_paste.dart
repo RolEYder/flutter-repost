@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:cached_video_player/cached_video_player.dart' as cachedVideo;
+import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:instagram_video_story_share/instagram_video_story_share.dart';
 import 'package:repost/helper/herpers.dart';
@@ -12,12 +14,16 @@ import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'caption_screen.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:share_extend/share_extend.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:image/image.dart' as ui;
+import 'package:path/path.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:widgets_to_image/widgets_to_image.dart';
+import 'package:image_watermark/image_watermark.dart';
 import 'dart:io' as File;
 
 // REPOSTS SCHEDULE
@@ -48,6 +54,8 @@ class RepostSchedulePasted extends StatefulWidget {
 class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
   TextStyle button = const TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
   ScreenshotController screenshotController = ScreenshotController();
+  WidgetsToImageController controller = WidgetsToImageController();
+  Uint8List? bytes;
   final _controller = PageController(initialPage: 0);
   String selectedWatermark = "Top left";
   int pageIndex = 0;
@@ -58,8 +66,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
   String _scheduleSelected = "";
   // ignore: unused_field
   String _hashtagsSelected = "";
+  String _chipSaving = "";
   int selectedAlignment = 0;
   int currentIndexImage = 0;
+  int imageIndex = 0;
   bool isShowWaterMark = false;
   late cachedVideo.CachedVideoPlayerController videoController;
   List watermarks = [
@@ -218,6 +228,49 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     );
   }
 
+  Screenshot chipToImage() {
+    return Screenshot(
+        controller: screenshotController,
+        child: Container(
+          child: Column(
+            children: [
+              Expanded(
+                  child: Stack(
+                children: [
+                  if (selectedAlignment >= 0) ...[
+                    Align(
+                        alignment: alignmentArr[selectedAlignment],
+                        child: Chip(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(0),
+                                  bottomRight: Radius.circular(0))),
+                          labelPadding: EdgeInsets.all(0),
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.white70,
+                            radius: 48,
+                            backgroundImage:
+                                NetworkImage(widget.profile_pic_url),
+                          ),
+                          label: Text(
+                            textAlign: TextAlign.right,
+                            "@" + widget.username,
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                          backgroundColor: Colors.white,
+                          elevation: 6,
+                          padding: EdgeInsets.all(8.0),
+                        )),
+                  ],
+                ],
+              ))
+            ],
+          ),
+        ));
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -237,6 +290,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
       ),
       body: ListView(
         children: [
+          // Screenshot(
+          //   controller: screenshotController,
+          //   child: Text("This text will be captured as image"),
+          // ),
           Container(
             height: 450,
             child: Padding(
@@ -246,9 +303,11 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   Expanded(
                     child: PageView.builder(
                         onPageChanged: (index) {
+                          print(pageIndex.toInt());
                           setState(() {
-                            index = pageIndex.toInt();
-                            currentIndexImage = pageIndex.toInt();
+                            //index = pageIndex.toInt();
+                            currentIndexImage = index;
+                            imageIndex = index;
                           });
                         },
                         controller: _controller,
@@ -308,28 +367,32 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                               if (selectedAlignment >= 0) ...[
                                 Align(
                                     alignment: alignmentArr[selectedAlignment],
-                                    child: Chip(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(0),
-                                              bottomRight: Radius.circular(0))),
-                                      labelPadding: EdgeInsets.all(0),
-                                      avatar: CircleAvatar(
-                                        backgroundColor: Colors.white70,
-                                        radius: 48,
-                                        backgroundImage: NetworkImage(
-                                            widget.profile_pic_url),
-                                      ),
-                                      label: Text(
-                                        textAlign: TextAlign.right,
-                                        "@" + widget.username,
-                                        style: TextStyle(
-                                          color: Colors.black,
+                                    child: Screenshot(
+                                      controller: screenshotController,
+                                      child: Chip(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(0),
+                                                bottomRight:
+                                                    Radius.circular(0))),
+                                        labelPadding: EdgeInsets.all(0),
+                                        avatar: CircleAvatar(
+                                          backgroundColor: Colors.white70,
+                                          radius: 48,
+                                          backgroundImage: NetworkImage(
+                                              widget.profile_pic_url),
                                         ),
+                                        label: Text(
+                                          textAlign: TextAlign.right,
+                                          "@" + widget.username,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.white,
+                                        elevation: 6,
+                                        padding: EdgeInsets.all(8.0),
                                       ),
-                                      backgroundColor: Colors.white,
-                                      elevation: 6,
-                                      padding: EdgeInsets.all(8.0),
                                     )),
                               ]
                             ],
@@ -498,7 +561,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     const Color.fromARGB(255, 73, 65, 125)),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_captionSelected.isEmpty) {
                                 _dialogBuilder(context, "Oops!",
                                     "You must select a caption");
@@ -536,15 +599,104 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                           children: <Widget>[
                                             TextButton(
                                               onPressed: () async {
+                                                screenshotController
+                                                    .capture()
+                                                    .then((value) async {
+                                                  setState(() async {
+                                                    bytes = value;
+                                                  });
+                                                });
                                                 List<String> images = [];
                                                 for (var i = 0;
                                                     i < widget.content.length;
                                                     i++) {
-                                                  var uriImage =
-                                                      widget.content[i]
-                                                          ["display_url_image"];
+                                                 
+                                                  final photoBytes =
+                                                      await rootBundle.load(widget
+                                                              .content[i][
+                                                          "display_url_image"]);
+                                                  File.File img = File.File(
+                                                      widget.content[i][
+                                                          "display_url_image"]);
+                                                  var decodeImage =
+                                                      await decodeImageFromList(
+                                                          img.readAsBytesSync());
+                                                  final Uint8List photo =
+                                                      photoBytes.buffer
+                                                          .asUint8List();
+                                                  var watermarkedImgBytes;
 
-                                                  images.add(uriImage);
+                                                  switch (selectedAlignment) {
+                                                    case 0:
+                                                      watermarkedImgBytes = await image_watermark
+                                                          .addImageWatermark(
+                                                              photo, //image bytes
+                                                              bytes!, //watermark img bytes
+                                                              imgHeight:
+                                                                  400, //watermark img height
+                                                              imgWidth:
+                                                                  400, //watermark img width
+                                                              dstY: 0,
+                                                              dstX: 0);
+                                                      break;
+                                                    case 1:
+                                                      watermarkedImgBytes = await image_watermark
+                                                          .addImageWatermark(
+                                                              photo, //image bytes
+                                                              bytes!, //watermark img bytes
+                                                              imgHeight:
+                                                                  400, //watermark img height
+                                                              imgWidth:
+                                                                  400, //watermark img width
+                                                              dstY: 0,
+                                                              dstX: decodeImage
+                                                                      .width ~/
+                                                                  1.6);
+                                                      break;
+                                                    case 2:
+                                                      watermarkedImgBytes = await image_watermark
+                                                          .addImageWatermark(
+                                                              photo, //image bytes
+                                                              bytes!, //watermark img bytes
+                                                              imgHeight:
+                                                                  400, //watermark img height
+                                                              imgWidth:
+                                                                  400, //watermark img width
+                                                              dstY: 0,
+                                                              dstX: decodeImage
+                                                                  .width);
+                                                      break;
+                                                    case 3:
+                                                      watermarkedImgBytes = await image_watermark
+                                                          .addImageWatermark(
+                                                              photo, //image bytes
+                                                              bytes!, //watermark img bytes
+                                                              imgHeight:
+                                                                  400, //watermark img height
+                                                              imgWidth:
+                                                                  400, //watermark img width
+                                                              dstY: decodeImage
+                                                                  .width,
+                                                              dstX: 600);
+                                                      break;
+                                                    default:
+                                                  }
+                                                  Directory documentDirectory =
+                                                      await getApplicationDocumentsDirectory();
+                                                  File.File file =
+                                                      new File.File(join(
+                                                          documentDirectory
+                                                                  .path +
+                                                              "/images",
+                                                          'shared_all_media_${widget.content[i]["id"]}.png'));
+                                                  file.writeAsBytesSync(
+                                                      watermarkedImgBytes);
+
+                                                  var urlImage = documentDirectory
+                                                          .path +
+                                                      "/images/shared_all_media_${widget.content[i]["id"]}.png";
+
+                                                  images.add(urlImage);
                                                 }
                                                 await ShareExtend.shareMultiple(
                                                     images, "image",
@@ -560,10 +712,100 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                             ),
                                             TextButton(
                                               onPressed: () async {
-                                                var urlImage = widget.content[
-                                                        currentIndexImage]
-                                                    ["display_url_image"];
+                                                screenshotController
+                                                    .capture()
+                                                    .then((value) async {
+                                                  setState(() async {
+                                                    bytes = value;
+                                                  });
+                                                });
 
+                                                final photoBytes =
+                                                    await rootBundle.load(widget
+                                                                .content[
+                                                            currentIndexImage]
+                                                        ["display_url_image"]);
+                                                File.File img = File.File(
+                                                    widget.content[
+                                                            currentIndexImage]
+                                                        ["display_url_image"]);
+                                                var decodeImage =
+                                                    await decodeImageFromList(
+                                                        img.readAsBytesSync());
+                                                final Uint8List photo =
+                                                    photoBytes.buffer
+                                                        .asUint8List();
+                                                var watermarkedImgBytes;
+
+                                                switch (selectedAlignment) {
+                                                  case 0:
+                                                    watermarkedImgBytes = await image_watermark
+                                                        .addImageWatermark(
+                                                            photo, //image bytes
+                                                            bytes!, //watermark img bytes
+                                                            imgHeight:
+                                                                400, //watermark img height
+                                                            imgWidth:
+                                                                400, //watermark img width
+                                                            dstY: 0,
+                                                            dstX: 0);
+                                                    break;
+                                                  case 1:
+                                                    watermarkedImgBytes = await image_watermark
+                                                        .addImageWatermark(
+                                                            photo, //image bytes
+                                                            bytes!, //watermark img bytes
+                                                            imgHeight:
+                                                                400, //watermark img height
+                                                            imgWidth:
+                                                                400, //watermark img width
+                                                            dstY: 0,
+                                                            dstX: decodeImage
+                                                                    .width ~/
+                                                                1.6);
+                                                    break;
+                                                  case 2:
+                                                    watermarkedImgBytes = await image_watermark
+                                                        .addImageWatermark(
+                                                            photo, //image bytes
+                                                            bytes!, //watermark img bytes
+                                                            imgHeight:
+                                                                400, //watermark img height
+                                                            imgWidth:
+                                                                400, //watermark img width
+                                                            dstY: 0,
+                                                            dstX: decodeImage
+                                                                .width);
+                                                    break;
+                                                  case 3:
+                                                    watermarkedImgBytes = await image_watermark
+                                                        .addImageWatermark(
+                                                            photo, //image bytes
+                                                            bytes!, //watermark img bytes
+                                                            imgHeight:
+                                                                400, //watermark img height
+                                                            imgWidth:
+                                                                400, //watermark img width
+                                                            dstY: decodeImage
+                                                                .width,
+                                                            dstX: 600);
+                                                    break;
+                                                  default:
+                                                }
+
+                                                Directory documentDirectory =
+                                                    await getApplicationDocumentsDirectory();
+                                                File.File file = new File.File(join(
+                                                    documentDirectory.path +
+                                                        "/images",
+                                                    'shared_current_image_${decodeImage.hashCode}.png'));
+                                                file.writeAsBytesSync(
+                                                    watermarkedImgBytes);
+
+                                                var urlImage = documentDirectory
+                                                        .path +
+                                                    "/images/shared_current_image_${decodeImage.hashCode}.png";
+                                                print(urlImage);
                                                 await Share.shareFiles(
                                                     [urlImage],
                                                     text: widget.caption);
