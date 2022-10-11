@@ -23,8 +23,12 @@ Future<bool> checkIfUserHasActivePurchase() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (!purchaserInfo.entitlements.active.isEmpty) {
       //user has access to some entitlement
-      if (purchaserInfo.entitlements.all["good_discount"].isActive) {
+      if (purchaserInfo.entitlements.all["basic"].isActive) {
         // Good discount
+        sharedPreferences.setString("subscription", "basic");
+        return true;
+      } else if (purchaserInfo.entitlements.all["good_discount"].isActive) {
+        // Best Offer
         sharedPreferences.setString("subscription", "good_discount");
         return true;
       } else if (purchaserInfo.entitlements.all["best_offer"].isActive) {
@@ -38,6 +42,7 @@ Future<bool> checkIfUserHasActivePurchase() async {
   } on PlatformException catch (e) {
     print(e);
   }
+  return false;
 }
 
 gettingOfferingPurchaseProductos() async {

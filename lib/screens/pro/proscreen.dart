@@ -263,19 +263,26 @@ class _ProScreenState extends State<ProScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   customCard(
-                      "\$22.99",
-                      "6",
-                      AppLocalizations.of(context)!.months,
-                      AppLocalizations.of(context)!.best_offer,
-                      "best_offer.png",
-                      1),
-                  customCard(
                       "\$4.99",
                       "1",
                       AppLocalizations.of(context)!.months,
-                      AppLocalizations.of(context)!.good_discount,
+                      AppLocalizations.of(context)!.basic,
                       "good_discount.png",
+                      1),
+                  customCard(
+                      "\$22.99",
+                      "6",
+                      AppLocalizations.of(context)!.months,
+                      AppLocalizations.of(context)!.good_discount,
+                      "best_offer.png",
                       2),
+                  customCard(
+                      "\$44.99",
+                      "1",
+                      AppLocalizations.of(context)!.year,
+                      AppLocalizations.of(context)!.best_offer,
+                      "best_offer.png",
+                      3),
                 ],
               ),
               const SizedBox(
@@ -315,24 +322,6 @@ class _ProScreenState extends State<ProScreen> {
                       var myProductList = offerings.current!.availablePackages;
 
                       switch (selectedTrial) {
-                        case 0:
-                          try {
-                            var purchaserInfo = await Purchases.purchasePackage(
-                                myProductList[2]);
-
-                            if (purchaserInfo
-                                .entitlements.all["free_trial"]!.isActive) {
-                              // Unlock that great "pro" content
-                            }
-                          } on PlatformException catch (e) {
-                            var errorCode =
-                                PurchasesErrorHelper.getErrorCode(e);
-                            if (errorCode !=
-                                PurchasesErrorCode.purchaseCancelledError) {
-                              print(e);
-                            }
-                          }
-                          break;
                         case 1:
                           try {
                             var purchaserInfo = await Purchases.purchasePackage(
@@ -340,13 +329,9 @@ class _ProScreenState extends State<ProScreen> {
                             SharedPreferences sharedPreferences =
                                 await SharedPreferences.getInstance();
                             sharedPreferences.setString(
-                                "subscription", "best_offer");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DashBoard()));
+                                "subscription", "basic");
                             if (purchaserInfo
-                                .entitlements.all["best_offer"]!.isActive) {
+                                .entitlements.all["basic"]!.isActive) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -368,13 +353,41 @@ class _ProScreenState extends State<ProScreen> {
                             SharedPreferences sharedPreferences =
                                 await SharedPreferences.getInstance();
                             sharedPreferences.setString(
-                                "subscription", "best_offer");
+                                "subscription", "good_discount");
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DashBoard()));
                             if (purchaserInfo
                                 .entitlements.all["good_discount"]!.isActive) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashBoard()));
+                            }
+                          } on PlatformException catch (e) {
+                            var errorCode =
+                                PurchasesErrorHelper.getErrorCode(e);
+                            if (errorCode !=
+                                PurchasesErrorCode.purchaseCancelledError) {
+                              print(e);
+                            }
+                          }
+                          break;
+                        case 3:
+                          try {
+                            var purchaserInfo = await Purchases.purchasePackage(
+                                myProductList[2]);
+                            SharedPreferences sharedPreferences =
+                                await SharedPreferences.getInstance();
+                            sharedPreferences.setString(
+                                "subscription", "best_offer");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DashBoard()));
+                            if (purchaserInfo
+                                .entitlements.all["best_offer"]!.isActive) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(

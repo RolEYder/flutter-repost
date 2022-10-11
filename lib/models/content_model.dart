@@ -5,6 +5,7 @@ class Archived {
   late String? uid;
   late String? shortcode;
   late int? is_video;
+  late int? was_posted;
   late String? caption;
   late String? profile_pic_url;
   late String? username;
@@ -19,6 +20,7 @@ class Archived {
       this.shortcode,
       this.is_video,
       this.caption,
+      this.was_posted,
       this.profile_pic_url,
       this.username,
       this.display_url,
@@ -36,6 +38,7 @@ class Archived {
     username = map["username"];
     display_url = map["display_url"];
     is_verified = map["is_verified"];
+    was_posted = map["was_posted"];
     accessibility_caption = map["accessibility_caption"];
     content = map["content"];
   }
@@ -45,6 +48,7 @@ class Archived {
       DatabaseHelper.columnArchivedId: id,
       DatabaseHelper.columnArchivedShortcode: shortcode,
       DatabaseHelper.columnArchivedIsVideo: is_video,
+      DatabaseHelper.columnArchivedWasPosted: was_posted,
       DatabaseHelper.columnArchivedCaption: caption,
       DatabaseHelper.columnArchivedProfilePicUrl: profile_pic_url,
       DatabaseHelper.columnArchivedUsername: username,

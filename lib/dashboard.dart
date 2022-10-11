@@ -23,7 +23,7 @@ class _DashBoardState extends State<DashBoard> {
   void initState() {
     super.initState();
     initPlatformState();
-    DatabaseHelper.instance.deleteDatabase();
+    // DatabaseHelper.instance.deleteDatabase();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
       setState(() {});
     });
@@ -58,7 +58,7 @@ class _DashBoardState extends State<DashBoard> {
     {"title": "More"}
   ];
 
-  List titleArr = ["report", "schedule", "hashtags", "more"];
+  List titleArr = ["repost", "schedule", "hashtags", "more"];
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class _DashBoardState extends State<DashBoard> {
           ),
           leading: IconButton(
               onPressed: () {
-                reteApplication(context);
+              //  reteApplication(context);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Settings()));
               },
@@ -159,13 +159,10 @@ class _DashBoardState extends State<DashBoard> {
 
   Future<void> _launchInstagramApp(BuildContext context) async {
     const nativeUrl = "instagram://";
-    const webUrl = "https://www.instagram.com/";
     if (await canLaunchUrlString(nativeUrl)) {
       await launchUrlString(nativeUrl);
-    } else if (await canLaunchUrlString(webUrl)) {
-      await launchUrlString(webUrl);
     } else {
-      _dialogBuilder(context, "Error", "Unable to open Instagram");
+      _dialogBuilder(context, "Error", "You must install Instagram");
     }
   }
 }

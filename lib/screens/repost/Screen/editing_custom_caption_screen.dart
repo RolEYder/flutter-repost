@@ -129,7 +129,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                       width: 10,
                     ),
                     SizedBox(
-                      width: 200  ,
+                      width: 200,
                       height: 45,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -197,7 +197,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
       DatabaseHelper.columnId: Id
     };
     Captions caption = Captions.fromMap(row);
-    DatabaseHelper.instance.update(caption);
+    DatabaseHelper.instance.update_caption(caption);
     _showMessageInScaffold("Caption was updated 👍 ");
   }
 

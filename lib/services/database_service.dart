@@ -1,14 +1,11 @@
 import 'dart:developer';
 import 'package:repost/models/content_model.dart';
-import 'package:repost/models/searcherPost_model.dart';
 import 'package:repost/models/caption_model.dart';
-import 'package:repost/models/schedulepPost_model.dart';
 import 'package:path/path.dart';
 import 'dart:convert' show jsonEncode;
 import 'package:repost/models/stories_repost_model.dart';
 import 'package:sqflite/sqflite.dart'
     show Database, Sqflite, getDatabasesPath, openDatabase, databaseFactory;
-
 
 class DatabaseHelper {
   static final _databaseName = "database.db";
@@ -31,6 +28,7 @@ class DatabaseHelper {
   static final columnArchivedUsername = "username";
   static final columnArchivedDisplayUrl = "display_url";
   static final columnArchivedIsVerified = "is_verified";
+  static final columnArchivedWasPosted = "was_posted";
   static final columnArchivedAccessibilityCaption = "accessibility_caption";
   static final columnArchivedContent = "content";
 
@@ -126,6 +124,7 @@ class DatabaseHelper {
       $columnArchivedUid TEXT NOT NULL,
       $columnArchivedShortcode TEXT NOT NULL,
       $columnArchivedIsVideo INTERGER NOT NULL,
+      $columnArchivedWasPosted INTEGER NULL,
       $columnArchivedCaption TEXT NOT NULL,
       $columnArchivedProfilePicUrl TEXT NOT NULL,
       $columnArchivedUsername TEXT NOT NULL,
@@ -161,6 +160,7 @@ class DatabaseHelper {
           "username": archived.username.toString(),
           "display_url": archived.display_url.toString(),
           "is_verified": archived.is_verified,
+          "was_posted": archived.was_posted,
           "accessibility_caption": archived.accessibility_caption.toString(),
           "content": jsonEncode(archived.content)
         });
@@ -170,30 +170,6 @@ class DatabaseHelper {
       rethrow;
     }
     return 1;
-  }
-
-  // Helper methods
-  Future<int> insert_searcher_post(SearchersPosts searchersPosts) async {
-    try {
-      // check if the post already exists
-      final response = await getPostByUid(searchersPosts.uid.toString());
-      log(response.toString());
-      if (response == 0) {
-        Database? db = await instance.database;
-        return await db!.insert(tablePostsSearches, {
-          "uid": searchersPosts.uid.toString(),
-          "content": searchersPosts.content.toString(),
-          "profilepic": searchersPosts.profilepic.toString(),
-          "thumbnailpic": searchersPosts.thumbnailpic.toString(),
-          "username": searchersPosts.username.toString(),
-          "created_at": searchersPosts.created_at.toString()
-        });
-      }
-    } catch (Exception) {
-      print(Exception);
-      rethrow;
-    }
-    return 0;
   }
 
   Future<int> insert_schedule_story(StoryRepost storyRepost) async {
@@ -206,20 +182,6 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> insert_schedule_post(SchedulePosts schedulePosts) async {
-    Database? db = await instance.database;
-    return await db!.insert(tableSchedulePosts, {
-      "profile_pic": schedulePosts.profile_pic,
-      "username": schedulePosts.username,
-      "title": schedulePosts.title,
-      "content": schedulePosts.content,
-      "photo": schedulePosts.photo,
-      "date_end": schedulePosts.date_end,
-      "created_at": schedulePosts.created_at,
-      "hashtags": schedulePosts.hashtags
-    });
-  }
-
   Future<int> insert(Captions caption) async {
     Database? db = await instance.database;
     return await db!
@@ -229,7 +191,8 @@ class DatabaseHelper {
   /// get all archived
   Future<List<Map<String, dynamic>>> get_all_archived_rows() async {
     Database? db = await instance.database;
-    return await db!.query(tableArchived);
+    return await db!.rawQuery(
+        'SELECT * FROM $tableArchived WHERE $columnArchivedWasPosted = 0');
   }
 
   Future<List<Map<String, dynamic>>> getAllRows() async {
@@ -252,6 +215,23 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> queryRows(name) async {
     Database? db = await instance.database;
     return await db!.query(table, where: "$columnContent LIKE '%name%'");
+  }
+
+  // update to posted
+  Future<int> update_posted(String _uid) async {
+    Database? db = await instance.database;
+    var count = db!.rawUpdate(
+        'UPDATE $tableArchived SET $columnArchivedWasPosted = 1 WHERE $columnArchivedUid = ?',
+        [_uid]);
+    return count;
+  }
+
+  // get all posted
+  Future<List<Map<String, dynamic>>> get_all_posted() async {
+    Database? db = await instance.database;
+    var response = await db!.rawQuery(
+        'SELECT * FROM $tableArchived WHERE $columnArchivedWasPosted = 1');
+    return response;
   }
 
   // get a archived by Shortcode
@@ -282,7 +262,7 @@ class DatabaseHelper {
   }
 
   // update
-  Future<int> update(Captions caption) async {
+  Future<int> update_caption(Captions caption) async {
     Database? db = await instance.database;
     int id = caption.toMap()['id'];
     return await db!.update(table, caption.toMap(),
@@ -290,7 +270,7 @@ class DatabaseHelper {
   }
 
   // delete
-  Future<int> delete(int id) async {
+  Future<int> delete_caption(int id) async {
     Database? db = await instance.database;
     return await db!.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }

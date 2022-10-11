@@ -39,8 +39,8 @@ class _PostState extends State<PostPasted> {
         itemBuilder: (context, index) {
           return GestureDetector(
               onTap: () {
-                reteApplication(
-                    context);
+                // reteApplication(
+                //     context);
                 Navigator.push(
                     context,
                     MaterialPageRoute(

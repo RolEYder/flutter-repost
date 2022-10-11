@@ -189,7 +189,7 @@ class _CaptionState extends State<Caption> with WidgetsBindingObserver {
                           map.removeAt(index);
                           // removing from database
                           DatabaseHelper.instance
-                              .delete(this._savedCaptions[index]["id"]);
+                              .delete_caption(this._savedCaptions[index]["id"]);
                           setState(() => {this._savedCaptions = map});
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

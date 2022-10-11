@@ -75,6 +75,8 @@ dependencies:
   image_gallery_saver: ^1.7.1
   widgets_to_image: ^0.0.2
   image_watermark: ^0.0.3
+  video_watermark: ^1.0.2
+  progress_dialog_null_safe: ^1.0.7
  
 
   

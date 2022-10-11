@@ -11,19 +11,21 @@ import 'package:repost/screens/pro/proscreen.dart';
 import 'package:repost/screens/repost/Screen/repost_hastags_screen.dart';
 import 'package:repost/screens/repost/Widget/rate_us.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
+import 'package:repost/services/database_service.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'caption_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
+import 'package:video_watermark/video_watermark.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:image/image.dart' as ui;
 import 'package:path/path.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 import 'package:image_watermark/image_watermark.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'dart:io' as File;
 
 // REPOSTS SCHEDULE
@@ -71,6 +73,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
   int currentIndexImage = 0;
   int imageIndex = 0;
   bool isShowWaterMark = false;
+  bool isLoading = false;
   late cachedVideo.CachedVideoPlayerController videoController;
   List watermarks = [
     "Top Left",
@@ -83,6 +86,12 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     Alignment.topRight,
     Alignment.bottomLeft,
     Alignment.bottomRight,
+  ];
+  List<WatermarkAlignment> alignmentList = [
+    WatermarkAlignment.topLeft,
+    WatermarkAlignment.topRight,
+    WatermarkAlignment.bottomLeft,
+    WatermarkAlignment.botomRight
   ];
 
   Widget waterMarks(String title, String trailing) {
@@ -137,28 +146,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     DefaultCacheManager manager = new DefaultCacheManager();
     manager.emptyCache();
     super.dispose();
-  }
-
-  saveToGallery(BuildContext context) {
-    screenshotController.capture().then((Uint8List? image) {
-      print(image);
-      saveImage(image!);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Image saved to gallery.'),
-        ),
-      );
-      // ignore: invalid_return_type_for_catch_error
-    }).catchError((err) => print(err));
-  }
-
-  saveImage(Uint8List bytes) async {
-    final time = DateTime.now()
-        .toIso8601String()
-        .replaceAll('.', '-')
-        .replaceAll(':', '-');
-    final name = "screenshot_$time";
-    await ImageGallerySaver.saveImage(bytes, name: name);
   }
 
   void ShareToStoryOrPost(
@@ -228,50 +215,45 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     );
   }
 
-  Screenshot chipToImage() {
-    return Screenshot(
-        controller: screenshotController,
-        child: Container(
-          child: Column(
+  void _onLoading(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: new Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                  child: Stack(
-                children: [
-                  if (selectedAlignment >= 0) ...[
-                    Align(
-                        alignment: alignmentArr[selectedAlignment],
-                        child: Chip(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(0),
-                                  bottomRight: Radius.circular(0))),
-                          labelPadding: EdgeInsets.all(0),
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.white70,
-                            radius: 48,
-                            backgroundImage:
-                                NetworkImage(widget.profile_pic_url),
-                          ),
-                          label: Text(
-                            textAlign: TextAlign.right,
-                            "@" + widget.username,
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                          backgroundColor: Colors.white,
-                          elevation: 6,
-                          padding: EdgeInsets.all(8.0),
-                        )),
-                  ],
-                ],
-              ))
+              new CircularProgressIndicator(),
+              new Text("Loading"),
             ],
           ),
-        ));
+        );
+      },
+    );
+    new Future.delayed(new Duration(seconds: 3), () {
+      Navigator.pop(context); //pop dialog
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   Widget build(BuildContext context) {
+    ProgressDialog pr = ProgressDialog(context);
+    pr = ProgressDialog(context,
+        type: ProgressDialogType.normal, isDismissible: true, showLogs: false);
+    pr.style(
+      message: 'Uploading content...',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+      progress: 0.0,
+      textAlign: TextAlign.right,
+      maxProgress: 100.0,
+    );
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -294,6 +276,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
           //   controller: screenshotController,
           //   child: Text("This text will be captured as image"),
           // ),
+
           Container(
             height: 450,
             child: Padding(
@@ -303,7 +286,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   Expanded(
                     child: PageView.builder(
                         onPageChanged: (index) {
-                          print(pageIndex.toInt());
                           setState(() {
                             //index = pageIndex.toInt();
                             currentIndexImage = index;
@@ -324,9 +306,14 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                           child: Container(
                                               width: 100,
                                               height: 100,
-                                              child:
-                                                  cachedVideo.CachedVideoPlayer(
-                                                      videoController)))
+                                              child: InkWell(
+                                                onTap: () {
+                                                  videoPlayback();
+                                                },
+                                                child: cachedVideo
+                                                    .CachedVideoPlayer(
+                                                        videoController),
+                                              )))
                                       : const CircularProgressIndicator()
                                   : SizedBox.shrink(),
                               (!widget.is_video &
@@ -345,11 +332,16 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                   aspectRatio: videoController
                                                       .value.aspectRatio,
                                                   child: Container(
-                                                      width: 100,
-                                                      height: 100,
-                                                      child: cachedVideo
-                                                          .CachedVideoPlayer(
-                                                              videoController)))
+                                                    width: 100,
+                                                    height: 100,
+                                                    child: InkWell(
+                                                        onTap: () {
+                                                          videoPlayback();
+                                                        },
+                                                        child: cachedVideo
+                                                            .CachedVideoPlayer(
+                                                                videoController)),
+                                                  ))
                                               : const CircularProgressIndicator()
                                           : SizedBox.shrink()
                                       : Container(
@@ -496,7 +488,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   ),
                   GestureDetector(
                       onTap: () {
-                        reteApplication(context);
+                      //  reteApplication(context);
                         _gettingCaptionAfterSelected(context);
                       },
                       child: waterMarks(
@@ -509,7 +501,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   ),
                   GestureDetector(
                       onTap: () async {
-                        reteApplication(context);
+                      //  reteApplication(context);
                         _gettingHashtagsAfterSelected(context);
                       },
                       child: waterMarks(
@@ -527,7 +519,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                 backgroundColor:
                                     const Color.fromARGB(255, 125, 64, 121)),
                             onPressed: () async {
-                              reteApplication(context);
+                             // reteApplication(context);
                               final active = await hasActiveSubscription();
                               if (!active) {
                                 Navigator.push(
@@ -603,6 +595,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                     .capture()
                                                     .then((value) async {
                                                   setState(() async {
+                                                    pr.show();
                                                     bytes = value;
                                                   });
                                                 });
@@ -610,7 +603,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                 for (var i = 0;
                                                     i < widget.content.length;
                                                     i++) {
-                                                 
                                                   final photoBytes =
                                                       await rootBundle.load(widget
                                                               .content[i][
@@ -650,8 +642,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                                   400, //watermark img width
                                                               dstY: 0,
                                                               dstX: decodeImage
-                                                                      .width ~/
-                                                                  1.6);
+                                                                      .width -
+                                                                  400);
                                                       break;
                                                     case 2:
                                                       watermarkedImgBytes = await image_watermark
@@ -662,9 +654,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                                   400, //watermark img height
                                                               imgWidth:
                                                                   400, //watermark img width
-                                                              dstY: 0,
-                                                              dstX: decodeImage
-                                                                  .width);
+                                                              dstY: decodeImage
+                                                                      .height -
+                                                                  150,
+                                                              dstX: 0);
                                                       break;
                                                     case 3:
                                                       watermarkedImgBytes = await image_watermark
@@ -676,8 +669,11 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                               imgWidth:
                                                                   400, //watermark img width
                                                               dstY: decodeImage
-                                                                  .width,
-                                                              dstX: 600);
+                                                                      .height -
+                                                                  160,
+                                                              dstX: decodeImage
+                                                                      .width -
+                                                                  400);
                                                       break;
                                                     default:
                                                   }
@@ -698,12 +694,17 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
 
                                                   images.add(urlImage);
                                                 }
+                                                setState(() {
+                                                  pr.hide();
+                                                });
+                                                _update_to_posted(widget.uid);
+                                                Navigator.pop(context);
+
                                                 await ShareExtend.shareMultiple(
                                                     images, "image",
                                                     subject: widget.caption);
                                                 // await Share.shareFiles([path],
                                                 //     text: widget.caption);
-                                                Navigator.pop(context);
                                               },
                                               child: Text('All media'),
                                               style: TextButton.styleFrom(
@@ -717,6 +718,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                     .then((value) async {
                                                   setState(() async {
                                                     bytes = value;
+                                                    pr.show();
                                                   });
                                                 });
 
@@ -761,8 +763,8 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                                 400, //watermark img width
                                                             dstY: 0,
                                                             dstX: decodeImage
-                                                                    .width ~/
-                                                                1.6);
+                                                                    .width -
+                                                                400);
                                                     break;
                                                   case 2:
                                                     watermarkedImgBytes = await image_watermark
@@ -773,9 +775,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                                 400, //watermark img height
                                                             imgWidth:
                                                                 400, //watermark img width
-                                                            dstY: 0,
-                                                            dstX: decodeImage
-                                                                .width);
+                                                            dstY: decodeImage
+                                                                    .height -
+                                                                150,
+                                                            dstX: 0);
                                                     break;
                                                   case 3:
                                                     watermarkedImgBytes = await image_watermark
@@ -787,8 +790,11 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                             imgWidth:
                                                                 400, //watermark img width
                                                             dstY: decodeImage
-                                                                .width,
-                                                            dstX: 600);
+                                                                    .height -
+                                                                160,
+                                                            dstX: decodeImage
+                                                                    .width -
+                                                                400);
                                                     break;
                                                   default:
                                                 }
@@ -805,11 +811,15 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                 var urlImage = documentDirectory
                                                         .path +
                                                     "/images/shared_current_image_${decodeImage.hashCode}.png";
-                                                print(urlImage);
+                                                Navigator.pop(context);
+
                                                 await Share.shareFiles(
                                                     [urlImage],
                                                     text: widget.caption);
-                                                Navigator.pop(context);
+                                                setState(() {
+                                                  pr.hide();
+                                                });
+                                                _update_to_posted(widget.uid);
                                               },
                                               child: Text('Current photo'),
                                               style: TextButton.styleFrom(
@@ -823,8 +833,45 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                   ),
                                 );
                               } else {
-                                String path = widget.content[0]["video_url"];
-                                share_video(path);
+                                screenshotController
+                                    .capture()
+                                    .then((value) async {
+                                  setState(() async {
+                                    await pr.show();
+                                    bytes = value;
+                                    isLoading = true;
+                                  });
+                                });
+                                // setting path watermark
+                                Directory temp =
+                                    await getApplicationDocumentsDirectory();
+                                File.File file = new File.File(join(
+                                    temp.path + "/images", "watermark.png"));
+                                file.writeAsBytesSync(bytes!);
+                                var imagepath =
+                                    temp.path + "/images/watermark.png";
+                                String videoPath =
+                                    widget.content[0]["video_url"];
+                                String saveVideoPath = "";
+                                Watermark watermark = Watermark(
+                                  image: WatermarkSource.file(imagepath),
+                                  watermarkAlignment:
+                                      alignmentList[selectedAlignment],
+                                  watermarkSize: WatermarkSize(300, 100),
+                                );
+                                VideoWatermark videoWatermark = VideoWatermark(
+                                  sourceVideoPath: videoPath,
+                                  watermark: watermark,
+                                  onSave: (path) async {
+                                    print(path);
+                                    saveVideoPath = await path!;
+                                    isLoading = false;
+                                    await pr.hide();
+                                    share_video(path);
+                                  },
+                                );
+                                await videoWatermark.generateVideo();
+                                //  String path = widget.content[0]["video_url"];
                               }
                             },
                             child: Row(
@@ -857,6 +904,14 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     return result;
   }
 
+  Future<void> videoPlayback() async {
+    if (videoController.value.isPlaying) {
+      await videoController.pause();
+    } else {
+      await videoController.play();
+    }
+  }
+
   Future<void> _dialogBuilder(
       BuildContext context, String title, String content) {
     return showDialog<void>(
@@ -879,6 +934,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
         );
       },
     );
+  }
+
+  void _update_to_posted(String _uid) {
+    DatabaseHelper.instance.update_posted(_uid);
   }
 
   Future<void> _gettingScheduleAfterSelected(BuildContext context) async {

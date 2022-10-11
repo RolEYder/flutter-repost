@@ -3,6 +3,13 @@ PODS:
     - Flutter
     - KTVHTTPCache (~> 2.0.0)
   - CocoaAsyncSocket (7.6.5)
+  - ffmpeg-kit-ios-https (4.5.1.LTS)
+  - ffmpeg_kit_flutter (4.5.1.LTS):
+    - ffmpeg_kit_flutter/https-lts (= 4.5.1.LTS)
+    - Flutter
+  - ffmpeg_kit_flutter/https-lts (4.5.1.LTS):
+    - ffmpeg-kit-ios-https (= 4.5.1.LTS)
+    - Flutter
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
     - Flutter
@@ -60,6 +67,7 @@ PODS:
 
 DEPENDENCIES:
   - cached_video_player (from `.symlinks/plugins/cached_video_player/ios`)
+  - ffmpeg_kit_flutter (from `.symlinks/plugins/ffmpeg_kit_flutter/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
@@ -79,6 +87,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - CocoaAsyncSocket
+    - ffmpeg-kit-ios-https
     - FMDB
     - KTVCocoaHTTPServer
     - KTVHTTPCache
@@ -90,6 +99,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   cached_video_player:
     :path: ".symlinks/plugins/cached_video_player/ios"
+  ffmpeg_kit_flutter:
+    :path: ".symlinks/plugins/ffmpeg_kit_flutter/ios"
   Flutter:
     :path: Flutter
   fluttertoast:
@@ -124,6 +135,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   cached_video_player: 9f225ed1c46bda0fe287b8288742329d441e2cc5
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
+  ffmpeg-kit-ios-https: c95f1d49599efd796a7cfb433f4500a7c953cc9c
+  ffmpeg_kit_flutter: 7429364786c032a7825e7882819cca6c65449a81
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a

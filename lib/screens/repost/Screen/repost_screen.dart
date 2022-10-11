@@ -26,6 +26,7 @@ class _RepostScreenState extends State<RepostScreen> {
   List<dynamic> POSTS = [];
   Map<String, dynamic> PASTED = {};
   List<dynamic> SAVE_DATA = [];
+  List<dynamic> REPOSTED_DATA = [];
   // ignore: unused_field
   String _valueSearch = "";
   // ignore: unused_field
@@ -46,12 +47,44 @@ class _RepostScreenState extends State<RepostScreen> {
 
   /// show saved data
   ///
+
+  List<Map<String, dynamic>> getVideoContetReposted(int index) {
+    List<Map<String, dynamic>> content = [];
+    content.add({
+      "has_audio": jsonDecode(REPOSTED_DATA[index]["content"])[0]["has_audio"],
+      "video_url": jsonDecode(REPOSTED_DATA[index]["content"])[0]["video_url"]
+    });
+    return content;
+  }
+
   List<Map<String, dynamic>> getVideoContet(int index) {
     List<Map<String, dynamic>> content = [];
     content.add({
       "has_audio": jsonDecode(SAVE_DATA[index]["content"])[0]["has_audio"],
       "video_url": jsonDecode(SAVE_DATA[index]["content"])[0]["video_url"]
     });
+    return content;
+  }
+
+  List<Map<String, dynamic>> getContentReposted(int index) {
+    List<Map<String, dynamic>> content = [];
+
+    if (jsonDecode(REPOSTED_DATA[index]["content"]).isNotEmpty) {
+      for (var i = 0;
+          i < jsonDecode(REPOSTED_DATA[index]["content"]).length;
+          i++) {
+        content.add({
+          "typeimage": jsonDecode(REPOSTED_DATA[index]["content"])[i]
+              ["typeimage"],
+          "id": jsonDecode(REPOSTED_DATA[index]["content"])[i]["id"],
+          "display_url_image": jsonDecode(REPOSTED_DATA[index]["content"])[i]
+              ["display_url_image"]
+        });
+      }
+    } else {
+      content = new List<Map<String, dynamic>>.empty();
+    }
+
     return content;
   }
 
@@ -72,6 +105,23 @@ class _RepostScreenState extends State<RepostScreen> {
     }
 
     return content;
+  }
+
+  Widget showRepostedContent() {
+    var counter = 0;
+    return new GestureDetector(
+        child: Column(children: <Widget>[
+      ...REPOSTED_DATA.map((e) => PostPasted(
+          uid: e["uid"].toString(),
+          username: e["username"].toString(),
+          caption: e["caption"].toString(),
+          display_url: e["display_url"].toString(),
+          content: e["is_video"] == 1
+              ? getVideoContetReposted(counter++)
+              : getContentReposted(counter++),
+          is_video: e["is_video"] == 1 ? true : false,
+          profile_pic_url: e["profile_pic_url"]))
+    ]));
   }
 
   Widget showArchiveContent() {
@@ -99,6 +149,7 @@ class _RepostScreenState extends State<RepostScreen> {
     ftoast.init(context);
     getAllArchiveContent();
     getClipboardPastedLinks();
+    getAllRepostedContent();
   }
 
   showToast(String desc) {
@@ -140,6 +191,7 @@ class _RepostScreenState extends State<RepostScreen> {
       // post
       if (isPostUrl(url)) {
         showToast(AppLocalizations.of(context).repost_posted_from_instagram);
+
         var pattern = "\/p\/(.*?)\/";
         RegExp regExp = RegExp(pattern);
         if (regExp.hasMatch(url)) {
@@ -174,6 +226,7 @@ class _RepostScreenState extends State<RepostScreen> {
               username,
               display_url,
               is_verified,
+              0,
               accessibility_caption,
               content);
           setState(() {
@@ -193,6 +246,7 @@ class _RepostScreenState extends State<RepostScreen> {
       // story
       else if (isStoryUrl(data.text)) {
         showToast(AppLocalizations.of(context).story_posted_from_instagram);
+
         var storyPattern =
             r'(?:https?:\/\/)?(?:www.)?instagram.com\/?([stories]+)?\/([a-zA-Z0-9\-\_\.]+)\/?([0-9]+)?';
         RegExp regExp = RegExp(storyPattern);
@@ -228,6 +282,7 @@ class _RepostScreenState extends State<RepostScreen> {
               username,
               display_url,
               is_verified,
+              0,
               accessibility_caption,
               content);
           setState(() {
@@ -246,6 +301,9 @@ class _RepostScreenState extends State<RepostScreen> {
       // reel
       else if (isReelUrl(data.text)) {
         showToast(AppLocalizations.of(context).reel_posted_from_instagram);
+        setState(() {
+          _isLoading = true;
+        });
         var pattern = "\/reel\/(.*?)\/";
         RegExp regExp = RegExp(pattern);
         if (regExp.hasMatch(url)) {
@@ -262,6 +320,7 @@ class _RepostScreenState extends State<RepostScreen> {
           String username = _reel["username"].toString();
           String display_url = _reel["display_url"].toString();
           int is_verified = _reel["is_verified"] ? 1 : 0;
+          int was_posted = 0;
           String accessibility_caption =
               _reel["accessibility_caption"].toString();
           List<Map<String, dynamic>> content = [];
@@ -279,6 +338,7 @@ class _RepostScreenState extends State<RepostScreen> {
               username,
               display_url,
               is_verified,
+              0,
               accessibility_caption,
               content);
           setState(() {
@@ -368,6 +428,18 @@ class _RepostScreenState extends State<RepostScreen> {
                           fontSize: 30,
                           color: Colors.white),
                     ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    REPOSTED_DATA.isNotEmpty
+                        ? showRepostedContent()
+                        : Text(
+                            AppLocalizations.of(context).there_are_not_archive,
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                    const SizedBox(
+                      height: 25,
+                    ),
                   ],
                 ),
               ),
@@ -388,6 +460,7 @@ class _RepostScreenState extends State<RepostScreen> {
       username,
       display_url,
       is_verified,
+      was_posted,
       accessibility_caption,
       content) async {
     Map<String, dynamic> row = {
@@ -399,11 +472,22 @@ class _RepostScreenState extends State<RepostScreen> {
       DatabaseHelper.columnArchivedUsername: username,
       DatabaseHelper.columnArchivedDisplayUrl: display_url,
       DatabaseHelper.columnArchivedIsVerified: is_verified,
+      DatabaseHelper.columnArchivedWasPosted: was_posted,
       DatabaseHelper.columnArchivedAccessibilityCaption: accessibility_caption,
       DatabaseHelper.columnArchivedContent: content
     };
     Archived archived = Archived.fromMap(row);
     DatabaseHelper.instance.insert_archived(archived);
+  }
+
+  /// getting repsted
+  void getAllRepostedContent() async {
+    final response = await dbHelper.DatabaseHelper.instance.get_all_posted();
+    if (response.isNotEmpty) {
+      setState(() {
+        REPOSTED_DATA = response;
+      });
+    }
   }
 
   /// getting archived
