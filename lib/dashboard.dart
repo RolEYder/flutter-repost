@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/StringExtension.dart';
-import 'package:repost/screens/repost/Widget/rate_us.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'screens/hastag/hastag.dart';
 import 'screens/more/morescreen.dart';
@@ -23,7 +23,8 @@ class _DashBoardState extends State<DashBoard> {
   void initState() {
     super.initState();
     initPlatformState();
-    // DatabaseHelper.instance.deleteDatabase();
+    proScreenEveryDay();
+    DatabaseHelper.instance.deleteDatabase();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
       setState(() {});
     });
@@ -78,7 +79,7 @@ class _DashBoardState extends State<DashBoard> {
           ),
           leading: IconButton(
               onPressed: () {
-              //  reteApplication(context);
+                //  reteApplication(context);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Settings()));
               },
@@ -155,6 +156,22 @@ class _DashBoardState extends State<DashBoard> {
         );
       },
     );
+  }
+
+  Future<void> proScreenEveryDay() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int? lastAccess = sharedPreferences.getInt('lastAccess');
+    String? subscription = sharedPreferences.getString("subscription");
+
+    if (lastAccess != null && subscription == "free") {
+      final DateTime lastAccessTime =
+          DateTime.fromMillisecondsSinceEpoch(lastAccess);
+      final opened = lastAccessTime.isAfter(DateTime.now());
+      if (!opened) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProScreen()));
+      }
+    }
   }
 
   Future<void> _launchInstagramApp(BuildContext context) async {

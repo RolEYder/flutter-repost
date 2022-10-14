@@ -70,5 +70,10 @@
     "update": "Atualizar",
     "selected": "Selecionado",
     "ok": "Ok",
-    "subscribe": "Se inscrever"
+    "subscribe": "Se inscrever",
+    "how_to_repost": "Como repostar?",
+    "open_instagram": "Abrir Instagram",
+    "find_the_photo_or_video": "Encontre a foto ou o vídeo que você deseja republicar",
+    "tap_button": "Toque no botão ••• no canto superior direito e selecione 'Copiar link'",
+    "return_to_repost": "Volte para o Repost e espere o post aparecer!"
 }

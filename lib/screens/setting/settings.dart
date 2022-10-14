@@ -4,6 +4,7 @@ import 'package:repost/l10n/l10n.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:repost/provider/locale_provider.dart';
 import 'package:repost/screens/pro/proscreen.dart';
+import 'package:repost/screens/repost/Screen/how_to_repost_screen.dart';
 import 'package:repost/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -144,6 +145,34 @@ class _SettingsState extends State<Settings> {
                   children: [
                     Text(
                       AppLocalizations.of(context)!.change_langauge,
+                      style: insideStyle,
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 16,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            _space(),
+            height(),
+            _space(),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HowToRepostScreen()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.how_to_repost,
                       style: insideStyle,
                     ),
                     const Icon(

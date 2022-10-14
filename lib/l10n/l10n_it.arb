@@ -70,5 +70,10 @@
     "update": "Aggiornare",
     "selected": "Selezionato",
     "ok": "ok",
-    "subscribe": "Sottoscrivi"
+    "subscribe": "Sottoscrivi",
+    "how_to_repost": "Come ripubblicare?",
+    "open_instagram": "Apri Instagram",
+    "find_the_photo_or_video": "Trova la foto o il video che desideri ripubblicare",
+    "tap_button": "Tocca il pulsante ••• nell'angolo in alto a destra e seleziona 'Copia collegamento'",
+    "return_to_repost": "Torna a Repost e attendi che il post venga visualizzato!"
 }

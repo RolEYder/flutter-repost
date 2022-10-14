@@ -287,6 +287,27 @@
     "subscribe": "Subscribe",
     "@subscribe": {
         "description": "Subscribe"
+    },
+    "how_to_repost": "How to Repost?",
+    "@how_to_repost": {
+        "description": "How to Repost?"
+    },
+    "open_instagram": "Open Instagram", 
+        "@open_instagram": {
+            "description": "Open Instagram"
+    },
+    "find_the_photo_or_video": "Find the photo or video you want to repost", 
+    "@find_the_photo_or_video": {
+        "description": "Find the photo or video you want to repost"
+    },
+    "tap_button": "Tap ••• button in the top right corner and select 'Copy Link' ",
+    "@tap_button": {
+        "description": "Tap ••• button in the top right corner and select 'Copy Link' "
+    },
+    "return_to_repost": "Return to Repost and wait for the post to show up!",
+    "@return_to_repost": {
+        "description": "Return to Repost and wait for the post to show up!"
     }
+
 
 }

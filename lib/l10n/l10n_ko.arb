@@ -70,5 +70,11 @@
     "update": "업데이트",
     "selected": "セル",
     "ok": "わかった",
-    "subscribe": "구독하다"
+    "subscribe": "구독하다",
+    "how_to_repost": "다시 게시하는 방법?",
+    "open_instagram": "인스타그램 열기",
+    "find_the_photo_or_video": "다시 게시할 사진 또는 동영상 찾기",
+    "tap_button": "오른쪽 상단 모서리에 있는 ••• 버튼을 누르고 링크 복사를 선택합니다.",
+    "return_to_repost": "Repost로 돌아가서 게시물이 표시될 때까지 기다리세요!"
+    
 }

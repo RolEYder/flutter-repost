@@ -128,6 +128,7 @@ class PostService {
       "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
     });
     final data = json.decode(response.body);
+    print(data);
     post = {
       "uid": data["id"],
       "shortcode": data["shortcode"],

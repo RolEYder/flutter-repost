@@ -77,6 +77,9 @@ dependencies:
   image_watermark: ^0.0.3
   video_watermark: ^1.0.2
   progress_dialog_null_safe: ^1.0.7
+  firebase_core: ^1.24.0
+  firebase_messaging: ^13.1.0
+  firebase_in_app_messaging: ^0.6.0+27
  
 
   

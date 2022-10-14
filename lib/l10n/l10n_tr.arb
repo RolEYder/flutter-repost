@@ -70,5 +70,10 @@
     "update": "Güncelleme",
     "selected": "Seçilmiş",
     "ok": "Tamam",
-    "subscribe": "Abone olmak"
+    "subscribe": "Abone olmak",
+    "how_to_repost": "Nasıl Yeniden Gönderilir?",
+    "open_instagram": "Instagram'ı aç",
+    "find_the_photo_or_video": "Yeniden yayınlamak istediğiniz fotoğrafı veya videoyu bulun",
+    "tap_button": "Sağ üst köşedeki ••• düğmesine dokunun ve 'Bağlantıyı Kopyala'yı seçin",
+    "return_to_repost": "Return to Repost and wait for the post to show up!"
 }

@@ -70,5 +70,10 @@
     "update": "アップデート",
     "selected": "選択した",
     "ok": "わかった",
-    "subscribe": "申し込む"
+    "subscribe": "申し込む",
+    "how_to_repost": "再投稿するには？", 
+    "open_instagram": "インスタグラムを開く",
+    "find_the_photo_or_video": "再投稿する写真またはビデオを見つけます",
+    "tap_button": "右上隅の ••• ボタンをタップし、[リンクをコピー] を選択します。",
+    "return_to_repost": "再投稿に戻り、投稿が表示されるのを待ちます"
 }

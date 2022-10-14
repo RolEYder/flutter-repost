@@ -12,6 +12,7 @@ import 'package:repost/screens/repost/Screen/repost_hastags_screen.dart';
 import 'package:repost/screens/repost/Widget/rate_us.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/services/database_service.dart';
+import 'package:repost/services/notification_service.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'caption_screen.dart';
@@ -488,7 +489,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   ),
                   GestureDetector(
                       onTap: () {
-                      //  reteApplication(context);
+                        //  reteApplication(context);
                         _gettingCaptionAfterSelected(context);
                       },
                       child: waterMarks(
@@ -501,7 +502,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                   ),
                   GestureDetector(
                       onTap: () async {
-                      //  reteApplication(context);
+                        //  reteApplication(context);
                         _gettingHashtagsAfterSelected(context);
                       },
                       child: waterMarks(
@@ -519,7 +520,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                 backgroundColor:
                                     const Color.fromARGB(255, 125, 64, 121)),
                             onPressed: () async {
-                             // reteApplication(context);
+                              // reteApplication(context);
                               final active = await hasActiveSubscription();
                               if (!active) {
                                 Navigator.push(
@@ -696,6 +697,9 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                 }
                                                 setState(() {
                                                   pr.hide();
+                                                  send_push_notification(
+                                                      "Reposted!",
+                                                      "All media has been reposted");
                                                 });
                                                 _update_to_posted(widget.uid);
                                                 Navigator.pop(context);
@@ -817,6 +821,10 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                                                     [urlImage],
                                                     text: widget.caption);
                                                 setState(() {
+                                                  send_push_notification(
+                                                      "Reposted!",
+                                                      "Current photo has been reposted");
+
                                                   pr.hide();
                                                 });
                                                 _update_to_posted(widget.uid);
