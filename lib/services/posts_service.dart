@@ -60,7 +60,7 @@ class PostService {
         "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" +
             _shortcode;
     final http.Response response = await http.get(Uri.parse(url), headers: {
-      "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+      "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
       "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
     });
     final data = json.decode(response.body);
@@ -124,7 +124,7 @@ class PostService {
         "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" +
             _shortcode;
     final http.Response response = await http.get(Uri.parse(url), headers: {
-      "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+      "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
       "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
     });
     final data = json.decode(response.body);
@@ -190,7 +190,7 @@ class PostService {
         "https://instagram-scraper-2022.p.rapidapi.com/ig/post_info/?shortcode=" +
             shortcode;
     final http.Response response = await http.get(Uri.parse(url), headers: {
-      "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+      "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
       "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
     });
 
@@ -216,7 +216,7 @@ class PostService {
           "https://instagram-scraper-2022.p.rapidapi.com/ig/info_username/?user=" +
               _username;
       final http.Response response = await http.get(Uri.parse(url), headers: {
-        "X-RapidAPI-Key": "9da44fc6ddmsh37b9e8973436610p10ab16jsnf989eb4c232a",
+        "X-RapidAPI-Key": "cb42a464cbmsh5d08b3d42135b64p1de875jsn9ef075c0c463",
         "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
       });
       final isPrivate = json.decode(response.body)["user"]["is_private"];
