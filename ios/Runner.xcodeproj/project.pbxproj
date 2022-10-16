@@ -366,7 +366,7 @@
 				DEVELOPMENT_TEAM = 5S85Q2GK24;
 				ENABLE_BITCODE = NO;
 				FLUTTER_BUILD_NAME = 1.0.1;
-				FLUTTER_BUILD_NUMBER = 0.2;
+				FLUTTER_BUILD_NUMBER = 0.4;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Repost;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
@@ -503,7 +503,7 @@
 				DEVELOPMENT_TEAM = 5S85Q2GK24;
 				ENABLE_BITCODE = NO;
 				FLUTTER_BUILD_NAME = 1.0.1;
-				FLUTTER_BUILD_NUMBER = 0.2;
+				FLUTTER_BUILD_NUMBER = 0.4;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Repost;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
@@ -532,7 +532,7 @@
 				DEVELOPMENT_TEAM = 5S85Q2GK24;
 				ENABLE_BITCODE = NO;
 				FLUTTER_BUILD_NAME = 1.0.1;
-				FLUTTER_BUILD_NUMBER = 0.2;
+				FLUTTER_BUILD_NUMBER = 0.4;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Repost;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
