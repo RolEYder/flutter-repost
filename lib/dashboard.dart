@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repost/helper/StringExtension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'screens/hastag/hastag.dart';
 import 'screens/more/morescreen.dart';
 import 'screens/pro/proscreen.dart';
@@ -11,6 +10,7 @@ import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
 import 'services/database_service.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:external_app_launcher/external_app_launcher.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -24,7 +24,6 @@ class _DashBoardState extends State<DashBoard> {
     super.initState();
     initPlatformState();
     proScreenEveryDay();
-    DatabaseHelper.instance.deleteDatabase();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
       setState(() {});
     });
@@ -176,10 +175,8 @@ class _DashBoardState extends State<DashBoard> {
 
   Future<void> _launchInstagramApp(BuildContext context) async {
     const nativeUrl = "instagram://";
-    if (await canLaunchUrlString(nativeUrl)) {
-      await launchUrlString(nativeUrl);
-    } else {
-      _dialogBuilder(context, "Error", "You must install Instagram");
-    }
+    await LaunchApp.openApp(
+        iosUrlScheme: nativeUrl,
+        appStoreLink: "https://apps.apple.com/us/app/instagram/id389801252");
   }
 }

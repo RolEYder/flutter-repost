@@ -50,7 +50,6 @@ dependencies:
   rflutter_alert: ^2.0.4
   sqflite: ^2.0.3+1
   progress_dialog: ^1.2.4
-  url_launcher: ^6.1.5
   overlay_support: ^2.0.1
   onesignal_flutter: ^3.4.1
   video_player: ^2.4.7
@@ -80,6 +79,7 @@ dependencies:
   firebase_core: ^1.24.0
   firebase_messaging: ^13.1.0
   firebase_in_app_messaging: ^0.6.0+27
+  external_app_launcher: ^3.1.0
  
 
   

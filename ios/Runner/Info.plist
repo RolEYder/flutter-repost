@@ -30,12 +30,12 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSApplicationQueriesSchemes</key>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>The app require to get access to external APIs </string>
-	<array>
+		<array>
 		<string>instagram</string>
 		<string>instagram-stories</string>
 	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The app require to get access to external APIs </string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
