@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> send_push_notification(String title, String body) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final tokenDevice = prefs.getString("tokenDevice");
-  final post = http.post(
+   http.post(
     Uri.parse("https://fcm.googleapis.com/fcm/send"),
     headers: <String, String>{
       'Content-Type': 'application/json',

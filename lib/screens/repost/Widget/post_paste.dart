@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:repost/screens/repost/Screen/repost_schedule_screen_paste.dart';
-import 'package:repost/screens/repost/Widget/rate_us.dart';
+
 
 class PostPasted extends StatefulWidget {
   final String uid;

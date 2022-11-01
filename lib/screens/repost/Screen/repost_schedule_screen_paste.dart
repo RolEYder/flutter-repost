@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
+
 
 import 'package:flutter/material.dart';
 import 'package:cached_video_player/cached_video_player.dart' as cachedVideo;
@@ -9,7 +9,6 @@ import 'package:instagram_video_story_share/instagram_video_story_share.dart';
 import 'package:repost/helper/herpers.dart';
 import 'package:repost/screens/pro/proscreen.dart';
 import 'package:repost/screens/repost/Screen/repost_hastags_screen.dart';
-import 'package:repost/screens/repost/Widget/rate_us.dart';
 import 'package:repost/screens/schedule/notify_screen.dart';
 import 'package:repost/services/database_service.dart';
 import 'package:repost/services/notification_service.dart';
@@ -23,7 +22,6 @@ import 'package:share_extend/share_extend.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path/path.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 import 'package:image_watermark/image_watermark.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
@@ -69,7 +67,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
   String _scheduleSelected = "";
   // ignore: unused_field
   String _hashtagsSelected = "";
-  String _chipSaving = "";
   int selectedAlignment = 0;
   int currentIndexImage = 0;
   int imageIndex = 0;
@@ -216,29 +213,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
     );
   }
 
-  void _onLoading(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: new Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              new CircularProgressIndicator(),
-              new Text("Loading"),
-            ],
-          ),
-        );
-      },
-    );
-    new Future.delayed(new Duration(seconds: 3), () {
-      Navigator.pop(context); //pop dialog
-      setState(() {
-        isLoading = false;
-      });
-    });
-  }
+
 
   Widget build(BuildContext context) {
     ProgressDialog pr = ProgressDialog(context);

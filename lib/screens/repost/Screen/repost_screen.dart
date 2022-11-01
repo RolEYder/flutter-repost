@@ -320,7 +320,7 @@ class _RepostScreenState extends State<RepostScreen> {
           String username = _reel["username"].toString();
           String display_url = _reel["display_url"].toString();
           int is_verified = _reel["is_verified"] ? 1 : 0;
-          int was_posted = 0;
+
           String accessibility_caption =
               _reel["accessibility_caption"].toString();
           List<Map<String, dynamic>> content = [];

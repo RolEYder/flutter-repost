@@ -9,7 +9,6 @@ import 'screens/repost/Screen/repost_screen.dart';
 import 'screens/schedule/schedule_screen.dart';
 import 'screens/setting/settings.dart';
 import 'services/database_service.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
 
 class DashBoard extends StatefulWidget {
@@ -22,19 +21,10 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
     proScreenEveryDay();
     DatabaseHelper.instance.initializeDB().whenComplete(() async {
       setState(() {});
     });
-  }
-
-  static final String oneSignalAppId = "48194e35-d4ef-4265-bf2f-d28da15b8ac3";
-  Future<void> initPlatformState() async {
-    OneSignal.shared.setAppId(oneSignalAppId);
-    OneSignal.shared
-        .promptUserForPushNotificationPermission()
-        .then((accepted) {});
   }
 
   int index = 0;
@@ -133,29 +123,6 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  Future<void> _dialogBuilder(
-      BuildContext context, String title, String content) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title.toString()),
-          content: Text(content.toString()),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Future<void> proScreenEveryDay() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
