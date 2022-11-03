@@ -152,8 +152,7 @@ class _ScheduleRepostState extends State<ScheduleRepost> {
                       width: double.infinity,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Color.fromARGB(255, 73, 65, 125)),
+                              primary: Color.fromARGB(255, 73, 65, 125)),
                           onPressed: () {
                             String minute =
                                 _getTime!.minute.toString().length == 1

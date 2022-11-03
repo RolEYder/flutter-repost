@@ -1,7 +1,8 @@
 // @dart=2.9
 
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:repost/helper/herpers.dart';
@@ -185,178 +186,187 @@ class _RepostScreenState extends State<RepostScreen> {
   }
 
   void getClipboardPastedLinks() async {
-    ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
-    if (hasValidUrlString(data.text)) {
-      var url = data.text;
-      // post
-      if (isPostUrl(url)) {
-        showToast(AppLocalizations.of(context).repost_posted_from_instagram);
+    if (Platform.isAndroid || Platform.isIOS) {
+      var StoragePermission = await Permission.manageExternalStorage.isGranted;
+      bool isStorage = StoragePermission == ServiceStatus.enabled;
+      final status = await Permission.manageExternalStorage.request();
 
-        var pattern = "\/p\/(.*?)\/";
-        RegExp regExp = RegExp(pattern);
-        if (regExp.hasMatch(url)) {
-          var value = regExp.firstMatch(url)?.group(1);
-          var _post = await PostService().getPostPasted(value);
-          setState(() {
-            _isLoading = true;
-          });
-          String shortcode = _post["shortcode"].toString();
-          String uid = _post["uid"].toString();
-          int is_video = _post["is_video"] ? 1 : 0;
-          String caption = _post["caption"].toString();
-          String profile_pic_url = _post["profile_pic_url"].toString();
-          String username = _post["username"].toString();
-          String display_url = _post["display_url"].toString();
-          int is_verified = _post["is_verified"] ? 1 : 0;
-          String accessibility_caption =
+      if (status.isGranted){
+        ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
+        if (hasValidUrlString(data.text)) {
+          var url = data.text;
+          // post
+          if (isPostUrl(url)) {
+            showToast(AppLocalizations.of(context).repost_posted_from_instagram);
+
+            var pattern = "\/p\/(.*?)\/";
+            RegExp regExp = RegExp(pattern);
+            if (regExp.hasMatch(url)) {
+              var value = regExp.firstMatch(url)?.group(1);
+              var _post = await PostService().getPostPasted(value);
+              setState(() {
+                _isLoading = true;
+              });
+              String shortcode = _post["shortcode"].toString();
+              String uid = _post["uid"].toString();
+              int is_video = _post["is_video"] ? 1 : 0;
+              String caption = _post["caption"].toString();
+              String profile_pic_url = _post["profile_pic_url"].toString();
+              String username = _post["username"].toString();
+              String display_url = _post["display_url"].toString();
+              int is_verified = _post["is_verified"] ? 1 : 0;
+              String accessibility_caption =
               _post["accessibility_caption"].toString();
-          List<Map<String, dynamic>> content = [];
+              List<Map<String, dynamic>> content = [];
 
-          if (_post["content"].isNotEmpty) {
-            content = _post["content"];
-          } else {
-            content = new List<Map<String, dynamic>>.empty();
-          }
-          saveArchived(
-              shortcode,
-              uid,
-              is_video,
-              caption,
-              profile_pic_url,
-              username,
-              display_url,
-              is_verified,
-              0,
-              accessibility_caption,
-              content);
-          setState(() {
-            PASTED.addAll(_post);
-            _valueSearch = value;
-            _typeSearch = "post";
-            _isLoading = true;
-          });
+              if (_post["content"].isNotEmpty) {
+                content = _post["content"];
+              } else {
+                content = new List<Map<String, dynamic>>.empty();
+              }
+              saveArchived(
+                  shortcode,
+                  uid,
+                  is_video,
+                  caption,
+                  profile_pic_url,
+                  username,
+                  display_url,
+                  is_verified,
+                  0,
+                  accessibility_caption,
+                  content);
+              setState(() {
+                PASTED.addAll(_post);
+                _valueSearch = value;
+                _typeSearch = "post";
+                _isLoading = true;
+              });
 
-          Future.delayed(Duration(seconds: 5)).then((value) => {
+              Future.delayed(Duration(seconds: 5)).then((value) => {
                 setState(() {
                   _isLoading = false;
                 })
               });
-        }
-      }
-      // story
-      else if (isStoryUrl(data.text)) {
-        showToast(AppLocalizations.of(context).story_posted_from_instagram);
+            }
+          }
+          // story
+          else if (isStoryUrl(data.text)) {
+            showToast(AppLocalizations.of(context).story_posted_from_instagram);
 
-        var storyPattern =
-            r'(?:https?:\/\/)?(?:www.)?instagram.com\/?([stories]+)?\/([a-zA-Z0-9\-\_\.]+)\/?([0-9]+)?';
-        RegExp regExp = RegExp(storyPattern);
-        if (regExp.hasMatch(url)) {
-          var value = regExp.firstMatch(url)?.group(3);
-          print(value);
-          setState(() {
-            _isLoading = true;
-          });
-          var _story = await PostService().getStoriesPasted(value);
-          String shortcode = _story["shortcode"].toString();
-          String uid = _story["uid"].toString();
-          int is_video = _story["is_video"] ? 1 : 0;
-          String caption = _story["caption"].toString();
-          String profile_pic_url = _story["profile_pic_url"].toString();
-          String username = _story["username"].toString();
-          String display_url = _story["display_url"].toString();
-          int is_verified = _story["is_verified"] ? 1 : 0;
-          String accessibility_caption =
+            var storyPattern =
+                r'(?:https?:\/\/)?(?:www.)?instagram.com\/?([stories]+)?\/([a-zA-Z0-9\-\_\.]+)\/?([0-9]+)?';
+            RegExp regExp = RegExp(storyPattern);
+            if (regExp.hasMatch(url)) {
+              var value = regExp.firstMatch(url)?.group(3);
+              print(value);
+              setState(() {
+                _isLoading = true;
+              });
+              var _story = await PostService().getStoriesPasted(value);
+              String shortcode = _story["shortcode"].toString();
+              String uid = _story["uid"].toString();
+              int is_video = _story["is_video"] ? 1 : 0;
+              String caption = _story["caption"].toString();
+              String profile_pic_url = _story["profile_pic_url"].toString();
+              String username = _story["username"].toString();
+              String display_url = _story["display_url"].toString();
+              int is_verified = _story["is_verified"] ? 1 : 0;
+              String accessibility_caption =
               _story["accessibility_caption"].toString();
-          List<Map<String, dynamic>> content = [];
-          if (_story["content"].isNotEmpty) {
-            content = _story["content"];
-          } else {
-            content = new List<Map<String, dynamic>>.empty();
-          }
-          saveArchived(
-              shortcode,
-              uid,
-              is_video,
-              caption,
-              profile_pic_url,
-              username,
-              display_url,
-              is_verified,
-              0,
-              accessibility_caption,
-              content);
-          setState(() {
-            PASTED.addAll(_story);
-            _valueSearch = value;
-            _typeSearch = "story";
-            _isLoading = true;
-          });
-          Future.delayed(Duration(seconds: 5)).then((value) => {
+              List<Map<String, dynamic>> content = [];
+              if (_story["content"].isNotEmpty) {
+                content = _story["content"];
+              } else {
+                content = new List<Map<String, dynamic>>.empty();
+              }
+              saveArchived(
+                  shortcode,
+                  uid,
+                  is_video,
+                  caption,
+                  profile_pic_url,
+                  username,
+                  display_url,
+                  is_verified,
+                  0,
+                  accessibility_caption,
+                  content);
+              setState(() {
+                PASTED.addAll(_story);
+                _valueSearch = value;
+                _typeSearch = "story";
+                _isLoading = true;
+              });
+              Future.delayed(Duration(seconds: 5)).then((value) => {
                 setState(() {
                   _isLoading = false;
                 })
               });
-        }
-      }
-      // reel
-      else if (isReelUrl(data.text)) {
-        showToast(AppLocalizations.of(context).reel_posted_from_instagram);
-        setState(() {
-          _isLoading = true;
-        });
-        var pattern = "\/reel\/(.*?)\/";
-        RegExp regExp = RegExp(pattern);
-        if (regExp.hasMatch(url)) {
-          var value = regExp.firstMatch(url)?.group(1);
-          var _reel = await PostService().getReelPasted(value);
-          setState(() {
-            _isLoading = true;
-          });
-          String shortcode = _reel["shortcode"].toString();
-          String uid = _reel["uid"].toString();
-          int is_video = _reel["is_video"] ? 1 : 0;
-          String caption = _reel["caption"].toString();
-          String profile_pic_url = _reel["profile_pic_url"].toString();
-          String username = _reel["username"].toString();
-          String display_url = _reel["display_url"].toString();
-          int is_verified = _reel["is_verified"] ? 1 : 0;
+            }
+          }
+          // reel
+          else if (isReelUrl(data.text)) {
+            showToast(AppLocalizations.of(context).reel_posted_from_instagram);
+            setState(() {
+              _isLoading = true;
+            });
+            var pattern = "\/reel\/(.*?)\/";
+            RegExp regExp = RegExp(pattern);
+            if (regExp.hasMatch(url)) {
+              var value = regExp.firstMatch(url)?.group(1);
+              var _reel = await PostService().getReelPasted(value);
+              setState(() {
+                _isLoading = true;
+              });
+              String shortcode = _reel["shortcode"].toString();
+              String uid = _reel["uid"].toString();
+              int is_video = _reel["is_video"] ? 1 : 0;
+              String caption = _reel["caption"].toString();
+              String profile_pic_url = _reel["profile_pic_url"].toString();
+              String username = _reel["username"].toString();
+              String display_url = _reel["display_url"].toString();
+              int is_verified = _reel["is_verified"] ? 1 : 0;
 
-          String accessibility_caption =
+              String accessibility_caption =
               _reel["accessibility_caption"].toString();
-          List<Map<String, dynamic>> content = [];
-          if (_reel["content"].isNotEmpty) {
-            content = _reel["content"];
-          } else {
-            content = new List<Map<String, dynamic>>.empty();
-          }
-          saveArchived(
-              shortcode,
-              uid,
-              is_video,
-              caption,
-              profile_pic_url,
-              username,
-              display_url,
-              is_verified,
-              0,
-              accessibility_caption,
-              content);
-          setState(() {
-            PASTED.addAll(_reel);
-            _valueSearch = value;
-            _typeSearch = "reel";
-            _isLoading = true;
-          });
-          Future.delayed(Duration(seconds: 5)).then((value) => {
+              List<Map<String, dynamic>> content = [];
+              if (_reel["content"].isNotEmpty) {
+                content = _reel["content"];
+              } else {
+                content = new List<Map<String, dynamic>>.empty();
+              }
+              saveArchived(
+                  shortcode,
+                  uid,
+                  is_video,
+                  caption,
+                  profile_pic_url,
+                  username,
+                  display_url,
+                  is_verified,
+                  0,
+                  accessibility_caption,
+                  content);
+              setState(() {
+                PASTED.addAll(_reel);
+                _valueSearch = value;
+                _typeSearch = "reel";
+                _isLoading = true;
+              });
+              Future.delayed(Duration(seconds: 5)).then((value) => {
                 setState(() {
                   _isLoading = false;
                 })
               });
+            }
+          }
         }
+        Future.delayed(Duration(seconds: 3))
+            .then((value) => {showArchiveContent()});
       }
     }
-    Future.delayed(Duration(seconds: 3))
-        .then((value) => {showArchiveContent()});
+
   }
 
   Widget build(BuildContext context) {

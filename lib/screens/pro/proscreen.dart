@@ -291,8 +291,7 @@ class _ProScreenState extends State<ProScreen> {
               SizedBox(
                 height: 49,
                 child: ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                    style: ElevatedButton.styleFrom(primary: primaryColor),
                     onPressed: () async {
                       if (selectedTrial == -1) {
                         showDialog<void>(

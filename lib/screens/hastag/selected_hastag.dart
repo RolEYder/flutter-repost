@@ -111,8 +111,7 @@ class _SelectedHastagState extends State<SelectedHastag> {
                     height: 45,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 70, 62, 147)),
+                            primary: const Color.fromARGB(255, 70, 62, 147)),
                         onPressed: () {
                           showDialog(
                               barrierDismissible: false,
@@ -142,8 +141,7 @@ class _SelectedHastagState extends State<SelectedHastag> {
                                       actions: [
                                         ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.transparent,
+                                                primary: Colors.transparent,
                                                 elevation: 0),
                                             onPressed: () {
                                               Navigator.pop(context);

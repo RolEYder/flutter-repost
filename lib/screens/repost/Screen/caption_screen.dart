@@ -59,7 +59,7 @@ class _CaptionState extends State<Caption> with WidgetsBindingObserver {
               const EdgeInsets.only(left: 22, right: 22, top: 18, bottom: 18),
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 73, 65, 125)),
+                  primary: const Color.fromARGB(255, 73, 65, 125)),
               onPressed: () {
                 Navigator.pop(context, _savedCaptions[this.isCheckedbox[0]]);
               },

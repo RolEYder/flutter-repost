@@ -124,8 +124,7 @@ class _HastagState extends State<Hastag> {
                         width: double.infinity,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Color.fromARGB(255, 92, 84, 144)),
+                                primary: Color.fromARGB(255, 92, 84, 144)),
                             onPressed: () {
                               List selectedHashTagArr = [];
                               for (var i = 0; i < selectedhastag.length; i++) {

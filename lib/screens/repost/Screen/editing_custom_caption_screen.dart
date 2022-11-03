@@ -109,8 +109,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                       height: 45,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Color.fromARGB(255, 125, 64, 121)),
+                              primary: Color.fromARGB(255, 125, 64, 121)),
                           onPressed: () {
                             contentController.text = contentController.text +
                                 " " +
@@ -133,8 +132,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                       height: 45,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Color.fromARGB(255, 125, 64, 121)),
+                              primary: Color.fromARGB(255, 125, 64, 121)),
                           onPressed: () {
                             contentController.text = contentController.text +
                                 " " +
@@ -159,7 +157,7 @@ class _EditingCustomCaptionState extends State<EditingCustomCaption> {
                     width: double.infinity,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 73, 65, 125)),
+                            primary: Color.fromARGB(255, 73, 65, 125)),
                         onPressed: () {
                           String content = contentController.text;
                           String title = titleController.text;

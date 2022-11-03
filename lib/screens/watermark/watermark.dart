@@ -30,7 +30,7 @@ class _WatermarkState extends State<Watermark> {
             padding: const EdgeInsets.only(left: 80, right: 80, top: 12),
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 73, 65, 125),
+                  primary: Color.fromARGB(255, 73, 65, 125),
                 ),
                 onPressed: () {
                   var out = isShowWaterMark ? 0 : selectedAlignment;

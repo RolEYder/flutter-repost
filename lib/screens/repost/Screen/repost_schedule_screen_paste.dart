@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:cached_video_player/cached_video_player.dart' as cachedVideo;
@@ -212,8 +212,6 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
       ),
     );
   }
-
-
 
   Widget build(BuildContext context) {
     ProgressDialog pr = ProgressDialog(context);
@@ -492,7 +490,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                         height: 45,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor:
+                                primary:
                                     const Color.fromARGB(255, 125, 64, 121)),
                             onPressed: () async {
                               // reteApplication(context);
@@ -527,7 +525,7 @@ class _RepostSchedulePastedState extends State<RepostSchedulePasted> {
                         height: 45,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor:
+                                primary:
                                     const Color.fromARGB(255, 73, 65, 125)),
                             onPressed: () async {
                               if (_captionSelected.isEmpty) {

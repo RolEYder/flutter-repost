@@ -263,8 +263,7 @@ class _RepostHastags extends State<RepostHastags> {
                       height: 45,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Color.fromARGB(255, 70, 62, 147)),
+                              primary: Color.fromARGB(255, 70, 62, 147)),
                           onPressed: () {
                             Navigator.pop(context, _clickedHashtags);
                           },
