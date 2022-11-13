@@ -16,11 +16,10 @@ import 'package:repost/screens/onboarding/onboarding_page.dart';
 import 'package:repost/services/purchase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'dart:io';
 import 'notifications/notification_badge.dart';
 
-final _configuration =
-    PurchasesConfiguration('appl_EfjAGDblTeCDGccRDhqThHQsiTN');
+final _configuration = Platform.isIOS? PurchasesConfiguration('appl_EfjAGDblTeCDGccRDhqThHQsiTN') : PurchasesConfiguration('goog_rqSaPpxQwQWafeljPNzsrRicPrJ');
 int initScreen;
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
